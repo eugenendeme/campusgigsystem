@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusGig — Your Skill Pays You Today</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --green-deep: #0a3d2b;
+  --green-mid: #0e6641;
+  --green-vivid: #16a34a;
+  --green-bright: #22c55e;
+  --green-lime: #86efac;
+  --green-mist: #dcfce7;
+  --white: #ffffff;
+  --off-white: #f0fdf4;
+  --gray-soft: #e2e8f0;
+  --gray-text: #64748b;
+  --dark: #0f172a;
+  --grad-hero: linear-gradient(135deg, #0a3d2b 0%, #0e6641 40%, #166534 70%, #14532d 100%);
+  --grad-card: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  --grad-accent: linear-gradient(90deg, #22c55e, #86efac);
+  --grad-green: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 40px;
+  --shadow-card: 0 8px 32px rgba(22,163,74,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-btn: 0 4px 20px rgba(34,197,94,0.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--dark); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ===== TICKER ===== */
+.ticker-bar {
+  background: var(--green-deep);
+  padding: 8px 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 101;
+}
+.ticker-track {
+  display: flex;
+  gap: 60px;
+  animation: ticker 30s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,.75);
+  flex-shrink: 0;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green-bright);
+  animation: pulse 1.5s infinite;
+  flex-shrink: 0;
+}
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+/* ===== NAV ===== */
+nav {
+  position: fixed;
+  top: 32px; left: 0; right: 0;
+  z-index: 100;
+  padding: 14px 0;
+  transition: background .3s, box-shadow .3s, top .3s;
+}
+nav.scrolled {
+  background: rgba(10,61,43,.96);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 2px 24px rgba(0,0,0,.25);
+  top: 0;
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+}
+.logo {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800; font-size: 22px; color: var(--white);
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--grad-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--green-deep);
+}
+.nav-links {
+  display: flex; align-items: center; gap: 28px; list-style: none;
+}
+.nav-links a {
+  color: rgba(255,255,255,.75); font-size: 14px;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--green-lime); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-login {
+  color: rgba(255,255,255,.8); font-size: 14px;
+  padding: 8px 18px; border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px; transition: border-color .2s, color .2s;
+}
+.nav-login:hover { border-color: var(--green-lime); color: var(--green-lime); }
+.nav-cta {
+  background: var(--green-vivid); color: var(--white);
+  padding: 10px 22px; border-radius: 999px;
+  font-size: 14px; font-weight: 500;
+  transition: background .2s, transform .2s;
+  box-shadow: var(--shadow-btn);
+}
+.nav-cta:hover { background: var(--green-bright); transform: translateY(-1px); }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  cursor: pointer; padding: 4px;
+}
+.hamburger span { width: 24px; height: 2px; background: white; border-radius: 2px; transition: .3s; }
+.mobile-menu {
+  display: none; position: fixed; inset: 0; z-index: 99;
+  background: var(--green-deep); flex-direction: column;
+  align-items: center; justify-content: center; gap: 32px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: white; }
+.mobile-menu a:hover { color: var(--green-lime); }
+.mobile-close { position: absolute; top: 24px; right: 24px; font-size: 32px; color: white; cursor: pointer; background: none; border: none; }
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--grad-hero);
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+  padding: 140px 0 100px;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(90px); opacity: .2; pointer-events: none;
+}
+.orb-1 { width: 500px; height: 500px; background: #22c55e; top: -120px; right: -80px; }
+.orb-2 { width: 320px; height: 320px; background: #86efac; bottom: -40px; left: -80px; }
+.orb-3 { width: 220px; height: 220px; background: #4ade80; top: 45%; left: 38%; }
+
+.hero-layout {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center;
+  max-width: 1180px; margin: 0 auto; padding: 0 24px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px; border-radius: 999px;
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.9); font-size: 12px; font-weight: 500;
+  letter-spacing: .05em; text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeUp .6s ease both;
+}
+.hero-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(40px, 5.5vw, 76px);
+  font-weight: 900; line-height: 1.04;
+  color: var(--white); margin-bottom: 22px;
+  animation: fadeUp .7s .1s ease both;
+}
+.hero-title .highlight {
+  background: var(--grad-accent);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(15px, 1.8vw, 18px); font-weight: 300;
+  color: rgba(255,255,255,.72); max-width: 520px;
+  line-height: 1.75; margin-bottom: 36px;
+  animation: fadeUp .7s .18s ease both;
+}
+.search-wrap {
+  display: flex; align-items: center;
+  background: rgba(255,255,255,.1);
+  border: 1.5px solid rgba(255,255,255,.18);
+  border-radius: 999px;
+  padding: 7px 7px 7px 22px;
+  max-width: 540px; gap: 10px;
+  backdrop-filter: blur(10px);
+  animation: fadeUp .7s .26s ease both;
+  transition: border-color .25s, background .25s;
+}
+.search-wrap:focus-within {
+  border-color: var(--green-bright);
+  background: rgba(255,255,255,.15);
+}
+.search-wrap input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: 'Inter', sans-serif; font-size: 15px; color: var(--white);
+}
+.search-wrap input::placeholder { color: rgba(255,255,255,.45); }
+.search-btn {
+  background: var(--grad-accent); border: none; cursor: pointer;
+  padding: 11px 26px; border-radius: 999px;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
+  color: var(--green-deep);
+  transition: opacity .2s, transform .2s; white-space: nowrap;
+}
+.search-btn:hover { opacity: .88; transform: scale(1.02); }
+.search-tags {
+  display: flex; gap: 9px; flex-wrap: wrap;
+  margin-top: 14px;
+  animation: fadeUp .7s .34s ease both;
+}
+.stag {
+  padding: 5px 13px; border-radius: 999px;
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.14);
+  color: rgba(255,255,255,.78); font-size: 13px;
+  cursor: pointer; transition: background .2s, border-color .2s;
+}
+.stag:hover { background: rgba(34,197,94,.22); border-color: var(--green-bright); }
+
+.hero-stats {
+  display: flex; gap: 36px; margin-top: 52px; flex-wrap: wrap;
+  animation: fadeUp .7s .42s ease both;
+}
+.stat-item { display: flex; flex-direction: column; gap: 3px; }
+.stat-num {
+  font-family: 'Inter', sans-serif; font-size: 30px; font-weight: 800;
+  color: var(--white); display: flex; align-items: baseline; gap: 3px;
+}
+.stat-num sup { font-size: 15px; color: var(--green-lime); }
+.stat-label { font-size: 12px; color: rgba(255,255,255,.5); }
+.stat-divider { width: 1px; background: rgba(255,255,255,.12); align-self: stretch; margin: 0 4px; }
+
+/* Hero right — floating cards */
+.hero-right {
+  display: flex; flex-direction: column; gap: 16px;
+  animation: floatIn .9s .3s ease both;
+}
+.fcard {
+  background: rgba(255,255,255,.09);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius-md); padding: 18px 20px;
+  backdrop-filter: blur(14px); color: var(--white);
+  transition: transform .25s;
+}
+.fcard:hover { transform: translateY(-3px); }
+.fcard-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.fcard-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--grad-card);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: white; flex-shrink: 0;
+}
+.fcard-name { font-weight: 500; font-size: 14px; }
+.fcard-role { font-size: 11px; color: var(--green-lime); margin-top: 2px; }
+.fcard-body { font-size: 13px; color: rgba(255,255,255,.68); line-height: 1.55; }
+.fcard-price { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+.fcard-price span { font-size: 12px; color: rgba(255,255,255,.5); }
+.fcard-price strong { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; color: var(--green-lime); }
+.stars { color: #fbbf24; font-size: 11px; letter-spacing: 1px; }
+.fcard-offset { margin-left: 32px; }
+.fcard-escrow {
+  background: rgba(34,197,94,.15);
+  border-color: rgba(34,197,94,.3);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: rgba(255,255,255,.8); font-weight: 500;
+}
+.fcard-escrow strong {
+  font-family: 'Inter', sans-serif; font-size: 19px; font-weight: 800;
+  color: var(--green-lime); margin-left: auto;
+}
+
+/* ===== SECTION COMMONS ===== */
+.container { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+section { padding: 96px 0; }
+.section-label {
+  font-size: 11px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--green-vivid); margin-bottom: 10px;
+}
+.section-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(28px, 3.6vw, 46px);
+  font-weight: 800; line-height: 1.14;
+  color: var(--dark); margin-bottom: 14px;
+}
+.section-sub {
+  font-size: 16px; color: var(--gray-text);
+  max-width: 540px; line-height: 1.72; margin-bottom: 52px;
+}
+
+/* ===== HOW IT WORKS ===== */
+.how-bg { background: var(--off-white); }
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.step-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 30px 26px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: transform .25s, box-shadow .25s;
+}
+.step-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(22,163,74,.18); }
+.step-card::after {
+  content: attr(data-step);
+  position: absolute; top: -12px; right: 14px;
+  font-family: 'Inter', sans-serif; font-size: 88px; font-weight: 900;
+  color: var(--green-mist); line-height: 1; pointer-events: none;
+}
+.step-icon {
+  width: 50px; height: 50px; border-radius: var(--radius-sm);
+  background: var(--grad-green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 18px;
+}
+.step-card h3 { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; margin-bottom: 9px; }
+.step-card p { font-size: 13px; color: var(--gray-text); line-height: 1.7; }
+.step-connector {
+  display: none;
+}
+
+/* ===== SKILLS ===== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.skill-card {
+  border-radius: var(--radius-lg); padding: 28px 24px;
+  position: relative; overflow: hidden; cursor: pointer;
+  transition: transform .25s, box-shadow .25s;
+}
+.skill-card:hover { transform: translateY(-4px); }
+.skill-card.c-dark { background: var(--grad-hero); }
+.skill-card.c-light { background: var(--green-mist); border: 1.5px solid var(--green-lime); }
+.skill-card.c-white { background: var(--white); border: 1.5px solid var(--gray-soft); box-shadow: var(--shadow-card); }
+.skill-card h3 { font-family: 'Inter', sans-serif; font-size: 19px; font-weight: 800; margin-bottom: 7px; }
+.skill-card.c-dark h3, .skill-card.c-dark p { color: var(--white); }
+.skill-card.c-light h3 { color: var(--green-deep); }
+.skill-card.c-white h3 { color: var(--dark); }
+.skill-card p { font-size: 13px; line-height: 1.62; }
+.skill-card.c-light p { color: var(--green-mid); }
+.skill-card.c-white p { color: var(--gray-text); }
+.skill-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.skill-tag { padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+.skill-card.c-dark .skill-tag { background: rgba(255,255,255,.14); color: white; }
+.skill-card.c-light .skill-tag { background: var(--green-vivid); color: white; }
+.skill-card.c-white .skill-tag { background: var(--green-mist); color: var(--green-mid); }
+.skill-bg-num {
+  position: absolute; bottom: 16px; right: 18px;
+  font-family: 'Inter', sans-serif; font-size: 52px; font-weight: 900; opacity: .07;
+}
+.skill-card.c-dark .skill-bg-num { color: white; }
+.skill-card.c-light .skill-bg-num { color: var(--green-mid); }
+.skill-card.c-white .skill-bg-num { color: var(--dark); }
+
+/* ===== TRUST / ESCROW ===== */
+.trust-bg {
+  background: var(--grad-hero); position: relative; overflow: hidden;
+}
+.trust-bg::before {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+.trust-cols {
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 72px; align-items: center;
+}
+.trust-label { color: var(--green-lime) !important; }
+.trust-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(26px, 3.4vw, 42px);
+  font-weight: 900; color: white;
+  margin-bottom: 18px; line-height: 1.14;
+}
+.trust-desc { font-size: 15px; color: rgba(255,255,255,.68); line-height: 1.72; margin-bottom: 30px; }
+.trust-steps { display: flex; flex-direction: column; gap: 18px; }
+.tstep { display: flex; gap: 14px; align-items: flex-start; }
+.tstep-num {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--green-vivid); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-weight: 800; font-size: 13px;
+  flex-shrink: 0; margin-top: 1px;
+}
+.tstep-text h4 { font-weight: 500; color: white; font-size: 14px; margin-bottom: 3px; }
+.tstep-text p { font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.6; }
+
+/* Escrow visual */
+.escrow-box {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: var(--radius-lg); padding: 30px;
+  backdrop-filter: blur(12px);
+}
+.escrow-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.escrow-header h4 { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800; color: white; }
+.locked-badge {
+  padding: 5px 13px; border-radius: 999px;
+  background: rgba(34,197,94,.18); border: 1px solid var(--green-bright);
+  color: var(--green-lime); font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; gap: 5px;
+}
+.escrow-amount { font-family: 'Inter', sans-serif; font-size: 38px; font-weight: 900; color: var(--green-lime); margin-bottom: 6px; }
+.escrow-sub { font-size: 12px; color: rgba(255,255,255,.45); margin-bottom: 26px; }
+.escrow-parties { display: flex; justify-content: space-between; align-items: center; }
+.party { text-align: center; }
+.party-av {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--grad-card); margin: 0 auto 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: white; font-size: 15px;
+}
+.party-av.amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.party-name { font-size: 11px; color: rgba(255,255,255,.7); }
+.party-role { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 2px; }
+.arrow-line {
+  flex: 1; height: 2px;
+  background: linear-gradient(90deg, var(--green-vivid), var(--green-bright));
+  margin: 0 14px; position: relative;
+}
+.arrow-line::after {
+  content: '🔒'; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); font-size: 16px;
+  background: var(--green-deep); padding: 0 8px;
+}
+.escrow-footer {
+  margin-top: 22px; padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.escrow-footer span { font-size: 12px; color: rgba(255,255,255,.5); }
+.escrow-footer strong { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 800; color: var(--green-lime); }
+
+/* ===== REVENUE / BUSINESS MODEL ===== */
+.rev-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.rev-card {
+  border-radius: var(--radius-md); padding: 22px 18px;
+  border: 1.5px solid var(--gray-soft);
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+  background: var(--white);
+}
+.rev-card:hover { border-color: var(--green-vivid); box-shadow: var(--shadow-card); transform: translateY(-4px); }
+.rev-icon { font-size: 26px; margin-bottom: 12px; }
+.rev-card h4 { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800; margin-bottom: 5px; }
+.rev-card p { font-size: 12px; color: var(--gray-text); line-height: 1.65; }
+.rev-tag {
+  display: inline-block; margin-top: 10px;
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 10px; font-weight: 600;
+  background: var(--green-mist); color: var(--green-mid);
+}
+
+/* ===== TESTIMONIALS ===== */
+.testi-bg { background: var(--off-white); }
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.testi-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 26px 22px; box-shadow: var(--shadow-card);
+  transition: transform .25s;
+  position: relative; overflow: hidden;
+}
+.testi-card::before {
+  content: '"';
+  position: absolute; top: -10px; right: 20px;
+  font-family: 'Inter', sans-serif; font-size: 100px; font-weight: 900;
+  color: var(--green-mist); line-height: 1;
+}
+.testi-card:hover { transform: translateY(-4px); }
+.testi-stars { color: #fbbf24; font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; }
+.testi-quote { font-size: 14px; color: var(--dark); line-height: 1.72; margin-bottom: 18px; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-av {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--grad-card);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: white; font-size: 14px; flex-shrink: 0;
+}
+.testi-name { font-weight: 600; font-size: 13px; }
+.testi-role { font-size: 11px; color: var(--gray-text); margin-top: 2px; }
+
+/* ===== CTA ===== */
+.cta-section {
+  background: var(--grad-hero); text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(34,197,94,.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(134,239,172,.1) 0%, transparent 50%);
+}
+.cta-inner { position: relative; z-index: 2; }
+.cta-title {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(30px, 4.5vw, 54px);
+  font-weight: 900; color: white; margin-bottom: 14px; line-height: 1.1;
+}
+.cta-sub {
+  font-size: 17px; color: rgba(255,255,255,.68);
+  max-width: 460px; margin: 0 auto 38px; line-height: 1.65;
+}
+.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 15px 34px; border-radius: 999px;
+  background: var(--grad-accent); color: var(--green-deep);
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800;
+  border: none; cursor: pointer; box-shadow: var(--shadow-btn);
+  transition: transform .2s, opacity .2s;
+}
+.btn-primary:hover { transform: translateY(-2px) scale(1.02); opacity: .9; }
+.btn-outline {
+  padding: 15px 34px; border-radius: 999px;
+  background: transparent; color: white;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+  border: 2px solid rgba(255,255,255,.35); cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.btn-outline:hover { border-color: white; background: rgba(255,255,255,.08); }
+
+/* ===== FOOTER ===== */
+footer { background: var(--green-deep); padding: 56px 0 28px; }
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 44px; margin-bottom: 44px;
+}
+.footer-brand p { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.7; margin-top: 14px; max-width: 260px; }
+.footer-col h5 {
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 800;
+  color: white; margin-bottom: 14px; letter-spacing: .04em;
+}
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.footer-col ul li a { font-size: 13px; color: rgba(255,255,255,.5); transition: color .2s; }
+.footer-col ul li a:hover { color: var(--green-lime); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom p { font-size: 12px; color: rgba(255,255,255,.35); }
+.footer-socials { display: flex; gap: 12px; }
+.social-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.55); font-size: 13px;
+  transition: background .2s, color .2s; cursor: pointer;
+}
+.social-btn:hover { background: var(--green-vivid); color: white; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.hero-right { animation: float 5s ease-in-out infinite; }
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  .skills-grid { grid-template-columns: repeat(2, 1fr); }
+  .rev-grid { grid-template-columns: repeat(2, 1fr); }
+  .testi-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .trust-cols { grid-template-columns: 1fr; gap: 48px; }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-actions { display: none; }
+  .hamburger { display: flex; }
+  section { padding: 72px 0; }
+  .hero { padding: 120px 0 80px; }
+  .hero-title { font-size: clamp(36px, 10vw, 54px); }
+  .skills-grid { grid-template-columns: 1fr; }
+  .rev-grid { grid-template-columns: 1fr 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .hero-stats { gap: 24px; }
+  .stat-divider { display: none; }
+}
+@media (max-width: 480px) {
+  .search-btn { padding: 11px 18px; font-size: 13px; }
+  .steps-grid { grid-template-columns: 1fr; }
+  .rev-grid { grid-template-columns: 1fr; }
+  .cta-btns { flex-direction: column; align-items: center; }
+  .trust-cols { gap: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TICKER ===== -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item"><span class="live-dot"></span> Amara Enow just completed a React project — 25,000 CFA released 🎉</span>
+    <span class="ticker-item"><span class="live-dot"></span> Grace Tabi is now CampusGig Verified ✓</span>
+    <span class="ticker-item"><span class="live-dot"></span> Molyko SME posted: "Need an Excel Expert" — 6,000 CFA</span>
+    <span class="ticker-item"><span class="live-dot"></span> 3 new gigs posted in Engineering this hour</span>
+    <span class="ticker-item"><span class="live-dot"></span> Trust Score: 1,247 successful escrow transactions today</span>
+    <span class="ticker-item"><span class="live-dot"></span> New: UI/UX Design gig — 18,000 CFA — posted in Buea</span>
+    <!-- duplicate for seamless loop -->
+    <span class="ticker-item"><span class="live-dot"></span> Amara Enow just completed a React project — 25,000 CFA released 🎉</span>
+    <span class="ticker-item"><span class="live-dot"></span> Grace Tabi is now CampusGig Verified ✓</span>
+    <span class="ticker-item"><span class="live-dot"></span> Molyko SME posted: "Need an Excel Expert" — 6,000 CFA</span>
+    <span class="ticker-item"><span class="live-dot"></span> 3 new gigs posted in Engineering this hour</span>
+    <span class="ticker-item"><span class="live-dot"></span> Trust Score: 1,247 successful escrow transactions today</span>
+    <span class="ticker-item"><span class="live-dot"></span> New: UI/UX Design gig — 18,000 CFA — posted in Buea</span>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark"><i class="fa-solid fa-bolt"></i></div>
+      CampusGig
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">How it Works</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#trust">Trust &amp; Escrow</a></li>
+      <li><a href="#testimonials">Stories</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="nav-login">Log In</a>
+      <a href="register.html" class="nav-cta">Get Started</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#how" onclick="toggleMenu()">How it Works</a>
+  <a href="#skills" onclick="toggleMenu()">Skills</a>
+  <a href="#trust" onclick="toggleMenu()">Trust & Escrow</a>
+  <a href="#testimonials" onclick="toggleMenu()">Stories</a>
+  <a href="login.html" style="color:var(--green-lime)">Log In</a>
+  <a href="register.html" style="background:var(--green-vivid);padding:14px 36px;border-radius:999px;font-size:18px;">Get Started</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <div class="hero-layout">
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="live-dot"></span> Live in Buea &amp; Molyko
+      </div>
+      <h1 class="hero-title">
+        Your Skill<br>
+        <span class="highlight">Pays You</span><br>
+        Today.
+      </h1>
+      <p class="hero-sub">
+        CampusGig connects Cameroon's brightest student talent with local businesses — fast, trusted, and Mobile Money ready.
+      </p>
+
+      <div class="search-wrap">
+        <i class="fa-solid fa-magnifying-glass" style="color: rgba(255,255,255,.45)"></i>
+        <input type="text" id="searchInput" placeholder="Search a skill or post a gig…">
+        <button class="search-btn" onclick="handleSearch()">Find Talent</button>
+      </div>
+
+      <div class="search-tags">
+        <span class="stag" onclick="fillSearch('Logo Design')">🎨 Logo Design</span>
+        <span class="stag" onclick="fillSearch('Web Development')">💻 Web Dev</span>
+        <span class="stag" onclick="fillSearch('Accounting')">📊 Accounting</span>
+        <span class="stag" onclick="fillSearch('Social Media')">📱 Social Media</span>
+        <span class="stag" onclick="fillSearch('Barbering')">✂️ Barbering</span>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num"><span id="count1">0</span><sup>+</sup></div>
+          <div class="stat-label">Skilled students</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num"><span id="count2">0</span><sup>K</sup></div>
+          <div class="stat-label">CFA earned this month</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-num"><span id="count3">0</span><sup>%</sup></div>
+          <div class="stat-label">Escrow success rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — Floating Cards -->
+    <div class="hero-right" aria-hidden="true">
+      <div class="fcard">
+        <div class="fcard-head">
+          <div class="fcard-avatar">AE</div>
+          <div>
+            <div class="fcard-name">Amara Enow</div>
+            <div class="fcard-role">⚡ Engineering Student — UB</div>
+          </div>
+        </div>
+        <div class="fcard-body">"I will build your business website with React & Node.js. Fully responsive. Clean code."</div>
+        <div class="fcard-price">
+          <span><span class="stars">★★★★★</span> 4.9 (32)</span>
+          <strong>25,000 CFA</strong>
+        </div>
+      </div>
+
+      <div class="fcard fcard-offset">
+        <div class="fcard-head">
+          <div class="fcard-avatar amber">GT</div>
+          <div>
+            <div class="fcard-name">Grace Tabi</div>
+            <div class="fcard-role">📢 Marketing Student — UB</div>
+          </div>
+        </div>
+        <div class="fcard-body">"I will manage your brand's Instagram & grow it by 500 followers in 30 days."</div>
+        <div class="fcard-price">
+          <span><span class="stars">★★★★★</span> 5.0 (18)</span>
+          <strong>15,000 CFA</strong>
+        </div>
+      </div>
+
+      <div class="fcard fcard-escrow">
+        <span class="live-dot"></span> Escrow just released
+        <strong>8,000 CFA</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-bg" id="how">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">How it works</div>
+      <h2 class="section-title">From hidden talent<br>to paid professional</h2>
+      <p class="section-sub">Four simple steps connect students to income and businesses to quality help — all protected by our Escrow trust layer.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal" data-step="01" style="transition-delay:.0s">
+        <div class="step-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>Create Your Profile</h3>
+        <p>Register as Earner or Hirer. Students pick their Skill Pillars and build a verified Trust Profile that replaces your CV.</p>
+      </div>
+      <div class="step-card reveal" data-step="02" style="transition-delay:.1s">
+        <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <h3>Discover or Post</h3>
+        <p>Browse the dual-feed — find talented students ready to work, or post your gig to receive applications within minutes.</p>
+      </div>
+      <div class="step-card reveal" data-step="03" style="transition-delay:.2s">
+        <div class="step-icon"><i class="fa-solid fa-lock"></i></div>
+        <h3>Lock with Escrow</h3>
+        <p>The hirer locks payment on the platform. The student sees it's secured and starts work — zero risk for both sides.</p>
+      </div>
+      <div class="step-card reveal" data-step="04" style="transition-delay:.3s">
+        <div class="step-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+        <h3>Get Paid via MoMo</h3>
+        <p>Work delivered, payment released instantly to Mobile Money. Your Trust Score grows with every successful gig.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Skill Pillars</div>
+      <h2 class="section-title">Every talent has<br>a place here</h2>
+      <p class="section-sub">From code to curls — if you have a skill, CampusGig has a hirer waiting.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card c-dark reveal">
+        <h3>Engineering &amp; Tech</h3>
+        <p>Web dev, app building, database design, cybersecurity — the builders who power businesses.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Web Dev</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Data Analysis</span>
+          <span class="skill-tag">UI/UX</span>
+        </div>
+        <div class="skill-bg-num">01</div>
+      </div>
+      <div class="skill-card c-light reveal" style="transition-delay:.08s">
+        <h3>Business &amp; Finance</h3>
+        <p>Accounting, business plans, market research, Excel wizardry — minds that make money make sense.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Accounting</span>
+          <span class="skill-tag">Business Plans</span>
+          <span class="skill-tag">Excel</span>
+        </div>
+        <div class="skill-bg-num">02</div>
+      </div>
+      <div class="skill-card c-white reveal" style="transition-delay:.16s">
+        <h3>Marketing &amp; Creative</h3>
+        <p>Brand identity, social media, content creation, photography — storytellers who grow brands.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Social Media</span>
+          <span class="skill-tag">Logo Design</span>
+          <span class="skill-tag">Video Edit</span>
+        </div>
+        <div class="skill-bg-num">03</div>
+      </div>
+      <div class="skill-card c-white reveal" style="transition-delay:.24s">
+        <h3>Street-Smart Talents</h3>
+        <p>Barbering, photography, event planning, dance coaching — skills the world loves and pays for.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Barbering</span>
+          <span class="skill-tag">Photography</span>
+          <span class="skill-tag">Events</span>
+        </div>
+        <div class="skill-bg-num">04</div>
+      </div>
+      <div class="skill-card c-light reveal" style="transition-delay:.32s">
+        <h3>Academic Support</h3>
+        <p>Tutoring, assignment help, translation, research assistance — knowledge shared, money earned.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Tutoring</span>
+          <span class="skill-tag">Translation</span>
+          <span class="skill-tag">Research</span>
+        </div>
+        <div class="skill-bg-num">05</div>
+      </div>
+      <div class="skill-card c-dark reveal" style="transition-delay:.40s">
+        <h3>Your Skill = Your Business</h3>
+        <p>Not on the list? Post it anyway. CampusGig's Smart-Match AI finds the right hirer for any skill in Buea.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">+ Add Your Skill</span>
+        </div>
+        <div class="skill-bg-num">∞</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TRUST / ESCROW ===== -->
+<section class="trust-bg" id="trust">
+  <div class="container">
+    <div class="trust-cols">
+      <div class="reveal">
+        <div class="section-label trust-label">The Trust Layer</div>
+        <h2 class="trust-title">Zero risk.<br>Full protection.<br>Real money.</h2>
+        <p class="trust-desc">We solve the "Trust Tax" that cripples local hiring. Our Escrow system holds funds safely while work is done — then releases to Mobile Money the moment you confirm.</p>
+        <div class="trust-steps">
+          <div class="tstep">
+            <div class="tstep-num">1</div>
+            <div class="tstep-text">
+              <h4>Hirer locks payment on the platform</h4>
+              <p>Funds are held securely. Neither side can access them until the deal is done.</p>
+            </div>
+          </div>
+          <div class="tstep">
+            <div class="tstep-num">2</div>
+            <div class="tstep-text">
+              <h4>Student sees "LOCKED" and starts work</h4>
+              <p>No more "he ran with the money" stories. Payment is guaranteed before a single line of code is written.</p>
+            </div>
+          </div>
+          <div class="tstep">
+            <div class="tstep-num">3</div>
+            <div class="tstep-text">
+              <h4>Work delivered, funds released to MoMo</h4>
+              <p>Instant Mobile Money transfer. Your Trust Score updates. Your professional reputation grows.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal" style="transition-delay:.2s">
+        <div class="escrow-box">
+          <div class="escrow-header">
+            <h4><i class="fa-solid fa-shield-halved"></i> Active Escrow</h4>
+            <div class="locked-badge"><span class="live-dot"></span> LOCKED</div>
+          </div>
+          <div class="escrow-amount">25,000 CFA</div>
+          <div class="escrow-sub">Web Development Project • Posted 2hrs ago</div>
+          <div class="escrow-parties">
+            <div class="party">
+              <div class="party-av amber">BN</div>
+              <div class="party-name">Buma Nfor</div>
+              <div class="party-role">Hirer · Molyko SME</div>
+            </div>
+            <div class="arrow-line"></div>
+            <div class="party">
+              <div class="party-av">AE</div>
+              <div class="party-name">Amara Enow</div>
+              <div class="party-role">Earner · UB Student</div>
+            </div>
+          </div>
+          <div class="escrow-footer">
+            <span>Platform fee (8%)</span>
+            <strong>2,000 CFA</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BUSINESS MODEL ===== -->
+<section id="model">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">How We Grow Together</div>
+      <h2 class="section-title">Revenue built on<br>student success</h2>
+      <p class="section-sub">CampusGig only earns when students earn. Every fee we collect proves the ecosystem is working.</p>
+    </div>
+    <div class="rev-grid">
+      <div class="rev-card reveal">
+        <div class="rev-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+        <h4>Transaction Fee</h4>
+        <p>8% service fee on every completed escrow transaction. Only charged when work is done.</p>
+        <span class="rev-tag">Core Revenue</span>
+      </div>
+      <div class="rev-card reveal" style="transition-delay:.1s">
+        <div class="rev-icon"><i class="fa-solid fa-star"></i></div>
+        <h4>Pro Earner Badge</h4>
+        <p>Students pay a monthly subscription to unlock priority placement and verified status.</p>
+        <span class="rev-tag">Subscription</span>
+      </div>
+      <div class="rev-card reveal" style="transition-delay:.2s">
+        <div class="rev-icon"><i class="fa-solid fa-bullhorn"></i></div>
+        <h4>Sponsored Posts</h4>
+        <p>Local telcos, banks, and brands pay to reach our massive student audience with pinned gigs.</p>
+        <span class="rev-tag">Ads</span>
+      </div>
+      <div class="rev-card reveal" style="transition-delay:.3s">
+        <div class="rev-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <h4>Campus Partnerships</h4>
+        <p>Universities pay to integrate CampusGig into their career development programs.</p>
+        <span class="rev-tag">B2B</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testi-bg" id="testimonials">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Real Stories</div>
+      <h2 class="section-title">Hidden Giants,<br>now paid professionals</h2>
+      <p class="section-sub">From WhatsApp statuses to verified income — here's what CampusGig changed.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I used to post my designs on WhatsApp status and they'd disappear in 24 hours. With CampusGig, my profile stays live and I've earned over 180,000 CFA this semester."</p>
+        <div class="testi-author">
+          <div class="testi-av">CT</div>
+          <div>
+            <div class="testi-name">Cynthia Tah</div>
+            <div class="testi-role">Graphic Designer · UB Year 3</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.1s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I was scared of getting scammed again. The Escrow feature changed everything. I post a gig, lock the money, and I know exactly what I'm getting. No more middlemen."</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">PM</div>
+          <div>
+            <div class="testi-name">Patrick Musa</div>
+            <div class="testi-role">Pharmacy Owner · Molyko</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.2s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"My Trust Score is 94. Hirers message me every week. I've turned my barbering skill into a full income — and I haven't missed a lecture yet."</p>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#f59e0b,#d97706)">KA</div>
+          <div>
+            <div class="testi-name">Kevin Acho</div>
+            <div class="testi-role">Barber &amp; Law Student · UB</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="container cta-inner">
+    <div class="reveal">
+      <h2 class="cta-title">The WhatsApp Void<br>ends today.</h2>
+      <p class="cta-sub">Join thousands of students turning their skills into income — and businesses finding the best talent in Buea.</p>
+      <div class="cta-btns">
+        <button class="btn-primary" onclick="location.href='pages/register.html?role=earner'">I Have a Skill →</button>
+        <button class="btn-outline" onclick="location.href='pages/register.html?role=hirer'">I Need Talent</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo" style="margin-bottom:0">
+          <div class="logo-mark"><i class="fa-solid fa-bolt"></i></div> CampusGig
+        </div>
+        <p>Bridging Cameroon's student talent with local businesses. Premium quality at student rates.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="pages/feed.html">Browse Talent</a></li>
+          <li><a href="pages/feed.html">Browse Gigs</a></li>
+          <li><a href="pages/register.html">Post a Gig</a></li>
+          <li><a href="pages/register.html">Offer a Service</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Support</h5>
+        <ul>
+          <li><a href="#">Help Centre</a></li>
+          <li><a href="#">Trust &amp; Safety</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 CampusGig · Built with ❤️ for the Hidden Giants of Buea</p>
+      <div class="footer-socials">
+        <div class="social-btn"><i class="fa-brands fa-x-twitter"></i></div>
+        <div class="social-btn"><i class="fa-brands fa-linkedin-in"></i></div>
+        <div class="social-btn"><i class="fa-brands fa-instagram"></i></div>
+        <div class="social-btn"><i class="fa-brands fa-youtube"></i></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== NAV SCROLL =====
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ===== MOBILE MENU =====
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+  document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+}
+
+// ===== SEARCH =====
+function fillSearch(val) {
+  document.getElementById('searchInput').value = val;
+  document.getElementById('searchInput').focus();
+}
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.location.href = `pages/feed.html?q=${encodeURIComponent(q)}`;
+  else window.location.href = 'pages/feed.html';
+}
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch();
+});
+
+// ===== COUNTER ANIMATION =====
+function animateCount(id, target, suffix, duration = 1800) {
+  const el = document.getElementById(id);
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { el.textContent = target; clearInterval(timer); }
+    else el.textContent = Math.floor(start);
+  }, 16);
+}
+
+// Pull from localStorage if available, otherwise use defaults
+function getLiveStats() {
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+  return {
+    users: Math.max(users.length, 1240),
+    earned: Math.max(posts.length * 12, 850),
+    escrow: 98
+  };
+}
+
+let countersStarted = false;
+function startCounters() {
+  if (countersStarted) return;
+  countersStarted = true;
+  const stats = getLiveStats();
+  animateCount('count1', stats.users, '+');
+  animateCount('count2', stats.earned, 'K');
+  animateCount('count3', stats.escrow, '%');
+}
+
+// ===== SCROLL REVEAL =====
+const reveals = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Check if hero stats are in view to start counters
+      if (entry.target.closest('.hero-left') || entry.target === document.querySelector('.hero-left')) {
+        startCounters();
+      }
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(el => revealObserver.observe(el));
+
+// Start counters after 800ms if hero is visible
+setTimeout(startCounters, 800);
+</script>
+</body>
+</html>

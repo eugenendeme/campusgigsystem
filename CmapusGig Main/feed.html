@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feed — CampusGig</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --green-deep: #0a3d2b;
+  --green-mid: #0e6641;
+  --green-vivid: #16a34a;
+  --green-bright: #22c55e;
+  --green-lime: #86efac;
+  --green-mist: #dcfce7;
+  --white: #ffffff;
+  --off-white: #f8fafc;
+  --gray-soft: #e2e8f0;
+  --gray-mid: #cbd5e1;
+  --gray-text: #64748b;
+  --dark: #0f172a;
+  --dark-2: #1e293b;
+  --grad-hero: linear-gradient(135deg, #0a3d2b 0%, #0e6641 40%, #166534 70%, #14532d 100%);
+  --grad-card: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  --grad-accent: linear-gradient(90deg, #22c55e, #86efac);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.06);
+  --shadow-card: 0 4px 20px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.04);
+  --shadow-btn: 0 4px 16px rgba(22,163,74,.35);
+  --header-h: 64px;
+  --left-w: 252px;
+  --right-w: 300px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--off-white);
+  color: var(--dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: 'Inter', sans-serif; cursor: pointer; }
+input, textarea { font-family: 'Inter', sans-serif; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 99px; }
+
+/* ===== LIVE DOT ===== */
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green-bright);
+  display: inline-block;
+  animation: pulse 1.6s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+/* ============================
+   HEADER
+   ============================ */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--header-h);
+  background: var(--green-deep);
+  display: flex; align-items: center;
+  padding: 0 20px; gap: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,.2);
+}
+.header-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'Inter', sans-serif; font-weight: 800; font-size: 18px;
+  color: white; flex-shrink: 0;
+}
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--grad-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: var(--green-deep); flex-shrink: 0;
+}
+.header-search {
+  flex: 1; max-width: 420px;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 999px; padding: 8px 16px;
+  transition: background .2s, border-color .2s;
+}
+.header-search:focus-within {
+  background: rgba(255,255,255,.15); border-color: var(--green-bright);
+}
+.header-search svg { flex-shrink: 0; opacity: .6; }
+.header-search input {
+  flex: 1; background: none; border: none; outline: none;
+  font-size: 14px; color: white;
+}
+.header-search input::placeholder { color: rgba(255,255,255,.45); }
+.header-right {
+  display: flex; align-items: center; gap: 6px; margin-left: auto;
+}
+.hbtn {
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.1); color: white; font-size: 17px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; transition: background .2s;
+}
+.hbtn:hover { background: rgba(255,255,255,.18); }
+.notif-badge {
+  position: absolute; top: 4px; right: 4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #ef4444; border: 1.5px solid var(--green-deep);
+}
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 999px; padding: 4px 12px 4px 4px; cursor: pointer;
+  transition: background .2s;
+}
+.user-chip:hover { background: rgba(255,255,255,.18); }
+.chip-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--grad-accent); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--green-deep);
+}
+.chip-name { font-size: 13px; color: rgba(255,255,255,.9); font-weight: 500; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hamburger-btn {
+  display: none; background: none; border: none;
+  color: white; font-size: 22px; padding: 4px;
+}
+
+/* ============================
+   LAYOUT
+   ============================ */
+/* ============================
+   LEFT SIDEBAR
+   ============================ */
+.left-sidebar {
+  grid-area: left;
+  width: var(--left-w);
+  position: fixed;
+  top: var(--header-h); bottom: 0;
+  overflow-y: auto; overflow-x: hidden;
+  padding: 20px 14px 40px;
+  background: white;
+  border-right: 1px solid var(--gray-soft);
+  transition: transform .3s;
+  z-index: 150;
+  /* offset for max-width centering */
+  left: max(0px, calc((100vw - 1280px) / 2));
+}
+
+/* Profile card */
+.profile-card {
+  background: var(--grad-hero);
+  border-radius: var(--radius-lg); padding: 20px 16px;
+  text-align: center; margin-bottom: 20px; position: relative; overflow: hidden;
+}
+.profile-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.profile-cover-bg {
+  position: absolute; top: 0; left: 0; right: 0; height: 56px;
+  background: rgba(255,255,255,.05);
+}
+.profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: 10px; margin-top: 10px; z-index: 1; }
+.profile-avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: var(--grad-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 800;
+  color: var(--green-deep);
+  border: 3px solid rgba(255,255,255,.3);
+}
+.trust-ring {
+  position: absolute; bottom: -2px; right: -2px;
+  background: var(--green-bright); color: var(--green-deep);
+  border-radius: 999px; font-size: 9px; font-weight: 700;
+  padding: 2px 6px; border: 2px solid var(--green-deep);
+  white-space: nowrap;
+}
+.profile-name {
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+  color: white; margin-bottom: 3px; position: relative; z-index: 1;
+}
+.profile-role { font-size: 11px; color: rgba(255,255,255,.65); margin-bottom: 14px; position: relative; z-index: 1; }
+.profile-stats {
+  display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,.1);
+  padding-top: 12px; position: relative; z-index: 1;
+}
+.pstat {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.pstat + .pstat { border-left: 1px solid rgba(255,255,255,.1); }
+.pstat-num {
+  font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; color: white;
+}
+.pstat-label { font-size: 9px; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .05em; }
+
+/* Nav menu */
+.nav-menu { display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  font-size: 14px; color: var(--gray-text); font-weight: 400;
+  transition: background .2s, color .2s;
+  cursor: pointer; border: none; background: none; text-align: left;
+  width: 100%;
+}
+.nav-item:hover { background: var(--green-mist); color: var(--green-mid); }
+.nav-item.active { background: var(--green-mist); color: var(--green-vivid); font-weight: 600; }
+.nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; flex-shrink: 0; }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto; background: var(--green-vivid); color: white;
+  border-radius: 999px; font-size: 10px; font-weight: 700; padding: 1px 7px;
+}
+.nav-divider { height: 1px; background: var(--gray-soft); margin: 10px 0; }
+
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0; z-index: 140;
+  background: rgba(0,0,0,.5);
+}
+.sidebar-overlay.show { display: block; }
+
+/* ============================
+   MAIN FEED
+   ============================ */
+.main-feed {
+  grid-area: center;
+  margin-top: var(--header-h);
+  margin-left: var(--left-w);
+  margin-right: var(--right-w);
+  padding: 24px 24px 80px;
+  min-height: calc(100vh - var(--header-h));
+}
+
+/* --- Post creator --- */
+.post-creator {
+  background: white; border-radius: var(--radius-lg);
+  padding: 16px; margin-bottom: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--gray-soft);
+  animation: fadeUp .4s ease both;
+}
+.creator-top {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.creator-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--grad-card); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white;
+}
+.creator-input {
+  flex: 1; border: 1.5px solid var(--gray-soft); border-radius: 999px;
+  padding: 10px 18px; font-size: 14px; color: var(--dark);
+  outline: none; background: var(--off-white);
+  transition: border-color .2s;
+  resize: none; height: 42px; overflow: hidden;
+}
+.creator-input:focus {
+  border-color: var(--green-vivid); background: white;
+  height: 80px; border-radius: var(--radius-md);
+}
+.creator-bottom {
+  display: flex; align-items: center; gap: 6px;
+  padding-top: 12px; border-top: 1px solid var(--gray-soft);
+  flex-wrap: wrap;
+}
+.creator-action {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: 999px; border: none;
+  background: none; color: var(--gray-text); font-size: 13px;
+  transition: background .2s, color .2s;
+}
+.creator-action:hover { background: var(--green-mist); color: var(--green-mid); }
+.creator-action .icon { font-size: 17px; }
+.creator-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.post-type-select {
+  border: 1.5px solid var(--gray-soft); border-radius: 999px;
+  padding: 7px 12px; font-size: 13px; color: var(--dark);
+  outline: none; background: white; cursor: pointer;
+}
+.post-btn {
+  background: var(--green-vivid); color: white;
+  border: none; border-radius: 999px; padding: 8px 20px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  box-shadow: var(--shadow-btn); transition: background .2s, transform .2s;
+}
+.post-btn:hover { background: var(--green-bright); transform: translateY(-1px); }
+
+/* Expandable post form */
+.post-form-expanded {
+  display: none; margin-top: 12px; border-top: 1px solid var(--gray-soft); padding-top: 14px;
+}
+.post-form-expanded.show { display: block; }
+.pf-row { margin-bottom: 10px; }
+.pf-label { font-size: 12px; font-weight: 600; color: var(--dark); margin-bottom: 5px; }
+.pf-input {
+  width: 100%; border: 1.5px solid var(--gray-soft); border-radius: var(--radius-sm);
+  padding: 10px 12px; font-size: 14px; color: var(--dark);
+  outline: none; transition: border-color .2s;
+}
+.pf-input:focus { border-color: var(--green-vivid); }
+.pf-textarea { min-height: 80px; resize: vertical; }
+.pf-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pf-submit {
+  width: 100%; padding: 12px; border-radius: var(--radius-md);
+  background: var(--green-vivid); color: white; border: none;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+  box-shadow: var(--shadow-btn); transition: background .2s, transform .2s;
+  margin-top: 4px;
+}
+.pf-submit:hover { background: var(--green-bright); transform: translateY(-1px); }
+.pf-img-preview {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+}
+.pf-img-thumb {
+  width: 60px; height: 60px; border-radius: var(--radius-sm);
+  object-fit: cover; border: 1px solid var(--gray-soft);
+}
+
+/* --- Filter bar --- */
+.filter-bar {
+  display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 12px;
+  scrollbar-width: none; margin-bottom: 4px;
+}
+.filter-bar::-webkit-scrollbar { display: none; }
+.fpill {
+  padding: 7px 16px; border-radius: 999px; white-space: nowrap;
+  font-size: 13px; font-weight: 500; border: 1.5px solid var(--gray-soft);
+  background: white; color: var(--gray-text); cursor: pointer;
+  transition: all .2s; flex-shrink: 0;
+}
+.fpill:hover { border-color: var(--green-vivid); color: var(--green-vivid); }
+.fpill.active {
+  background: var(--green-vivid); color: white;
+  border-color: var(--green-vivid); box-shadow: var(--shadow-btn);
+}
+
+/* Toggle gigs/talent */
+.feed-toggle {
+  display: flex; background: white; border-radius: 999px; padding: 4px;
+  gap: 4px; margin-bottom: 16px; border: 1px solid var(--gray-soft);
+  box-shadow: var(--shadow-sm); width: fit-content;
+}
+.ftoggle-btn {
+  padding: 8px 20px; border-radius: 999px; border: none;
+  background: none; font-size: 13px; font-weight: 500;
+  color: var(--gray-text); transition: all .2s; cursor: pointer;
+}
+.ftoggle-btn.active {
+  background: var(--green-vivid); color: white; box-shadow: var(--shadow-btn);
+}
+
+/* --- Post cards --- */
+.feed-posts { display: flex; flex-direction: column; gap: 16px; }
+
+.post-card {
+  background: white; border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-soft); box-shadow: var(--shadow-card);
+  overflow: hidden;
+  animation: fadeUp .4s ease both;
+  transition: box-shadow .25s, transform .25s;
+}
+.post-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,.1); transform: translateY(-1px); }
+
+.post-header {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 16px 16px 0; flex-wrap: wrap;
+}
+.post-header .post-author-info { min-width: 0; flex: 1; }
+.post-author-name { flex-wrap: wrap; }
+.post-author-av {
+  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; color: white;
+}
+.post-author-info { flex: 1; }
+.post-author-name {
+  font-weight: 600; font-size: 14px; color: var(--dark);
+  display: flex; align-items: center; gap: 6px;
+}
+.verified-tick {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #3b82f6; color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px;
+}
+.post-meta { font-size: 12px; color: var(--gray-text); margin-top: 2px; }
+.post-type-badge {
+  padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  letter-spacing: .03em;
+}
+.badge-gig { background: #dbeafe; color: #1d4ed8; }
+.badge-service { background: var(--green-mist); color: var(--green-mid); }
+.badge-win { background: #fef3c7; color: #92400e; }
+.badge-hire { background: #fce7f3; color: #9d174d; }
+.post-more {
+  margin-left: auto; background: none; border: none; color: var(--gray-text);
+  font-size: 20px; cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm);
+  transition: background .2s;
+}
+.post-more:hover { background: var(--off-white); }
+
+.post-body { padding: 12px 16px; }
+.post-text { font-size: 14px; line-height: 1.65; color: var(--dark-2); }
+.post-text .hashtag { color: var(--green-vivid); font-weight: 500; cursor: pointer; }
+.post-img {
+  width: 100%; border-radius: var(--radius-md); margin-top: 10px;
+  max-height: 280px; object-fit: cover;
+}
+
+/* Service card inside post */
+.service-embed {
+  margin: 12px 16px 0;
+  border: 1.5px solid var(--gray-soft); border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.service-embed-body { padding: 14px; }
+.service-title {
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+  color: var(--dark); margin-bottom: 6px;
+}
+.service-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.service-tag {
+  padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 500;
+  background: var(--green-mist); color: var(--green-mid);
+  display: flex; align-items: center; gap: 4px;
+}
+.service-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; background: var(--off-white);
+  border-top: 1px solid var(--gray-soft); gap: 10px; flex-wrap: wrap;
+}
+.service-price {
+  font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 800;
+  color: var(--green-vivid);
+}
+.service-price span { font-size: 12px; font-weight: 400; color: var(--gray-text); }
+.hire-btn {
+  background: var(--green-vivid); color: white; border: none;
+  padding: 9px 22px; border-radius: 999px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+  box-shadow: var(--shadow-btn); transition: background .2s, transform .2s;
+}
+.hire-btn:hover { background: var(--green-bright); transform: translateY(-1px); }
+.apply-btn {
+  background: #1d4ed8; color: white; border: none;
+  padding: 9px 22px; border-radius: 999px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+  transition: background .2s, transform .2s;
+}
+.apply-btn:hover { background: #2563eb; transform: translateY(-1px); }
+
+/* Post actions */
+.post-actions {
+  display: flex; align-items: center; gap: 4px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--gray-soft); margin-top: 10px;
+  flex-wrap: wrap;
+}
+.paction {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 999px; border: none;
+  background: none; color: var(--gray-text); font-size: 13px;
+  transition: background .2s, color .2s; cursor: pointer;
+}
+.paction:hover { background: var(--green-mist); color: var(--green-mid); }
+.paction.liked { color: #ef4444; }
+.paction .picon { font-size: 17px; }
+.paction-share { margin-left: auto; }
+
+/* Comments */
+.comments-section { padding: 0 16px 14px; display: none; }
+.comments-section.show { display: block; }
+.comment-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+.comment-av {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  background: var(--grad-card); display: flex; align-items: center;
+  justify-content: center; font-size: 11px; font-weight: 700; color: white;
+}
+.comment-input {
+  flex: 1; border: 1.5px solid var(--gray-soft); border-radius: 999px;
+  padding: 7px 14px; font-size: 13px; outline: none;
+  transition: border-color .2s;
+}
+.comment-input:focus { border-color: var(--green-vivid); }
+.comment-send {
+  background: var(--green-vivid); color: white; border: none;
+  width: 32px; height: 32px; border-radius: 50%; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background .2s;
+}
+.comment-send:hover { background: var(--green-bright); }
+.comment-item { display: flex; gap: 8px; margin-bottom: 8px; }
+.comment-bubble { background: var(--off-white); border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 4px; padding: 8px 12px; }
+.comment-author { font-size: 12px; font-weight: 600; color: var(--dark); margin-bottom: 2px; }
+.comment-text { font-size: 13px; color: var(--dark-2); }
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 60px 20px;
+  color: var(--gray-text);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state h3 { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 18px; color: var(--dark); margin-bottom: 6px; }
+
+/* Loading skeleton */
+.skeleton-card {
+  background: white; border-radius: var(--radius-lg); padding: 16px;
+  border: 1px solid var(--gray-soft); margin-bottom: 16px;
+}
+.skel {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 999px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+.skel-avatar { width: 42px; height: 42px; border-radius: 50%; }
+.skel-line { height: 12px; margin-bottom: 8px; }
+.skel-row { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+
+/* ============================
+   RIGHT SIDEBAR
+   ============================ */
+.right-sidebar {
+  grid-area: right;
+  width: var(--right-w);
+  position: fixed;
+  top: var(--header-h); bottom: 0;
+  right: max(0px, calc((100vw - 1280px) / 2));
+  overflow-y: auto; overflow-x: hidden;
+  padding: 20px 14px 40px;
+  background: white;
+  border-left: 1px solid var(--gray-soft);
+}
+
+.widget {
+  background: white; border: 1px solid var(--gray-soft);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.widget-title {
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 800;
+  color: var(--dark); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.widget-title span { font-size: 16px; }
+
+/* Trending skills */
+.trend-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--gray-soft);
+}
+.trend-item:last-child { border-bottom: none; }
+.trend-rank {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--green-mist); color: var(--green-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.trend-info { flex: 1; }
+.trend-name { font-size: 13px; font-weight: 500; color: var(--dark); }
+.trend-count { font-size: 11px; color: var(--gray-text); }
+.trend-bar-wrap { width: 50px; height: 4px; background: var(--gray-soft); border-radius: 999px; }
+.trend-bar { height: 100%; background: var(--green-vivid); border-radius: 999px; }
+
+/* Suggested users */
+.suggest-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 0;
+  border-bottom: 1px solid var(--gray-soft);
+}
+.suggest-item:last-child { border-bottom: none; }
+.suggest-av {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: white;
+}
+.suggest-info { flex: 1; }
+.suggest-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.suggest-role { font-size: 11px; color: var(--gray-text); }
+.follow-btn {
+  padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid var(--green-vivid); color: var(--green-vivid);
+  background: none; transition: all .2s; white-space: nowrap;
+}
+.follow-btn:hover, .follow-btn.following {
+  background: var(--green-vivid); color: white; border-color: var(--green-vivid);
+}
+
+/* Live alerts */
+.alert-item {
+  border: 1px solid var(--gray-soft); border-radius: var(--radius-md);
+  padding: 12px; margin-bottom: 10px; transition: border-color .2s;
+}
+.alert-item:last-child { margin-bottom: 0; }
+.alert-item:hover { border-color: var(--green-vivid); }
+.alert-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.urgency-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.urgency-high { background: #ef4444; }
+.urgency-med { background: #f59e0b; }
+.alert-title { font-size: 13px; font-weight: 600; color: var(--dark); }
+.alert-desc { font-size: 12px; color: var(--gray-text); margin-bottom: 8px; line-height: 1.5; }
+.alert-footer { display: flex; gap: 6px; }
+.alert-btn {
+  flex: 1; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  text-align: center; border: 1.5px solid;
+  transition: all .2s;
+}
+.alert-btn-view { border-color: var(--gray-soft); color: var(--gray-text); background: none; }
+.alert-btn-view:hover { border-color: var(--green-vivid); color: var(--green-vivid); }
+.alert-btn-apply { border-color: var(--green-vivid); color: white; background: var(--green-vivid); }
+.alert-btn-apply:hover { background: var(--green-bright); }
+
+/* ============================
+   MODAL
+   ============================ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius-lg);
+  width: 100%; max-width: 480px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.2);
+  animation: modalIn .3s ease both;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(.95) translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px; border-bottom: 1px solid var(--gray-soft);
+}
+.modal-title { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 800; color: var(--dark); }
+.modal-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: var(--off-white); color: var(--dark); font-size: 18px;
+  display: flex; align-items: center; justify-content: center; transition: background .2s;
+}
+.modal-close:hover { background: var(--gray-soft); }
+.modal-body { padding: 20px; }
+.modal-footer {
+  padding: 14px 20px; border-top: 1px solid var(--gray-soft);
+  display: flex; gap: 10px; justify-content: flex-end;
+}
+.modal-btn-cancel {
+  padding: 10px 20px; border-radius: 999px; border: 1.5px solid var(--gray-soft);
+  background: none; color: var(--gray-text); font-size: 14px;
+}
+.modal-btn-cancel:hover { border-color: var(--dark); color: var(--dark); }
+.modal-btn-ok {
+  padding: 10px 24px; border-radius: 999px; border: none;
+  background: var(--green-vivid); color: white;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 800;
+  box-shadow: var(--shadow-btn);
+}
+.modal-btn-ok:hover { background: var(--green-bright); }
+
+/* Success toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--dark); color: white; padding: 12px 20px;
+  border-radius: 999px; font-size: 14px; font-weight: 500;
+  z-index: 999; transition: transform .3s;
+  display: flex; align-items: center; gap: 8px;
+  white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,.2);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Dropdown menu */
+.dropdown-menu {
+  position: absolute; right: 0; top: 100%;
+  background: white; border: 1px solid var(--gray-soft);
+  border-radius: var(--radius-md); padding: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  z-index: 300; min-width: 160px; display: none;
+}
+.dropdown-menu.open { display: block; }
+.dd-item {
+  padding: 9px 12px; border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--dark); cursor: pointer;
+  transition: background .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.dd-item:hover { background: var(--off-white); }
+.dd-item.danger { color: #ef4444; }
+.post-more-wrap { position: relative; }
+
+/* ============================
+   ANIMATIONS
+   ============================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+
+@media (max-width: 1100px) {
+  :root { --right-w: 260px; }
+}
+
+/* Tablet: hide right sidebar, show it stacked below */
+@media (max-width: 900px) {
+  .right-sidebar { display: none; }
+  .main-feed {
+    margin-top: var(--header-h);
+    margin-right: 0;
+    padding: 20px 16px 32px;
+  }
+  .right-sidebar-mobile { display: block; }
+}
+
+/* Mobile: collapse left sidebar to off-canvas */
+@media (max-width: 680px) {
+  :root { --header-h: 58px; }
+  .left-sidebar {
+    transform: translateX(-100%);
+    left: 0 !important;
+    z-index: 151;
+    width: 260px;
+  }
+  .left-sidebar.open { transform: translateX(0); }
+  .hamburger-btn { display: flex; }
+  .main-feed {
+    margin-top: var(--header-h);
+    margin-left: 0;
+    margin-right: 0;
+    padding: 16px 12px 32px;
+  }
+  /* Tighten header so it never overflows viewport */
+  .header { padding: 0 10px; gap: 8px; overflow: hidden; }
+  .header-logo { font-size: 15px; }
+  .hbtn { width: 34px; height: 34px; font-size: 15px; }
+  .user-chip { padding: 4px 8px 4px 4px; gap: 6px; }
+  .header-search { max-width: 160px; flex-shrink: 1; }
+  .chip-name { display: none; }
+  .post-creator { padding: 12px; }
+  .creator-action span:not(.icon) { display: none; }
+  .pf-row-2 { grid-template-columns: 1fr; }
+  /* Feed toggle full width */
+  .feed-toggle { width: 100%; }
+  .ftoggle-btn { flex: 1; text-align: center; }
+  /* Modal full-width on mobile */
+  .modal { border-radius: var(--radius-md); }
+  .modal-overlay { padding: 12px; }
+}
+
+@media (max-width: 400px) {
+  .header-search { display: none; }
+  .hbtn:first-of-type { display: none; } /* hide home btn to save space */
+}
+
+/* Right sidebar mobile: stacked below feed */
+.right-sidebar-mobile {
+  display: none; padding: 0 12px 40px;
+}
+
+
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+  <a href="index.html" class="header-logo">CampusGig</a>
+  <div class="header-search">
+    <i class="fa-solid fa-magnifying-glass" style="color: rgba(255,255,255,0.45)"></i>
+    <input type="text" placeholder="Search skills, gigs, people..." id="globalSearch" onkeyup="handleGlobalSearch()">
+  </div>
+  <div class="header-right">
+    <button class="hbtn" title="Home" onclick="location.href='../index.html'"><i class="fa-solid fa-house"></i></button>
+    <button class="hbtn" title="Messages" id="chatBtn" onclick="openChatModal()"><i class="fa-solid fa-comments"></i></button>
+    <button class="hbtn" title="Notifications" id="notifBtn">
+      <i class="fa-solid fa-bell"></i>
+      <span class="notif-badge" id="notifBadge"></span>
+    </button>
+    <div class="user-chip" onclick="location.href='profile.html'" id="userChip">
+      <div class="chip-avatar" id="chipAvatar">?</div>
+      <span class="chip-name" id="chipName">Me</span>
+    </div>
+  </div>
+</header>
+
+<!-- Sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== LEFT SIDEBAR ===== -->
+<aside class="left-sidebar" id="leftSidebar">
+  <!-- Profile card -->
+  <div class="profile-card">
+    <div class="profile-cover-bg"></div>
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar" id="sidebarAvatar">?</div>
+      <div class="trust-ring" id="sidebarTrust">TS 0</div>
+    </div>
+    <div class="profile-name" id="sidebarName">Loading...</div>
+    <div class="profile-role" id="sidebarRole">—</div>
+    <div class="profile-stats">
+      <div class="pstat">
+        <div class="pstat-num" id="statGigs">0</div>
+        <div class="pstat-label">Gigs</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num" id="statRating">—</div>
+        <div class="pstat-label">Rating</div>
+      </div>
+      <div class="pstat">
+        <div class="pstat-num" id="statEarnings">0k</div>
+        <div class="pstat-label">CFA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav menu -->
+  <nav class="nav-menu">
+    <button class="nav-item active" onclick="navTo('feed.html')">
+      <span class="nav-icon"><i class="fa-solid fa-newspaper"></i></span> Feed
+    </button>
+    <button class="nav-item" onclick="navTo('profile.html')">
+      <span class="nav-icon"><i class="fa-solid fa-user"></i></span> My Profile
+    </button>
+    <button class="nav-item" onclick="navTo('mygigs.html')">
+      <span class="nav-icon"><i class="fa-solid fa-briefcase"></i></span> My Gigs
+      <span class="nav-badge" id="myGigsBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" onclick="navTo('application.html')">
+      <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span> Applications
+    </button>
+    <button class="nav-item" onclick="openChatModal()">
+      <span class="nav-icon"><i class="fa-solid fa-comments"></i></span> Messages
+    </button>
+    <button class="nav-item" onclick="navTo('wallet.html')">
+      <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Escrow Wallet
+    </button>
+    <button class="nav-item" onclick="navTo('saved.html')">
+      <span class="nav-icon"><i class="fa-solid fa-bookmark"></i></span> Saved Posts
+    </button>
+    <div class="nav-divider"></div>
+    <button class="nav-item" onclick="navTo('settings.html')">
+      <span class="nav-icon"><i class="fa-solid fa-gear"></i></span> Settings
+    </button>
+    <button class="nav-item danger" onclick="handleLogout()" style="color:#ef4444;">
+      <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span> Log Out
+    </button>
+  </nav>
+</aside>
+
+<!-- ===== MAIN FEED ===== -->
+<main class="main-feed" id="mainFeed">
+
+  <!-- Post creator -->
+  <div class="post-creator reveal">
+    <div class="creator-top">
+      <div class="creator-avatar" id="creatorAvatar">?</div>
+      <textarea class="creator-input" id="creatorInput" placeholder="Share a gig, post a hire request, or celebrate a win..." rows="1" onfocus="expandCreator()" oninput="autoResize(this)"></textarea>
+    </div>
+    <div id="postFormExpanded" class="post-form-expanded">
+      <div class="pf-row">
+        <div class="pf-label">Post Title</div>
+        <input class="pf-input" id="pf-title" placeholder="e.g. Full-Stack Website — React + Node.js">
+      </div>
+      <div class="pf-row-2">
+        <div>
+          <div class="pf-label">Category</div>
+          <select class="pf-input" id="pf-category">
+            <option value="tech">⚡ Tech / Engineering</option>
+            <option value="design">🎨 Design / Creative</option>
+            <option value="business">📊 Business / Finance</option>
+            <option value="marketing">📱 Marketing</option>
+            <option value="talent">✨ Street-Smart Talent</option>
+            <option value="academic">📚 Academic Support</option>
+            <option value="other">💡 Other</option>
+          </select>
+        </div>
+        <div>
+          <div class="pf-label">Price / Budget (CFA)</div>
+          <input class="pf-input" id="pf-price" type="number" placeholder="e.g. 15000">
+        </div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-label">Attach Image <span style="color:var(--gray-text);font-weight:400">(optional)</span></div>
+        <input type="file" accept="image/*" id="pf-image" onchange="previewImg()" style="font-size:13px;color:var(--gray-text);">
+        <div class="pf-img-preview" id="pf-img-preview"></div>
+      </div>
+      <button class="pf-submit" onclick="submitPost()">📤 Post to Feed</button>
+    </div>
+    <div class="creator-bottom">
+      <button class="creator-action" onclick="document.getElementById('pf-image').click()">
+        <span class="icon"><i class="fa-solid fa-image"></i></span><span>Image</span>
+      </button>
+      <button class="creator-action">
+        <span class="icon"><i class="fa-solid fa-video"></i></span><span>Video</span>
+      </button>
+      <button class="creator-action">
+        <span class="icon"><i class="fa-solid fa-paperclip"></i></span><span>File</span>
+      </button>
+      <button class="creator-action">
+        <span class="icon"><i class="fa-solid fa-location-dot"></i></span><span>Location</span>
+      </button>
+      <div class="creator-right">
+        <select class="post-type-select" id="postTypeSelect">
+          <option value="service">Gig Offer</option>
+          <option value="hire">Hire Request</option>
+          <option value="win">🏆 Win</option>
+          <option value="update">Update</option>
+        </select>
+        <button class="post-btn" onclick="expandCreator(); submitPost()">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feed controls -->
+  <div class="feed-toggle">
+    <button class="ftoggle-btn active" id="togAll" onclick="setFeedToggle('all',this)">🌐 All Posts</button>
+    <button class="ftoggle-btn" id="togGigs" onclick="setFeedToggle('gig',this)">💼 Gigs</button>
+    <button class="ftoggle-btn" id="togTalent" onclick="setFeedToggle('service',this)">🎓 Talent</button>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="fpill active" onclick="setFilter('all',this)">All</button>
+    <button class="fpill" onclick="setFilter('tech',this)">⚡ Tech</button>
+    <button class="fpill" onclick="setFilter('design',this)">🎨 Design</button>
+    <button class="fpill" onclick="setFilter('business',this)">📊 Business</button>
+    <button class="fpill" onclick="setFilter('marketing',this)">📱 Marketing</button>
+    <button class="fpill" onclick="setFilter('talent',this)">✨ Talent</button>
+    <button class="fpill" onclick="setFilter('academic',this)">📚 Academic</button>
+  </div>
+
+  <!-- Skeleton loaders -->
+  <div id="skeletons">
+    <div class="skeleton-card">
+      <div class="skel-row"><div class="skel skel-avatar"></div><div style="flex:1"><div class="skel skel-line" style="width:40%"></div><div class="skel skel-line" style="width:25%"></div></div></div>
+      <div class="skel skel-line" style="width:90%"></div>
+      <div class="skel skel-line" style="width:70%"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skel-row"><div class="skel skel-avatar"></div><div style="flex:1"><div class="skel skel-line" style="width:35%"></div><div class="skel skel-line" style="width:20%"></div></div></div>
+      <div class="skel skel-line" style="width:80%"></div>
+    </div>
+  </div>
+
+  <!-- Feed posts -->
+  <div class="feed-posts" id="feedPosts"></div>
+  <div id="emptyState" class="empty-state" style="display:none">
+    <div class="empty-icon">🔍</div>
+    <h3>No posts found</h3>
+    <p>Be the first to post in this category!</p>
+  </div>
+
+  <!-- Right sidebar content stacked on mobile -->
+  <div class="right-sidebar-mobile" id="rightMobile"></div>
+</main>
+
+<!-- ===== RIGHT SIDEBAR ===== -->
+<aside class="right-sidebar" id="rightSidebar">
+  <div id="rightSidebarContent"></div>
+</aside>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Detail</div>
+      <button class="modal-close" onclick="closeModalNow()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">✅ Done!</div>
+
+
+
+<script>
+/* ============================
+   DATA & STATE
+   ============================ */
+let currentUser = null;
+let allPosts = [];
+let activeFilter = 'all';
+let activeFeedType = 'all';
+let openDropdown = null;
+
+const AVATAR_COLORS = ['#16a34a','#2563eb','#9333ea','#dc2626','#d97706','#0891b2','#be185d'];
+const getColor = str => AVATAR_COLORS[(str || 'A').charCodeAt(0) % AVATAR_COLORS.length];
+
+// Seed demo data
+const DEMO_POSTS = [
+  {
+    id:'p_001', type:'service', authorId:'demo', authorName:'Amara Enow', authorAvatar:'AE',
+    authorRole:'Full-Stack Dev · UB Engineering', authorVerified:true,
+    title:'Full-Stack Website (React + Node.js)', category:'tech',
+    text:'🚀 Hey Buea! I\'m offering professional website development for small businesses. Built with React frontend + Node.js backend. Fully responsive & SEO-friendly. 🔥\n\n#WebDev #ReactJS #BueaTech #CampusGig',
+    price:25000, delivery:'7 days', rating:'4.9', escrow:true,
+    timestamp: Date.now() - 7200000, likes:[], comments:[], image:null
+  },
+  {
+    id:'p_002', type:'hire', authorId:'biz_01', authorName:'Molyko Bake House', authorAvatar:'MB',
+    authorRole:'Local Business · Molyko', authorVerified:false,
+    title:'Need a Social Media Manager — 3 months', category:'marketing',
+    text:'📢 We\'re a growing bakery in Molyko looking for a creative student to manage our Instagram & Facebook pages. Post daily content, engage followers, run small ads. Flexible hours perfect for students!\n\n#JobAlert #Buea #Marketing #SocialMedia',
+    price:40000, delivery:'Monthly', rating:null, escrow:true,
+    timestamp: Date.now() - 14400000, likes:[], comments:[], image:null
+  },
+  {
+    id:'p_003', type:'service', authorId:'u_gt', authorName:'Grace Tabi', authorAvatar:'GT',
+    authorRole:'Marketing Student · UB', authorVerified:true,
+    title:'Instagram Brand Management — 500 Followers in 30 Days', category:'marketing',
+    text:'📱 Struggling to grow your brand on Instagram? I\'ll take over your page for a month and guarantee +500 real followers! Proven strategy using content calendars, reels & engagement pods.\n\n#SocialMedia #Buea #BrandGrowth',
+    price:15000, delivery:'30 days', rating:'5.0', escrow:true,
+    timestamp: Date.now() - 86400000, likes:[], comments:[], image:null
+  },
+  {
+    id:'p_004', type:'win', authorId:'u_kn', authorName:'Kevin Ndeh', authorAvatar:'KN',
+    authorRole:'Accounting Student · UB', authorVerified:false,
+    title:'', category:'business',
+    text:'🏆 Just completed my 10th gig on CampusGig!! Helped a Buea boutique with their full year bookkeeping & tax prep. Got paid 35,000 CFA — my biggest gig yet! 🎉\n\nThank you to every client who trusted me. The hustle is REAL! 💪\n\n#CampusGigWin #Accounting #BueaHustle',
+    price:null, delivery:null, rating:null, escrow:false,
+    timestamp: Date.now() - 172800000, likes:[], comments:[], image:null
+  },
+  {
+    id:'p_005', type:'service', authorId:'u_fm', authorName:'Fidelis Manga', authorAvatar:'FM',
+    authorRole:'Design Student · UB', authorVerified:true,
+    title:'Logo Design + Full Brand Identity Pack', category:'design',
+    text:'🎨 Your brand deserves to look PREMIUM. I design logos, business cards, letterheads & social media kits. Unlimited revisions until you\'re 100% satisfied!\n\n#GraphicDesign #Logo #Buea #BrandIdentity',
+    price:12000, delivery:'3 days', rating:'4.8', escrow:true,
+    timestamp: Date.now() - 259200000, likes:[], comments:[], image:null
+  }
+];
+
+
+const TRENDING_SKILLS = [
+  { name:'React.js', count:48, pct:95 },
+  { name:'Social Media Mgmt', count:42, pct:85 },
+  { name:'Logo Design', count:37, pct:74 },
+  { name:'Excel & Accounting', count:31, pct:62 },
+  { name:'Python / Data', count:26, pct:52 },
+];
+
+const SUGGESTED_USERS = [
+  { name:'Brice Epede', role:'Data Analyst · UB', av:'BE', color:'#2563eb' },
+  { name:'Carine Nfor', role:'Video Editor · IUC', av:'CN', color:'#9333ea' },
+  { name:'Denis Ako', role:'Football Scout', av:'DA', color:'#dc2626' },
+  { name:'Emmanuella Tah', role:'Python Dev · UB', av:'ET', color:'#0891b2' },
+];
+
+const LIVE_ALERTS = [
+  { title:'Excel Expert Needed', desc:'Molyko SME — help with payroll setup. Budget: 6,000 CFA', urgency:'high' },
+  { title:'WordPress Site Fix', desc:'Small church needs website fix. ASAP. Budget: 8,500 CFA', urgency:'high' },
+  { title:'Photography — Event', desc:'3-hour event coverage this Saturday in Buea Town', urgency:'med' },
+];
+
+/* ============================
+   INIT
+   ============================ */
+window.addEventListener('DOMContentLoaded', () => {
+  loadUser();
+  loadPosts();
+  renderRightSidebar(document.getElementById('rightSidebarContent'));
+  renderRightSidebar(document.getElementById('rightMobile'));
+  initScrollReveal();
+  updateMyGigsBadge();
+
+  // Remove skeletons
+  setTimeout(() => {
+    document.getElementById('skeletons').style.display = 'none';
+    renderFeed();
+  }, 900);
+});
+
+function loadUser() {
+  const stored = localStorage.getItem('currentUser');
+  if (!stored) { window.location.href = 'login.html'; return; }
+  currentUser = JSON.parse(stored);
+  updateUserUI();
+}
+
+function updateUserUI() {
+  const av = currentUser.avatar || (currentUser.name ? currentUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : '?');
+  const name = currentUser.name || 'User';
+  const role = [currentUser.role === 'earner' ? '🎓 Earner' : '🏢 Hirer', currentUser.institution || currentUser.business || ''].filter(Boolean).join(' · ');
+
+  document.getElementById('chipAvatar').textContent = av;
+  document.getElementById('chipAvatar').style.background = `linear-gradient(135deg, ${getColor(av)}, ${getColor(av+'x')})`;
+  document.getElementById('chipName').textContent = name.split(' ')[0];
+  document.getElementById('sidebarAvatar').textContent = av;
+  document.getElementById('sidebarName').textContent = name;
+  document.getElementById('sidebarRole').textContent = role;
+  document.getElementById('sidebarTrust').textContent = 'TS ' + (currentUser.trustScore || 0);
+  document.getElementById('creatorAvatar').textContent = av;
+  document.getElementById('creatorAvatar').style.background = getColor(av);
+
+  // Stats
+  const userPosts = getAllPosts().filter(p => p.authorId === currentUser.id);
+  document.getElementById('statGigs').textContent = userPosts.length;
+  document.getElementById('statRating').textContent = '4.9';
+  document.getElementById('statEarnings').textContent = Math.floor((currentUser.trustScore || 0) * 1200 / 1000) + 'k';
+}
+
+function loadPosts() {
+  const stored = JSON.parse(localStorage.getItem('posts') || '[]');
+  // Merge demo + real, avoid duplicates
+  const ids = new Set(stored.map(p => p.id));
+  allPosts = [...stored, ...DEMO_POSTS.filter(p => !ids.has(p.id))];
+  localStorage.setItem('posts', JSON.stringify(allPosts));
+}
+
+function getAllPosts() {
+  return JSON.parse(localStorage.getItem('posts') || '[]');
+}
+
+function savePosts(posts) {
+  localStorage.setItem('posts', JSON.stringify(posts));
+  allPosts = posts;
+}
+
+/* ============================
+   FEED RENDERING
+   ============================ */
+function renderFeed() {
+  const posts = getAllPosts();
+  const filtered = posts.filter(p => {
+    const typeMatch = activeFeedType === 'all' || p.type === activeFeedType;
+    const catMatch = activeFilter === 'all' || p.category === activeFilter;
+    return typeMatch && catMatch;
+  });
+
+  const container = document.getElementById('feedPosts');
+  const empty = document.getElementById('emptyState');
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Sort newest first
+  filtered.sort((a, b) => b.timestamp - a.timestamp);
+  filtered.forEach((post, i) => {
+    const el = createPostCard(post);
+    el.style.animationDelay = `${i * 0.06}s`;
+    container.appendChild(el);
+  });
+
+  initScrollReveal();
+}
+
+function createPostCard(post) {
+  const div = document.createElement('div');
+  div.className = 'post-card reveal';
+  div.dataset.postId = post.id;
+
+  const typeLabel = { service:'Gig Offer', hire:'Hire Request', win:'🏆 Win', update:'Update' }[post.type] || post.type;
+  const typeBadge = { service:'badge-service', hire:'badge-hire', win:'badge-win', update:'badge-gig' }[post.type] || 'badge-gig';
+  const timeAgo = formatTime(post.timestamp);
+  const color = getColor(post.authorAvatar || 'A');
+  const likes = post.likes || [];
+  const comments = post.comments || [];
+  const isLiked = currentUser && likes.includes(currentUser.id);
+
+  let serviceEmbed = '';
+  if ((post.type === 'service' || post.type === 'hire') && post.price) {
+    const actionBtn = post.type === 'service'
+      ? `<button class="hire-btn" onclick="openHireModal('${post.id}')">Hire Now</button>`
+      : `<button class="apply-btn" onclick="openApplyModal('${post.id}')">Apply Now</button>`;
+    serviceEmbed = `
+      <div class="service-embed">
+        <div class="service-embed-body">
+          <div class="service-title">${escHtml(post.title || 'Service Offer')}</div>
+          <div class="service-tags">
+            ${post.delivery ? `<span class="service-tag">⏱ ${escHtml(post.delivery)}</span>` : ''}
+            ${post.rating ? `<span class="service-tag">⭐ ${post.rating}</span>` : ''}
+            ${post.escrow ? `<span class="service-tag">🔒 Escrow</span>` : ''}
+          </div>
+        </div>
+        <div class="service-footer">
+          <div class="service-price">${Number(post.price).toLocaleString()} <span>CFA</span></div>
+          ${actionBtn}
+        </div>
+      </div>`;
+  }
+
+  const postText = formatPostText(post.text || '');
+  const imgHtml = post.image ? `<img class="post-img" src="${post.image}" alt="Post image">` : '';
+
+  div.innerHTML = `
+    <div class="post-header">
+      <div class="post-author-av" style="background:${color}">${escHtml(post.authorAvatar||'?')}</div>
+      <div class="post-author-info">
+        <div class="post-author-name">
+          ${escHtml(post.authorName||'User')}
+          ${post.authorVerified ? '<span class="verified-tick" title="Verified">✓</span>' : ''}
+        </div>
+        <div class="post-meta">${escHtml(post.authorRole||'')} · ${timeAgo}</div>
+      </div>
+      <span class="post-type-badge ${typeBadge}">${typeLabel}</span>
+      <div class="post-more-wrap">
+        <button class="post-more" onclick="toggleDropdown(event,'dd_${post.id}')">···</button>
+        <div class="dropdown-menu" id="dd_${post.id}">
+          <div class="dd-item" onclick="savePost('${post.id}')">🔖 Save Post</div>
+          <div class="dd-item" onclick="sharePost('${post.id}')">🔗 Share</div>
+          ${currentUser && post.authorId === currentUser.id ? `<div class="dd-item danger" onclick="deletePost('${post.id}')">🗑 Delete</div>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="post-body">
+      <div class="post-text">${postText}</div>
+      ${imgHtml}
+    </div>
+    ${serviceEmbed}
+    <div class="post-actions">
+      <button class="paction ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', this)">
+        <span class="picon"><i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i></span>
+        <span>${likes.length || ''}</span>
+      </button>
+      <button class="paction" onclick="toggleComments('${post.id}')">
+        <span class="picon"><i class="fa-solid fa-comment"></i></span>
+        <span>${comments.length || ''}</span>
+      </button>
+      <button class="paction paction-share" onclick="sharePost('${post.id}')">
+        <span class="picon"><i class="fa-solid fa-share-from-square"></i></span>
+        <span>Share</span>
+      </button>
+    </div>
+    <div class="comments-section" id="comments_${post.id}">
+      <div class="comment-input-row">
+        <div class="comment-av">${currentUser ? (currentUser.avatar||'?') : '?'}</div>
+        <input class="comment-input" id="cinput_${post.id}" placeholder="Write a comment…" onkeydown="if(event.key==='Enter')addComment('${post.id}')">
+        <button class="comment-send" onclick="addComment('${post.id}')">→</button>
+      </div>
+      <div id="commentslist_${post.id}">${renderComments(comments)}</div>
+    </div>`;
+  return div;
+}
+
+function renderComments(comments) {
+  return comments.map(c => `
+    <div class="comment-item">
+      <div class="comment-av" style="background:${getColor(c.avatar||'A')};width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">${c.avatar||'?'}</div>
+      <div class="comment-bubble">
+        <div class="comment-author">${escHtml(c.name||'User')}</div>
+        <div class="comment-text">${escHtml(c.text)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function formatPostText(text) {
+  return escHtml(text)
+    .replace(/(#\w+)/g, '<span class="hashtag">$1</span>')
+    .replace(/\n/g, '<br>');
+}
+
+function formatTime(ts) {
+  const d = Date.now() - ts;
+  if (d < 60000) return 'Just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return Math.floor(d/86400000) + 'd ago';
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ============================
+   RIGHT SIDEBAR WIDGETS
+   ============================ */
+function renderRightSidebar(container) {
+  container.innerHTML = `
+    <!-- Trending skills -->
+    <div class="widget">
+      <div class="widget-title"><i class="fa-solid fa-fire" style="color: #f59e0b; margin-right: 8px;"></i> Trending Skills</div>
+      ${TRENDING_SKILLS.map((s,i) => `
+        <div class="trend-item">
+          <div class="trend-rank">${i+1}</div>
+          <div class="trend-info">
+            <div class="trend-name">${s.name}</div>
+            <div class="trend-count">${s.count} active gigs</div>
+          </div>
+          <div class="trend-bar-wrap"><div class="trend-bar" style="width:${s.pct}%"></div></div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Suggested users -->
+    <div class="widget">
+      <div class="widget-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed; margin-right: 8px;"></i> Suggested Talent</div>
+      ${SUGGESTED_USERS.map(u => `
+        <div class="suggest-item">
+          <div class="suggest-av" style="background:${u.color}">${u.av}</div>
+          <div class="suggest-info">
+            <div class="suggest-name">${u.name}</div>
+            <div class="suggest-role">${u.role}</div>
+          </div>
+          <button class="follow-btn" onclick="toggleFollow(this)">Follow</button>
+        </div>`).join('')}
+    </div>
+
+    <!-- Live gig alerts -->
+    <div class="widget">
+      <div class="widget-title"><span class="live-dot"></span> Live Gig Alerts</div>
+      ${LIVE_ALERTS.map(a => `
+        <div class="alert-item">
+          <div class="alert-header">
+            <div class="urgency-dot urgency-${a.urgency}"></div>
+            <div class="alert-title">${a.title}</div>
+          </div>
+          <div class="alert-desc">${a.desc}</div>
+          <div class="alert-footer">
+            <button class="alert-btn alert-btn-view">View</button>
+            <button class="alert-btn alert-btn-apply" onclick="showToast('✅ Applied successfully!')">Apply</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+/* ============================
+   FILTERS & TOGGLES
+   ============================ */
+function setFilter(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderFeed();
+}
+
+function setFeedToggle(type, el) {
+  activeFeedType = type;
+  document.querySelectorAll('.ftoggle-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderFeed();
+}
+
+/* ============================
+   POST CREATOR
+   ============================ */
+function expandCreator() {
+  document.getElementById('postFormExpanded').classList.add('show');
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+function previewImg() {
+  const file = document.getElementById('pf-image').files[0];
+  const prev = document.getElementById('pf-img-preview');
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    prev.innerHTML = `<img class="pf-img-thumb" src="${e.target.result}">`;
+    prev.dataset.b64 = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitPost() {
+  const textEl = document.getElementById('creatorInput');
+  const text = textEl.value.trim();
+  const title = document.getElementById('pf-title').value.trim();
+  const category = document.getElementById('pf-category').value;
+  const price = document.getElementById('pf-price').value;
+  const type = document.getElementById('postTypeSelect').value;
+  const imgPrev = document.getElementById('pf-img-preview');
+
+  if (!text && !title) {
+    showToast('✏️ Write something first!');
+    document.getElementById('postFormExpanded').classList.add('show');
+    return;
+  }
+
+  const post = {
+    id: 'p_' + Date.now(),
+    type,
+    authorId: currentUser.id,
+    authorName: currentUser.name,
+    authorAvatar: currentUser.avatar,
+    authorRole: (currentUser.role === 'earner' ? '🎓 Earner' : '🏢 Hirer') + (currentUser.institution ? ' · ' + currentUser.institution : ''),
+    authorVerified: currentUser.verified || false,
+    title,
+    category,
+    text,
+    price: price || null,
+    delivery: null,
+    rating: null,
+    escrow: true,
+    timestamp: Date.now(),
+    likes: [],
+    comments: [],
+    image: imgPrev.dataset.b64 || null
+  };
+
+  const posts = getAllPosts();
+  posts.unshift(post);
+  savePosts(posts);
+
+  // Reset
+  textEl.value = '';
+  textEl.style.height = '';
+  document.getElementById('pf-title').value = '';
+  document.getElementById('pf-price').value = '';
+  document.getElementById('pf-img-preview').innerHTML = '';
+  document.getElementById('pf-img-preview').dataset.b64 = '';
+  document.getElementById('postFormExpanded').classList.remove('show');
+
+  renderFeed();
+  updateUserUI();
+  showToast('🚀 Post published!');
+  updateMyGigsBadge();
+}
+
+/* ============================
+   INTERACTIONS
+   ============================ */
+function toggleLike(postId, btn) {
+  if (!currentUser) return;
+  const posts = getAllPosts();
+  const post = posts.find(p => p.id === postId);
+  if (!post) return;
+  post.likes = post.likes || [];
+  const idx = post.likes.indexOf(currentUser.id);
+  if (idx === -1) {
+    post.likes.push(currentUser.id);
+    btn.classList.add('liked');
+    btn.querySelector('.picon').textContent = '❤️';
+  } else {
+    post.likes.splice(idx, 1);
+    btn.classList.remove('liked');
+    btn.querySelector('.picon').textContent = '🤍';
+  }
+  btn.querySelector('span:last-child').textContent = post.likes.length || '';
+  savePosts(posts);
+}
+
+function toggleComments(postId) {
+  const sec = document.getElementById('comments_' + postId);
+  sec.classList.toggle('show');
+  if (sec.classList.contains('show')) document.getElementById('cinput_' + postId)?.focus();
+}
+
+function addComment(postId) {
+  const inp = document.getElementById('cinput_' + postId);
+  const text = inp?.value.trim();
+  if (!text) return;
+  const posts = getAllPosts();
+  const post = posts.find(p => p.id === postId);
+  if (!post) return;
+  post.comments = post.comments || [];
+  post.comments.push({
+    id: 'c_' + Date.now(),
+    name: currentUser?.name || 'You',
+    avatar: currentUser?.avatar || '?',
+    text,
+    timestamp: Date.now()
+  });
+  savePosts(posts);
+  document.getElementById('commentslist_' + postId).innerHTML = renderComments(post.comments);
+  const countEl = document.querySelector(`[data-post-id="${postId}"] .paction:nth-child(2) span:last-child`);
+  if (countEl) countEl.textContent = post.comments.length || '';
+  inp.value = '';
+}
+
+function deletePost(postId) {
+  if (!confirm('Delete this post?')) return;
+  const posts = getAllPosts().filter(p => p.id !== postId);
+  savePosts(posts);
+  renderFeed();
+  updateUserUI();
+  updateMyGigsBadge();
+  showToast('🗑 Post deleted');
+}
+
+function savePost(postId) {
+  const saved = JSON.parse(localStorage.getItem('savedPosts') || '[]');
+  if (!saved.includes(postId)) { saved.push(postId); localStorage.setItem('savedPosts', JSON.stringify(saved)); }
+  showToast('🔖 Post saved!');
+  closeAllDropdowns();
+}
+
+function sharePost(postId) {
+  const url = window.location.href.split('?')[0] + '?post=' + postId;
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => showToast('🔗 Link copied!'));
+  else showToast('🔗 Share: ' + url);
+  closeAllDropdowns();
+}
+
+function toggleFollow(btn) {
+  const following = btn.classList.toggle('following');
+  btn.textContent = following ? 'Following' : 'Follow';
+  showToast(following ? '✅ Now following!' : 'Unfollowed');
+}
+
+/* ============================
+   HIRE / APPLY MODALS
+   ============================ */
+function openHireModal(postId) {
+  const post = getAllPosts().find(p => p.id === postId);
+  if (!post) return;
+  document.getElementById('modalTitle').textContent = '💼 Hire — ' + (post.title || post.authorName);
+  document.getElementById('modalBody').innerHTML = `
+    <div style="margin-bottom:14px;padding:12px;background:var(--green-mist);border-radius:var(--radius-md);border:1px solid var(--green-lime)">
+      <div style="font-size:13px;color:var(--green-mid);font-weight:600;margin-bottom:4px">🔒 Escrow Protected</div>
+      <div style="font-size:12px;color:var(--green-mid)">Your payment is held safely until work is delivered. Zero risk.</div>
+    </div>
+    <div style="font-size:14px;color:var(--dark);margin-bottom:16px">
+      You're hiring <strong>${escHtml(post.authorName)}</strong> for:<br>
+      <span style="font-size:18px;font-family:'Syne',sans-serif;font-weight:700;color:var(--green-vivid)">${Number(post.price).toLocaleString()} CFA</span>
+    </div>
+    <div style="margin-bottom:10px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Message to earner (optional)</label>
+      <textarea style="width:100%;border:1.5px solid var(--gray-soft);border-radius:var(--radius-sm);padding:10px;font-size:13px;min-height:80px;outline:none;resize:vertical;" placeholder="Describe what you need..."></textarea>
+    </div>`;
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="modal-btn-cancel" onclick="closeModalNow()">Cancel</button>
+    <button class="modal-btn-ok" onclick="confirmHire('${postId}')">🔒 Lock Funds & Hire</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function confirmHire(postId) {
+  closeModalNow();
+  showToast('🔒 Funds locked! Earner notified.');
+}
+
+function openApplyModal(postId) {
+  const post = getAllPosts().find(p => p.id === postId);
+  if (!post) return;
+  document.getElementById('modalTitle').textContent = '📋 Apply — ' + (post.title || 'Gig');
+  document.getElementById('modalBody').innerHTML = `
+    <p style="font-size:14px;color:var(--dark);margin-bottom:14px">You're applying to <strong>${escHtml(post.authorName)}'s</strong> gig. Budget: <strong>${Number(post.price).toLocaleString()} CFA</strong></p>
+    <div style="margin-bottom:10px">
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Why are you the best fit?</label>
+      <textarea id="applyMsg" style="width:100%;border:1.5px solid var(--gray-soft);border-radius:var(--radius-sm);padding:10px;font-size:13px;min-height:100px;outline:none;resize:vertical;" placeholder="Describe your experience and why you're perfect for this..."></textarea>
+    </div>
+    <div>
+      <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">Your proposed price (CFA)</label>
+      <input type="number" style="width:100%;border:1.5px solid var(--gray-soft);border-radius:var(--radius-sm);padding:10px;font-size:13px;outline:none;" placeholder="${post.price}">
+    </div>`;
+  document.getElementById('modalFooter').innerHTML = `
+    <button class="modal-btn-cancel" onclick="closeModalNow()">Cancel</button>
+    <button class="modal-btn-ok" onclick="confirmApply('${postId}')">📤 Submit Application</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function confirmApply(postId) {
+  const msg = document.getElementById('applyMsg')?.value.trim();
+  if (!msg) { showToast('✏️ Write a message first'); return; }
+  const apps = JSON.parse(localStorage.getItem('applications') || '[]');
+  apps.push({ id:'app_'+Date.now(), postId, userId:currentUser.id, msg, status:'pending', timestamp:Date.now() });
+  localStorage.setItem('applications', JSON.stringify(apps));
+  closeModalNow();
+  showToast('✅ Application sent!');
+}
+
+/* ============================
+   CHAT MODAL
+   ============================ */
+function openChatModal() {
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const contacts = users.filter(u => u.id !== currentUser?.id).slice(0, 8);
+  const isMobile = window.innerWidth < 520;
+  const chatHeight = isMobile ? 'min(72vh, 480px)' : '360px';
+
+  document.getElementById('modalTitle').textContent = '💬 Messages';
+  document.getElementById('modalBody').innerHTML = `
+    <div style="display:flex;gap:0;height:${chatHeight};margin:-20px;border-radius:0 0 var(--radius-lg) var(--radius-lg);overflow:hidden">
+      <!-- Contacts panel -->
+      <div id="chatSidePanel" style="width:${isMobile?'100%':'160px'};border-right:${isMobile?'none':'1px solid var(--gray-soft)'};overflow-y:auto;flex-shrink:0;background:var(--off-white);display:${isMobile?'flex':'flex'};flex-direction:column;">
+        <div style="padding:10px 12px;font-size:11px;font-weight:700;color:var(--gray-text);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--gray-soft);flex-shrink:0;">Contacts</div>
+        <div style="overflow-y:auto;flex:1;">
+          ${contacts.length ? contacts.map(u => `
+            <div onclick="openChat('${u.id}')" style="display:flex;align-items:center;gap:10px;padding:12px 12px;cursor:pointer;border-bottom:1px solid var(--gray-soft);transition:background .15s;" onmouseover="this.style.background='#f0fdf4'" onmouseout="this.style.background=''">
+              <div style="width:36px;height:36px;border-radius:50%;background:${getColor(u.avatar||'A')};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0">${u.avatar||'?'}</div>
+              <div style="overflow:hidden;flex:1;">
+                <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--dark)">${escHtml(u.name)}</div>
+                <div style="font-size:11px;color:var(--gray-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(u.role||'User')}</div>
+              </div>
+              <span style="font-size:14px;color:var(--gray-text)">›</span>
+            </div>`).join('') : '<div style="padding:24px 16px;font-size:13px;color:var(--gray-text);text-align:center;line-height:1.7">No contacts yet.<br>Post a gig to connect!</div>'}
+        </div>
+      </div>
+      <!-- Chat panel -->
+      <div id="chatMainPanel" style="flex:1;display:${isMobile?'none':'flex'};flex-direction:column;min-width:0;">
+        <!-- Chat header (back btn on mobile) -->
+        <div id="chatPanelHeader" style="display:none;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--gray-soft);background:var(--off-white);flex-shrink:0;">
+          <button onclick="backToContacts()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--dark);line-height:1;padding:2px 6px;border-radius:6px;" title="Back">←</button>
+          <div id="chatContactAvatar" style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;"></div>
+          <span id="chatContactName" style="font-size:14px;font-weight:600;color:var(--dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+        </div>
+        <!-- Messages -->
+        <div id="chatMessages" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;justify-content:center;align-items:center;color:var(--gray-text);font-size:13px;">
+          <div style="font-size:32px">💬</div>
+          <div>Select a contact to chat</div>
+        </div>
+        <!-- Input row -->
+        <div id="chatInputRow" style="display:none;padding:10px 12px;border-top:1px solid var(--gray-soft);gap:8px;align-items:center;flex-shrink:0;background:white;">
+          <input id="chatInput" style="flex:1;border:1.5px solid var(--gray-soft);border-radius:999px;padding:9px 16px;font-size:14px;outline:none;min-width:0;transition:border-color .2s;" placeholder="Type a message…" onkeydown="if(event.key==='Enter')sendChatMsg()" onfocus="this.style.borderColor='var(--green-vivid)'" onblur="this.style.borderColor='var(--gray-soft)'">
+          <button id="chatSendBtn" onclick="sendChatMsg()" style="background:var(--green-vivid);color:white;border:none;width:38px;height:38px;min-width:38px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;flex-shrink:0;" onmouseover="this.style.background='var(--green-bright)'" onmouseout="this.style.background='var(--green-vivid)'">→</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('modalFooter').innerHTML = '';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function backToContacts() {
+  const side = document.getElementById('chatSidePanel');
+  const main = document.getElementById('chatMainPanel');
+  if (side) { side.style.display = 'flex'; side.style.width = '100%'; }
+  if (main) main.style.display = 'none';
+  activeChatUser = null;
+}
+
+let activeChatUser = null;
+function openChat(userId) {
+  activeChatUser = userId;
+  const isMobile = window.innerWidth < 520;
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const user = users.find(u => u.id === userId);
+  const messages = JSON.parse(localStorage.getItem('messages') || '{}');
+  const key = [currentUser.id, userId].sort().join('_');
+  const msgs = messages[key] || [];
+
+  if (isMobile) {
+    const side = document.getElementById('chatSidePanel');
+    const main = document.getElementById('chatMainPanel');
+    if (side) side.style.display = 'none';
+    if (main) { main.style.display = 'flex'; main.style.flexDirection = 'column'; main.style.flex = '1'; }
+  }
+
+  // Show header with back btn on mobile
+  const header = document.getElementById('chatPanelHeader');
+  if (header) {
+    header.style.display = isMobile ? 'flex' : 'none';
+    const nameEl = document.getElementById('chatContactName');
+    const avEl = document.getElementById('chatContactAvatar');
+    if (nameEl) nameEl.textContent = user?.name || 'Chat';
+    if (avEl) {
+      avEl.textContent = user?.avatar || '?';
+      avEl.style.background = getColor(user?.avatar || 'A');
+    }
+  }
+
+  // Render messages
+  const box = document.getElementById('chatMessages');
+  if (!box) return;
+  if (msgs.length) {
+    box.style.justifyContent = 'flex-start';
+    box.style.alignItems = 'stretch';
+    box.innerHTML = msgs.map(m => {
+      const isMe = m.senderId === currentUser.id;
+      return `<div style="display:flex;justify-content:${isMe?'flex-end':'flex-start'};">
+        <div style="max-width:78%;padding:8px 14px;border-radius:${isMe?'16px 16px 4px 16px':'16px 16px 16px 4px'};background:${isMe?'var(--green-vivid)':'var(--gray-soft)'};color:${isMe?'white':'var(--dark)'};font-size:13px;line-height:1.55;word-break:break-word;">${escHtml(m.text)}</div>
+      </div>`;
+    }).join('');
+  } else {
+    box.style.justifyContent = 'center';
+    box.style.alignItems = 'center';
+    box.innerHTML = `<div style="text-align:center"><div style="font-size:32px;margin-bottom:8px">👋</div><div style="font-size:13px;color:var(--gray-text)">Start chatting with ${escHtml(user?.name||'User')}</div></div>`;
+  }
+  box.scrollTop = box.scrollHeight;
+
+  // Show input row
+  const inputRow = document.getElementById('chatInputRow');
+  if (inputRow) {
+    inputRow.style.display = 'flex';
+    setTimeout(() => document.getElementById('chatInput')?.focus(), 50);
+  }
+}
+
+function sendChatMsg() {
+  if (!activeChatUser) return;
+  const inp = document.getElementById('chatInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  const messages = JSON.parse(localStorage.getItem('messages') || '{}');
+  const key = [currentUser.id, activeChatUser].sort().join('_');
+  if (!messages[key]) messages[key] = [];
+  messages[key].push({ senderId: currentUser.id, receiverId: activeChatUser, text, timestamp: Date.now() });
+  localStorage.setItem('messages', JSON.stringify(messages));
+  inp.value = '';
+  openChat(activeChatUser);
+}
+
+/* ============================
+   DROPDOWN MENUS
+   ============================ */
+function toggleDropdown(e, id) {
+  e.stopPropagation();
+  closeAllDropdowns();
+  const dd = document.getElementById(id);
+  if (dd) { dd.classList.add('open'); openDropdown = id; }
+}
+function closeAllDropdowns() {
+  document.querySelectorAll('.dropdown-menu.open').forEach(d => d.classList.remove('open'));
+  openDropdown = null;
+}
+document.addEventListener('click', closeAllDropdowns);
+
+/* ============================
+   MODAL
+   ============================ */
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalNow();
+}
+function closeModalNow() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  activeChatUser = null;
+}
+
+/* ============================
+   NAVIGATION
+   ============================ */
+function navTo(page) {
+  window.location.href = page;
+}
+
+function handleLogout() {
+  if (!confirm('Log out of CampusGig?')) return;
+  localStorage.removeItem('currentUser');
+  window.location.href = '../index.html';
+}
+
+function handleGlobalSearch() {
+  const q = document.getElementById('globalSearch').value.trim().toLowerCase();
+  if (!q) { renderFeed(); return; }
+  const posts = getAllPosts().filter(p =>
+    (p.text||'').toLowerCase().includes(q) ||
+    (p.title||'').toLowerCase().includes(q) ||
+    (p.authorName||'').toLowerCase().includes(q) ||
+    (p.category||'').toLowerCase().includes(q)
+  );
+  const container = document.getElementById('feedPosts');
+  container.innerHTML = '';
+  if (!posts.length) {
+    document.getElementById('emptyState').style.display = 'block';
+    return;
+  }
+  document.getElementById('emptyState').style.display = 'none';
+  posts.forEach((post, i) => {
+    const el = createPostCard(post);
+    el.style.animationDelay = `${i * 0.06}s`;
+    container.appendChild(el);
+  });
+}
+
+/* ============================
+   SIDEBAR TOGGLE (mobile)
+   ============================ */
+function toggleSidebar() {
+  const sb = document.getElementById('leftSidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('show');
+}
+
+/* ============================
+   UTILITIES
+   ============================ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function updateMyGigsBadge() {
+  if (!currentUser) return;
+  const count = getAllPosts().filter(p => p.authorId === currentUser.id).length;
+  const badge = document.getElementById('myGigsBadge');
+  if (count > 0) { badge.textContent = count; badge.style.display = 'inline-block'; }
+  else badge.style.display = 'none';
+}
+
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+</script>
+</body>
+</html>

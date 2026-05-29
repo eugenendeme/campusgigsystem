@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Gigs — CampusGig</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --green-deep:   #0a3d2b;
+      --green-mid:    #0e6641;
+      --green-vivid:  #16a34a;
+      --green-bright: #22c55e;
+      --green-lime:   #86efac;
+      --green-mist:   #dcfce7;
+      --white:        #ffffff;
+      --off-white:    #f0fdf4;
+      --gray-soft:    #e2e8f0;
+      --gray-text:    #64748b;
+      --gray-light:   #f8fafc;
+      --dark:         #0f172a;
+      --dark-2:       #1e293b;
+      --grad-hero:    linear-gradient(135deg,#0a3d2b 0%,#0e6641 40%,#166534 70%,#14532d 100%);
+      --grad-card:    linear-gradient(135deg,#16a34a 0%,#15803d 100%);
+      --grad-accent:  linear-gradient(90deg,#22c55e,#86efac);
+      --grad-green:   linear-gradient(135deg,#dcfce7 0%,#bbf7d0 100%);
+      --radius-sm:    8px;
+      --radius-md:    14px;
+      --radius-lg:    22px;
+      --radius-xl:    40px;
+      --shadow-card:  0 4px 24px rgba(22,163,74,.10), 0 1px 4px rgba(0,0,0,.06);
+      --shadow-pop:   0 12px 40px rgba(22,163,74,.18);
+      --shadow-btn:   0 4px 20px rgba(34,197,94,.4);
+      --sidebar-w:    260px;
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--off-white);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { font-family: 'Inter', sans-serif; cursor: pointer; border: none; outline: none; }
+
+    /* ===== LAYOUT ===== */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--grad-hero);
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 24px;
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      overflow-y: auto;
+    }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 199;
+      backdrop-filter: blur(2px);
+    }
+    .sidebar-logo {
+      padding: 28px 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .logo-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--grad-accent);
+    }
+    .nav-section { padding: 16px 12px 0; }
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      padding: 0 12px;
+      margin-bottom: 8px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      color: rgba(255,255,255,.72);
+      font-size: 14px;
+      font-weight: 400;
+      transition: background .2s, color .2s;
+      margin-bottom: 2px;
+      cursor: pointer;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.1); color: var(--white); }
+    .nav-item.active {
+      background: rgba(34,197,94,.18);
+      color: var(--green-lime);
+      font-weight: 500;
+    }
+    .nav-item .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+    .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .nav-badge {
+      margin-left: auto;
+      background: var(--green-vivid);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .sidebar-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--grad-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: white;
+      flex-shrink: 0;
+    }
+    .sidebar-user-info { flex: 1; min-width: 0; }
+    .sidebar-username {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-role {
+      font-size: 11px;
+      color: rgba(255,255,255,.45);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--gray-soft);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      padding: 4px;
+    }
+    .hamburger-btn span {
+      width: 22px; height: 2px;
+      background: var(--dark);
+      border-radius: 2px;
+      transition: .3s;
+    }
+    .topbar-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--green-mist);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: background .2s, transform .2s;
+    }
+    .topbar-btn:hover { background: var(--green-lime); transform: scale(1.05); }
+    .topbar-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--grad-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      color: white;
+      cursor: pointer;
+      border: 2px solid var(--green-lime);
+    }
+
+    /* ===== PAGE BODY ===== */
+    .page-body {
+      padding: 28px 24px 60px;
+      max-width: 860px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ===== PAGE HEADER ===== */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .page-header-left h1 {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(22px, 3.5vw, 30px);
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .page-header-left p {
+      font-size: 14px;
+      color: var(--gray-text);
+    }
+    .btn-post-gig {
+      background: var(--grad-hero);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: var(--radius-xl);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-btn);
+      transition: opacity .2s, transform .2s;
+      white-space: nowrap;
+    }
+    .btn-post-gig:hover { opacity: .9; transform: translateY(-2px); }
+
+    /* ===== STATS STRIP ===== */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .stat-box {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 18px 16px;
+      border: 1.5px solid var(--gray-soft);
+      text-align: center;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .stat-box:hover {
+      border-color: var(--green-vivid);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-card);
+    }
+    .stat-box-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--green-vivid);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-box-label {
+      font-size: 11px;
+      color: var(--gray-text);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* ===== FILTER BAR ===== */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .filter-pill {
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1.5px solid var(--gray-soft);
+      background: var(--white);
+      color: var(--gray-text);
+      transition: all .2s;
+      cursor: pointer;
+    }
+    .filter-pill:hover { border-color: var(--green-vivid); color: var(--green-vivid); }
+    .filter-pill.active {
+      background: var(--green-vivid);
+      border-color: var(--green-vivid);
+      color: white;
+    }
+    .filter-search {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      background: var(--white);
+      border: 1.5px solid var(--gray-soft);
+      border-radius: 999px;
+      padding: 8px 16px;
+      gap: 8px;
+      transition: border-color .2s;
+    }
+    .filter-search:focus-within { border-color: var(--green-vivid); }
+    .filter-search input {
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--dark);
+      background: none;
+      width: 160px;
+    }
+    .filter-search input::placeholder { color: var(--gray-text); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 2px dashed var(--gray-soft);
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+    .empty-state p { font-size: 14px; color: var(--gray-text); margin-bottom: 24px; }
+
+    /* ===== GIG CARDS ===== */
+    .gigs-list { display: flex; flex-direction: column; gap: 20px; }
+
+    .gig-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--gray-soft);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      animation: slideUp .4s ease both;
+    }
+    .gig-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-pop);
+      border-color: var(--green-lime);
+    }
+
+    /* Card Image Banner */
+    .gig-img-wrap {
+      position: relative;
+      height: 180px;
+      background: var(--grad-hero);
+      overflow: hidden;
+    }
+    .gig-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .85;
+    }
+    .gig-img-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      background: var(--grad-hero);
+    }
+    .gig-status-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      backdrop-filter: blur(8px);
+    }
+    .gig-status-badge.active { background: rgba(34,197,94,.25); color: #bbf7d0; border: 1px solid rgba(134,239,172,.4); }
+    .gig-status-badge.closed { background: rgba(255,255,255,.15); color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.2); }
+    .gig-status-badge.draft { background: rgba(251,191,36,.2); color: #fde68a; border: 1px solid rgba(251,191,36,.3); }
+
+    .gig-menu-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background .2s;
+    }
+    .gig-menu-btn:hover { background: rgba(255,255,255,.3); }
+
+    /* Card Content */
+    .gig-body { padding: 20px; }
+    .gig-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .gig-category {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--green-vivid);
+      background: var(--green-mist);
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .gig-type-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .gig-type-badge.service { background: #eff6ff; color: #3b82f6; }
+    .gig-type-badge.job { background: #fef3c7; color: #d97706; }
+    .gig-date { font-size: 11px; color: var(--gray-text); margin-left: auto; }
+
+    .gig-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .gig-desc {
+      font-size: 13.5px;
+      color: var(--gray-text);
+      line-height: 1.65;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .gig-price-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .gig-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--green-vivid);
+    }
+    .gig-price span {
+      font-size: 12px;
+      color: var(--gray-text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+    .gig-apps-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--gray-text);
+    }
+    .gig-apps-count strong { color: var(--dark); font-weight: 600; }
+
+    /* Interaction Row */
+    .gig-interactions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-top: 14px;
+      border-top: 1px solid var(--gray-soft);
+      flex-wrap: wrap;
+    }
+    .interact-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: none;
+      border: 1.5px solid transparent;
+      font-size: 13px;
+      color: var(--gray-text);
+      transition: all .2s;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .interact-btn:hover { background: var(--green-mist); color: var(--green-vivid); border-color: var(--green-lime); }
+    .interact-btn.liked { color: #ef4444; border-color: #fecaca; background: #fff5f5; }
+    .interact-btn.liked:hover { background: #fee2e2; }
+    .interact-btn .i-icon { font-size: 15px; }
+    .interact-count { font-weight: 600; }
+
+    .interact-actions { margin-left: auto; display: flex; gap: 4px; }
+    .action-btn {
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      transition: all .2s;
+    }
+    .action-btn.edit {
+      background: var(--green-mist);
+      color: var(--green-mid);
+      border: 1.5px solid var(--green-lime);
+    }
+    .action-btn.edit:hover { background: var(--green-lime); }
+    .action-btn.delete {
+      background: #fff5f5;
+      color: #ef4444;
+      border: 1.5px solid #fecaca;
+    }
+    .action-btn.delete:hover { background: #fee2e2; }
+
+    /* Comments section */
+    .comments-section {
+      padding: 0 20px 20px;
+      display: none;
+    }
+    .comments-section.open { display: block; }
+    .comments-divider {
+      height: 1px;
+      background: var(--gray-soft);
+      margin-bottom: 14px;
+    }
+    .comment-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .comment-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--grad-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .comment-input-wrap {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+      background: var(--off-white);
+      border: 1.5px solid var(--gray-soft);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      transition: border-color .2s;
+    }
+    .comment-input-wrap:focus-within { border-color: var(--green-vivid); }
+    .comment-input-wrap input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--dark);
+      background: none;
+    }
+    .comment-send-btn {
+      background: var(--green-vivid);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .comment-send-btn:hover { background: var(--green-mid); }
+    .comment-list { display: flex; flex-direction: column; gap: 10px; }
+    .comment-item {
+      display: flex;
+      gap: 10px;
+      animation: slideUp .3s ease both;
+    }
+    .comment-bubble {
+      flex: 1;
+      background: var(--off-white);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+    }
+    .comment-author {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green-mid);
+      margin-bottom: 3px;
+    }
+    .comment-text { font-size: 13px; color: var(--dark); line-height: 1.5; }
+    .comment-time { font-size: 11px; color: var(--gray-text); margin-top: 4px; }
+
+    /* ===== POST GIG MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,61,43,.55);
+      backdrop-filter: blur(6px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(30px) scale(.97);
+      transition: transform .35s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 24px 80px rgba(0,0,0,.25);
+    }
+    .modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+    .modal-header {
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--dark);
+    }
+    .modal-close {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--off-white);
+      border: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s;
+      color: var(--gray-text);
+    }
+    .modal-close:hover { background: var(--green-mist); color: var(--green-vivid); }
+    .modal-body { padding: 0 24px 24px; }
+
+    /* Role toggle */
+    .role-toggle {
+      display: flex;
+      background: var(--off-white);
+      border-radius: 999px;
+      padding: 4px;
+      margin-bottom: 22px;
+      border: 1.5px solid var(--gray-soft);
+    }
+    .role-toggle-btn {
+      flex: 1;
+      padding: 9px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      border: none;
+      background: none;
+      color: var(--gray-text);
+      transition: all .25s;
+      cursor: pointer;
+    }
+    .role-toggle-btn.active {
+      background: var(--grad-hero);
+      color: white;
+      box-shadow: 0 2px 12px rgba(10,61,43,.2);
+    }
+
+    /* Form styles */
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 7px;
+    }
+    .form-required { color: #ef4444; margin-left: 2px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--gray-soft);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--dark);
+      background: var(--white);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--green-vivid);
+      box-shadow: 0 0 0 3px rgba(22,163,74,.1);
+    }
+    .form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-hint { font-size: 11px; color: var(--gray-text); margin-top: 5px; }
+
+    /* Image upload */
+    .img-upload-area {
+      border: 2px dashed var(--gray-soft);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .img-upload-area:hover { border-color: var(--green-vivid); background: var(--green-mist); }
+    .img-upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-text { font-size: 13px; color: var(--gray-text); }
+    .upload-text strong { color: var(--green-vivid); }
+    .img-preview {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* Tags input */
+    .tags-input-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 12px;
+      border: 1.5px solid var(--gray-soft);
+      border-radius: var(--radius-md);
+      min-height: 46px;
+      align-items: center;
+      transition: border-color .2s;
+      cursor: text;
+    }
+    .tags-input-wrap:focus-within { border-color: var(--green-vivid); }
+    .tag-chip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--green-mist);
+      color: var(--green-mid);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .tag-chip button {
+      background: none;
+      border: none;
+      color: var(--green-mid);
+      font-size: 13px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+    .tags-input-wrap input {
+      border: none;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      color: var(--dark);
+      flex: 1;
+      min-width: 80px;
+    }
+
+    /* Submit btn */
+    .form-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--grad-hero);
+      color: white;
+      border: none;
+      border-radius: var(--radius-xl);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: opacity .2s, transform .2s;
+      margin-top: 6px;
+    }
+    .form-submit:hover { opacity: .9; transform: translateY(-2px); }
+    .form-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    /* ===== DROPDOWN MENU ===== */
+    .dropdown-menu {
+      position: absolute;
+      background: var(--white);
+      border: 1.5px solid var(--gray-soft);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,.12);
+      z-index: 300;
+      min-width: 160px;
+      overflow: hidden;
+      animation: fadeDropdown .2s ease;
+    }
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      font-size: 13px;
+      color: var(--dark);
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .dropdown-item:hover { background: var(--off-white); }
+    .dropdown-item.danger { color: #ef4444; }
+    .dropdown-item.danger:hover { background: #fff5f5; }
+
+    /* ===== TOAST ===== */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--dark);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      animation: toastIn .3s ease both;
+      pointer-events: all;
+      max-width: 320px;
+    }
+    .toast.success { border-left: 4px solid var(--green-bright); }
+    .toast.error { border-left: 4px solid #ef4444; }
+    .toast.info { border-left: 4px solid #3b82f6; }
+
+    /* ===== SHARE MODAL ===== */
+    .share-modal-content { text-align: center; }
+    .share-modal-content p { font-size: 14px; color: var(--gray-text); margin-bottom: 20px; }
+    .share-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .share-option {
+      padding: 16px 8px;
+      border-radius: var(--radius-md);
+      background: var(--off-white);
+      border: 1.5px solid var(--gray-soft);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dark);
+      transition: all .2s;
+      text-align: center;
+    }
+    .share-option:hover { border-color: var(--green-vivid); background: var(--green-mist); color: var(--green-vivid); }
+    .share-option .share-icon { font-size: 24px; margin-bottom: 6px; }
+
+    /* ===== CONFIRM MODAL ===== */
+    .confirm-modal-content {
+      text-align: center;
+      padding: 8px 0;
+    }
+    .confirm-icon { font-size: 44px; margin-bottom: 12px; }
+    .confirm-modal-content h3 {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .confirm-modal-content p { font-size: 14px; color: var(--gray-text); margin-bottom: 24px; }
+    .confirm-btns { display: flex; gap: 12px; justify-content: center; }
+    .confirm-btn {
+      padding: 11px 28px;
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all .2s;
+      border: none;
+    }
+    .confirm-btn.cancel { background: var(--off-white); color: var(--gray-text); border: 1.5px solid var(--gray-soft); }
+    .confirm-btn.cancel:hover { background: var(--gray-soft); }
+    .confirm-btn.danger { background: #ef4444; color: white; }
+    .confirm-btn.danger:hover { background: #dc2626; transform: translateY(-1px); }
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:1024px){
+      .page-body{max-width:100%;}
+    }
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .overlay.show{display:block;}
+      .main-content{margin-left:0;}
+      .hamburger-btn{display:flex;}
+      .topbar{padding:0 16px;}
+      .page-body{padding:16px 16px 60px;}
+      .stats-strip{grid-template-columns:repeat(2,1fr);gap:10px;}
+      .page-header{flex-direction:column;}
+      .btn-post-gig{width:100%;justify-content:center;}
+      .filter-pill{min-width:fit-content;}
+    }
+    @media(max-width:480px){
+      .stats-strip{grid-template-columns:1fr 1fr;}
+      .stat-box{padding:12px;}
+      .stat-box-num{font-size:20px;}
+      .gig-card-top{flex-wrap:wrap;}
+      .gig-meta-row{flex-wrap:wrap;}
+      .gig-actions{width:100%;}
+    } */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDropdown {
+      from { opacity: 0; transform: translateY(-8px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulse-live {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%     { opacity: .5; transform: scale(.9); }
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green-bright);
+      display: inline-block;
+      animation: pulse-live 1.5s infinite;
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--green-lime); border-radius: 3px; }
+
+    /* ===== RESPONSIVE ===== */
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      :root { --sidebar-w: 220px; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 260px; }
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-overlay.open { display: block; }
+      .main-content { margin-left: 0; }
+      .hamburger-btn { display: flex; }
+      .page-body { padding: 20px 16px 48px; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .stat-box-num { font-size: 22px; }
+      .form-row { grid-template-columns: 1fr; }
+      .filter-bar { gap: 8px; }
+      .filter-search { order: -1; width: 100%; }
+      .filter-search input { width: 100%; }
+      .interact-actions { width: 100%; margin-left: 0; justify-content: flex-end; margin-top: 4px; }
+      .gig-interactions { flex-wrap: wrap; }
+      .gig-img-wrap { height: 140px; }
+    }
+
+    @media (max-width: 480px) {
+      .topbar { padding: 0 16px; }
+      .page-header { flex-direction: column; align-items: flex-start; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .share-options { grid-template-columns: repeat(2, 1fr); }
+      .confirm-btns { flex-direction: column; }
+      .confirm-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">
+      <span class="logo-dot"></span>
+      CampusGig
+    </div>
+  </div>
+
+  <nav class="nav-section">
+    <div class="nav-label">Main</div>
+    <a href="feed.html" class="nav-item">
+      <span class="nav-icon"><i class="fa-solid fa-magnifying-glass"></i></span> Discover Feed
+    </a>
+    <a href="mygigs.html" class="nav-item active">
+      <span class="nav-icon"><i class="fa-solid fa-thumbtack"></i></span> My Gigs
+    </a>
+    <a href="applications.html" class="nav-item">
+      <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span> Applications
+      <span class="nav-badge" id="appsBadge">0</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon"><i class="fa-solid fa-user"></i></span> My Profile
+    </a>
+  </nav>
+
+  <nav class="nav-section" style="margin-top:8px;">
+    <div class="nav-label">Finance</div>
+    <a href="wallet.html" class="nav-item">
+      <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Escrow Wallet
+    </a>
+  </nav>
+
+  <nav class="nav-section" style="margin-top:8px;">
+    <div class="nav-label">Other</div>
+    <a href="settings.html" class="nav-item">
+      <span class="nav-icon"><i class="fa-solid fa-gear"></i></span> Settings
+    </a>
+    <div class="nav-item" onclick="handleLogout()" style="cursor:pointer;">
+      <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span> Logout
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-username" id="sidebarName">Loading...</div>
+        <div class="sidebar-role" id="sidebarRole"></div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<div class="app-shell">
+  <main class="main-content">
+
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="topbar-title">My Gigs</span>
+      </div>
+      <div class="topbar-right">
+        <button class="topbar-btn" onclick="openPostModal()" title="Post new gig">
+          <i class="fa-solid fa-pen"></i>
+        </button>
+        <div class="topbar-avatar" id="topbarAvatar" onclick="window.location.href='profile.html'">?</div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <div class="page-body">
+
+      <!-- Header -->
+      <div class="page-header reveal">
+        <div class="page-header-left">
+          <h1>My Gigs</h1>
+          <p>Manage your posted services and job listings</p>
+        </div>
+        <button class="btn-post-gig" onclick="openPostModal()">
+          <i class="fa-solid fa-plus"></i> Post a Gig
+        </button>
+      </div>
+
+      <!-- Stats Strip -->
+      <div class="stats-strip reveal">
+        <div class="stat-box">
+          <div class="stat-box-num" id="statTotal">0</div>
+          <div class="stat-box-label">Total Gigs</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-num" id="statActive">0</div>
+          <div class="stat-box-label">Active</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-num" id="statApps">0</div>
+          <div class="stat-box-label">Applications</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-num" id="statLikes">0</div>
+          <div class="stat-box-label">Total Likes</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar reveal">
+        <button class="filter-pill active" data-filter="all" onclick="setFilter(this,'all')">All</button>
+        <button class="filter-pill" data-filter="service" onclick="setFilter(this,'service')">Services</button>
+        <button class="filter-pill" data-filter="job" onclick="setFilter(this,'job')">Jobs</button>
+        <button class="filter-pill" data-filter="active" onclick="setFilter(this,'active')">Active</button>
+        <button class="filter-pill" data-filter="draft" onclick="setFilter(this,'draft')">Draft</button>
+        <div class="filter-search">
+          <i class="fa-solid fa-magnifying-glass" style="font-size: 13px; color: var(--gray-text);"></i>
+          <input type="text" id="searchGigs" placeholder="Search your gigs..." oninput="renderGigs()">
+        </div>
+      </div>
+
+      <!-- Gigs List -->
+      <div id="gigsContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+    </div><!-- /page-body -->
+  </main>
+</div>
+
+<!-- ===== POST GIG MODAL ===== -->
+<div class="modal-overlay" id="postModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Post a New Gig</span>
+      <button class="modal-close" onclick="closePostModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Role toggle -->
+      <div class="role-toggle" id="gigTypeToggle">
+        <button class="role-toggle-btn active" data-type="service" onclick="switchGigType('service',this)">🎯 Offer a Service</button>
+        <button class="role-toggle-btn" data-type="job" onclick="switchGigType('job',this)">📢 Post a Job</button>
+      </div>
+
+      <form id="gigForm" onsubmit="submitGig(event)">
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label">Gig Title <span class="form-required">*</span></label>
+          <input type="text" class="form-input" id="gigTitle" placeholder="e.g. I will design your logo in 24hrs" required maxlength="100">
+          <div class="form-hint">Be specific — titles that describe the result convert best.</div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label class="form-label">Category <span class="form-required">*</span></label>
+          <select class="form-select" id="gigCategory" required>
+            <option value="">Select a category</option>
+            <option>Engineering & Tech</option>
+            <option>Business & Finance</option>
+            <option>Marketing & Creative</option>
+            <option>Street-Smart Talents</option>
+            <option>Academic Support</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label">Description <span class="form-required">*</span></label>
+          <textarea class="form-textarea" id="gigDesc" rows="4" placeholder="Describe exactly what you're offering or what you need. Include deliverables, timeline, and any requirements." required maxlength="800"></textarea>
+        </div>
+
+        <!-- Price / Budget row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" id="priceLabel">Price (CFA) <span class="form-required">*</span></label>
+            <input type="number" class="form-input" id="gigPrice" placeholder="e.g. 15000" required min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Delivery Time</label>
+            <select class="form-select" id="gigDelivery">
+              <option value="">Select</option>
+              <option>1 day</option>
+              <option>2–3 days</option>
+              <option>1 week</option>
+              <option>2 weeks</option>
+              <option>1 month</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label class="form-label">Skill Tags</label>
+          <div class="tags-input-wrap" id="tagsWrap" onclick="document.getElementById('tagInput').focus()">
+            <input type="text" id="tagInput" placeholder="Type tag, press Enter" onkeydown="addTag(event)">
+          </div>
+          <div class="form-hint">Press Enter or comma to add a tag. Max 5 tags.</div>
+        </div>
+
+        <!-- Image upload -->
+        <div class="form-group">
+          <label class="form-label">Cover Image (optional)</label>
+          <div class="img-upload-area" id="uploadArea">
+            <input type="file" accept="image/*" id="gigImage" onchange="previewImage(event)">
+            <div class="upload-icon"><i class="fa-solid fa-image"></i></div>
+            <div class="upload-text"><strong>Click to upload</strong> or drag & drop<br>JPG, PNG, GIF — max 2MB</div>
+            <img class="img-preview" id="imagePreview" alt="Preview">
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="form-group">
+          <label class="form-label">Publish as</label>
+          <select class="form-select" id="gigStatus">
+            <option value="active">Active (visible to all)</option>
+            <option value="draft">Draft (save privately)</option>
+          </select>
+        </div>
+
+        <button type="submit" class="form-submit" id="formSubmitBtn">
+          🚀 Publish Gig
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SHARE MODAL ===== -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header">
+      <span class="modal-title">Share Gig</span>
+      <button class="modal-close" onclick="closeShareModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body share-modal-content">
+      <p>Share this gig and get more visibility</p>
+      <div class="share-options">
+        <div class="share-option" onclick="shareVia('whatsapp')">
+          <div class="share-icon"><i class="fa-brands fa-whatsapp"></i></div>WhatsApp
+        </div>
+        <div class="share-option" onclick="shareVia('copy')">
+          <div class="share-icon"><i class="fa-solid fa-link"></i></div>Copy Link
+        </div>
+        <div class="share-option" onclick="shareVia('twitter')">
+          <div class="share-icon"><i class="fa-brands fa-x-twitter"></i></div>Twitter / X
+        </div>
+        <div class="share-option" onclick="shareVia('facebook')">
+          <div class="share-icon"><i class="fa-brands fa-facebook"></i></div>Facebook
+        </div>
+        <div class="share-option" onclick="shareVia('telegram')">
+          <div class="share-icon"><i class="fa-brands fa-telegram"></i></div>Telegram
+        </div>
+        <div class="share-option" onclick="shareVia('email')">
+          <div class="share-icon"><i class="fa-solid fa-envelope"></i></div>Email
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box" style="max-width:380px;">
+    <div class="modal-header">
+      <span class="modal-title">Confirm Action</span>
+      <button class="modal-close" onclick="closeConfirmModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body confirm-modal-content">
+      <div class="confirm-icon"><i class="fa-solid fa-trash-can" style="color: #ef4444;"></i></div>
+      <h3>Delete this Gig?</h3>
+      <p>This action cannot be undone. The gig and all its data will be permanently removed.</p>
+      <div class="confirm-btns">
+        <button class="confirm-btn cancel" onclick="closeConfirmModal()">Cancel</button>
+        <button class="confirm-btn danger" id="confirmDeleteBtn">Yes, Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ===== DROPDOWN PORTAL ===== -->
+<div id="dropdownPortal" style="position:fixed;z-index:450;display:none;"></div>
+
+<script>
+/* =============================================
+   CAMPUSGIG — MY GIGS PAGE
+   Full feature JS: LocalStorage, CRUD, likes,
+   comments, shares, tags, image preview, filters
+   ============================================= */
+
+let currentUser = null;
+let allGigs = [];
+let currentFilter = 'all';
+let editingGigId = null;
+let deleteGigId = null;
+let shareGigId = null;
+let currentTags = [];
+
+/* ---- Init ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  if (!currentUser) {
+    window.location.href = 'login.html';
+    return;
+  }
+  populateSidebar();
+  loadData();
+  renderGigs();
+  initScrollReveal();
+  updateStats();
+  updateAppsBadge();
+});
+
+function loadData() {
+  allGigs = JSON.parse(localStorage.getItem('posts') || '[]');
+}
+
+function saveData() {
+  localStorage.setItem('posts', JSON.stringify(allGigs));
+}
+
+function populateSidebar() {
+  const initials = getInitials(currentUser.name || currentUser.phone || 'U');
+  document.getElementById('sidebarAvatar').textContent = initials;
+  document.getElementById('topbarAvatar').textContent = initials;
+  document.getElementById('sidebarName').textContent = currentUser.name || currentUser.phone || 'User';
+  document.getElementById('sidebarRole').textContent = currentUser.role === 'Earner' ? '🎓 Student Earner' : '🏢 Business Hirer';
+}
+
+function getInitials(str) {
+  return str.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+/* ---- Sidebar ---- */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+/* ---- Filter ---- */
+function setFilter(btn, filter) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  renderGigs();
+}
+
+function getMyGigs() {
+  let gigs = allGigs.filter(g => g.userId === currentUser.id);
+  const q = (document.getElementById('searchGigs')?.value || '').toLowerCase().trim();
+  if (q) {
+    gigs = gigs.filter(g =>
+      g.title.toLowerCase().includes(q) ||
+      g.desc.toLowerCase().includes(q) ||
+      (g.category || '').toLowerCase().includes(q) ||
+      (g.tags || []).some(t => t.toLowerCase().includes(q))
+    );
+  }
+  if (currentFilter === 'service') gigs = gigs.filter(g => g.type === 'service');
+  else if (currentFilter === 'job')  gigs = gigs.filter(g => g.type === 'job');
+  else if (currentFilter === 'active') gigs = gigs.filter(g => g.status === 'active');
+  else if (currentFilter === 'draft')  gigs = gigs.filter(g => g.status === 'draft');
+  return gigs.sort((a,b) => b.createdAt - a.createdAt);
+}
+
+/* ---- Render ---- */
+function renderGigs() {
+  const container = document.getElementById('gigsContainer');
+  const gigs = getMyGigs();
+
+  if (!gigs.length) {
+    container.innerHTML = `
+      <div class="empty-state reveal visible">
+        <div class="empty-icon">📭</div>
+        <h3>No gigs yet${currentFilter !== 'all' ? ' in this filter' : ''}</h3>
+        <p>${currentFilter !== 'all' ? 'Try a different filter or' : ''} Post your first gig and start earning!</p>
+        <button class="btn-post-gig" onclick="openPostModal()" style="display:inline-flex;margin:0 auto;">
+          ✚ Post Your First Gig
+        </button>
+      </div>`;
+    updateStats();
+    return;
+  }
+
+  container.innerHTML = `<div class="gigs-list">${gigs.map((g, i) => buildGigCard(g, i)).join('')}</div>`;
+  updateStats();
+  initScrollReveal();
+}
+
+function buildGigCard(gig, idx) {
+  const likes = (gig.likes || []);
+  const isLiked = likes.includes(currentUser.id);
+  const likeCount = likes.length;
+  const comments = (gig.comments || []);
+  const commentCount = comments.length;
+  const appCount = (gig.applications || []).length;
+  const shares = gig.shares || 0;
+  const tags = (gig.tags || []).map(t => `<span style="display:inline-block;padding:3px 10px;background:var(--green-mist);color:var(--green-mid);border-radius:999px;font-size:11px;font-weight:500;margin-right:4px;margin-top:4px;">${escHtml(t)}</span>`).join('');
+  const date = gig.createdAt ? timeAgo(gig.createdAt) : '';
+
+  const imgHtml = gig.image
+    ? `<img src="${gig.image}" alt="${escHtml(gig.title)}" style="width:100%;height:100%;object-fit:cover;">`
+    : `<div class="gig-img-placeholder">${getCategoryEmoji(gig.category)}</div>`;
+
+  return `
+  <div class="gig-card reveal" id="card-${gig.id}" style="animation-delay:${idx * 0.07}s">
+    <div class="gig-img-wrap">
+      ${imgHtml}
+      <span class="gig-status-badge ${gig.status}">${gig.status === 'active' ? '● Active' : gig.status === 'draft' ? '○ Draft' : '✓ Closed'}</span>
+      <button class="gig-menu-btn" onclick="openDropdown(event,'${gig.id}')" title="Options">⋯</button>
+    </div>
+    <div class="gig-body">
+      <div class="gig-meta-row">
+        <span class="gig-category">${escHtml(gig.category || 'Uncategorized')}</span>
+        <span class="gig-type-badge ${gig.type}">${gig.type === 'service' ? '🎯 Service' : '📢 Job'}</span>
+        <span class="gig-date"><i class="fa-regular fa-clock"></i> ${date}</span>
+      </div>
+      <h3 class="gig-title">${escHtml(gig.title)}</h3>
+      <p class="gig-desc">${escHtml(gig.desc)}</p>
+      ${tags ? `<div style="margin-bottom:12px;">${tags}</div>` : ''}
+      <div class="gig-price-row">
+        <div class="gig-price">${Number(gig.price || 0).toLocaleString()} CFA <span>/${gig.delivery || 'task'}</span></div>
+        <div class="gig-apps-count">
+          <i class="fa-solid fa-file-lines"></i> <strong>${appCount}</strong> ${appCount === 1 ? 'application' : 'applications'}
+        </div>
+      </div>
+      <div class="gig-interactions">
+        <button class="interact-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${gig.id}')">
+          <span class="i-icon"><i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i></span>
+          <span class="interact-count">${likeCount}</span>
+          <span>Like${likeCount !== 1 ? 's' : ''}</span>
+        </button>
+        <button class="interact-btn" onclick="toggleComments('${gig.id}')">
+          <span class="i-icon"><i class="fa-solid fa-comment"></i></span>
+          <span class="interact-count">${commentCount}</span>
+          <span>Comment${commentCount !== 1 ? 's' : ''}</span>
+        </button>
+        <button class="interact-btn" onclick="openShareModal('${gig.id}')">
+          <span class="i-icon"><i class="fa-solid fa-share-from-square"></i></span>
+          <span class="interact-count">${shares}</span>
+          <span>Share${shares !== 1 ? 's' : ''}</span>
+        </button>
+        <div class="interact-actions">
+          <button class="action-btn edit" onclick="openEditModal('${gig.id}')"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+          <button class="action-btn delete" onclick="openConfirmDelete('${gig.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+    <!-- Comments -->
+    <div class="comments-section" id="comments-${gig.id}">
+      <div class="comments-divider"></div>
+      <div class="comment-input-row">
+        <div class="comment-avatar">${getInitials(currentUser.name || currentUser.phone || 'U')}</div>
+        <div class="comment-input-wrap">
+          <input type="text" placeholder="Write a comment..." id="cInput-${gig.id}" onkeydown="if(event.key==='Enter')submitComment('${gig.id}')">
+          <button class="comment-send-btn" onclick="submitComment('${gig.id}')"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+      <div class="comment-list" id="commentList-${gig.id}">
+        ${buildComments(comments)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildComments(comments) {
+  if (!comments.length) return '<p style="font-size:13px;color:var(--gray-text);text-align:center;padding:8px 0;">No comments yet. Be the first!</p>';
+  return comments.map(c => `
+    <div class="comment-item">
+      <div class="comment-avatar" style="background:var(--grad-card)">${getInitials(c.author || 'U')}</div>
+      <div class="comment-bubble">
+        <div class="comment-author">${escHtml(c.author || 'User')}</div>
+        <div class="comment-text">${escHtml(c.text)}</div>
+        <div class="comment-time">${timeAgo(c.createdAt)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function getCategoryEmoji(cat) {
+  const map = {
+    'Engineering & Tech': '<i class="fa-solid fa-laptop-code"></i>',
+    'Business & Finance': '<i class="fa-solid fa-chart-line"></i>',
+    'Marketing & Creative': '<i class="fa-solid fa-palette"></i>',
+    'Street-Smart Talents': '<i class="fa-solid fa-star"></i>',
+    'Academic Support': '<i class="fa-solid fa-book"></i>',
+  };
+  return map[cat] || '<i class="fa-solid fa-briefcase"></i>';
+}
+
+/* ---- Stats ---- */
+function updateStats() {
+  loadData();
+  const mine = allGigs.filter(g => g.userId === currentUser.id);
+  document.getElementById('statTotal').textContent = mine.length;
+  document.getElementById('statActive').textContent = mine.filter(g => g.status === 'active').length;
+  document.getElementById('statApps').textContent = mine.reduce((a, g) => a + (g.applications || []).length, 0);
+  document.getElementById('statLikes').textContent = mine.reduce((a, g) => a + (g.likes || []).length, 0);
+}
+
+function updateAppsBadge() {
+  const apps = JSON.parse(localStorage.getItem('applications') || '[]');
+  const pending = apps.filter(a => a.status === 'pending' && (
+    allGigs.find(g => g.id === a.gigId && g.userId === currentUser?.id)
+  )).length;
+  const badge = document.getElementById('appsBadge');
+  if (badge) badge.textContent = pending || '0';
+}
+
+/* ---- Like ---- */
+function toggleLike(gigId) {
+  loadData();
+  const gig = allGigs.find(g => g.id === gigId);
+  if (!gig) return;
+  gig.likes = gig.likes || [];
+  if (gig.likes.includes(currentUser.id)) {
+    gig.likes = gig.likes.filter(id => id !== currentUser.id);
+  } else {
+    gig.likes.push(currentUser.id);
+  }
+  saveData();
+  renderGigs();
+}
+
+/* ---- Comments ---- */
+function toggleComments(gigId) {
+  const sec = document.getElementById(`comments-${gigId}`);
+  if (sec) {
+    sec.classList.toggle('open');
+    if (sec.classList.contains('open')) {
+      document.getElementById(`cInput-${gigId}`)?.focus();
+    }
+  }
+}
+
+function submitComment(gigId) {
+  const input = document.getElementById(`cInput-${gigId}`);
+  const text = input?.value.trim();
+  if (!text) return;
+  loadData();
+  const gig = allGigs.find(g => g.id === gigId);
+  if (!gig) return;
+  gig.comments = gig.comments || [];
+  gig.comments.push({
+    id: Date.now().toString(),
+    author: currentUser.name || currentUser.phone || 'You',
+    text,
+    createdAt: Date.now()
+  });
+  saveData();
+  input.value = '';
+  // Re-render only comment list for speed
+  const list = document.getElementById(`commentList-${gigId}`);
+  if (list) list.innerHTML = buildComments(gig.comments);
+  updateStats();
+  showToast('Comment posted!', 'success');
+}
+
+/* ---- Share ---- */
+function openShareModal(gigId) {
+  shareGigId = gigId;
+  document.getElementById('shareModal').classList.add('open');
+  // Increment share count
+  loadData();
+  const gig = allGigs.find(g => g.id === gigId);
+  if (gig) { gig.shares = (gig.shares || 0) + 1; saveData(); }
+}
+function closeShareModal() {
+  document.getElementById('shareModal').classList.remove('open');
+  shareGigId = null;
+  renderGigs();
+}
+function shareVia(method) {
+  const gig = allGigs.find(g => g.id === shareGigId);
+  const text = gig ? `Check out this gig on CampusGig: "${gig.title}"` : 'Check out CampusGig!';
+  const url = window.location.href;
+  if (method === 'copy') {
+    navigator.clipboard.writeText(`${text} ${url}`).then(() => showToast('Link copied!', 'success'));
+  } else if (method === 'whatsapp') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+  } else if (method === 'twitter') {
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+  } else if (method === 'facebook') {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  } else if (method === 'telegram') {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+  } else if (method === 'email') {
+    window.location.href = `mailto:?subject=CampusGig&body=${encodeURIComponent(text + ' ' + url)}`;
+  }
+  closeShareModal();
+}
+
+/* ---- Dropdown ---- */
+let openDropdownId = null;
+function openDropdown(e, gigId) {
+  e.stopPropagation();
+  const portal = document.getElementById('dropdownPortal');
+  const rect = e.currentTarget.getBoundingClientRect();
+  portal.style.display = 'block';
+  portal.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+  portal.style.left = (rect.right - 164 + window.scrollX) + 'px';
+  portal.innerHTML = `
+    <div class="dropdown-menu">
+      <div class="dropdown-item" onclick="openEditModal('${gigId}');closeDropdown()"><i class="fa-solid fa-pen-to-square"></i> Edit Gig</div>
+      <div class="dropdown-item" onclick="toggleGigStatus('${gigId}');closeDropdown()"><i class="fa-solid fa-arrows-rotate"></i> Toggle Status</div>
+      <div class="dropdown-item" onclick="openShareModal('${gigId}');closeDropdown()"><i class="fa-solid fa-share-from-square"></i> Share</div>
+      <div class="dropdown-item danger" onclick="openConfirmDelete('${gigId}');closeDropdown()"><i class="fa-solid fa-trash-can"></i> Delete</div>
+    </div>`;
+  openDropdownId = gigId;
+}
+function closeDropdown() {
+  const portal = document.getElementById('dropdownPortal');
+  portal.style.display = 'none';
+  portal.innerHTML = '';
+  openDropdownId = null;
+}
+document.addEventListener('click', () => closeDropdown());
+
+function toggleGigStatus(gigId) {
+  loadData();
+  const gig = allGigs.find(g => g.id === gigId);
+  if (!gig) return;
+  gig.status = gig.status === 'active' ? 'draft' : 'active';
+  saveData();
+  renderGigs();
+  showToast(`Gig marked as ${gig.status}`, 'info');
+}
+
+/* ---- Delete ---- */
+function openConfirmDelete(gigId) {
+  deleteGigId = gigId;
+  document.getElementById('confirmModal').classList.add('open');
+  document.getElementById('confirmDeleteBtn').onclick = () => deleteGig(gigId);
+}
+function closeConfirmModal() {
+  document.getElementById('confirmModal').classList.remove('open');
+  deleteGigId = null;
+}
+function deleteGig(gigId) {
+  loadData();
+  allGigs = allGigs.filter(g => g.id !== gigId);
+  saveData();
+  closeConfirmModal();
+  renderGigs();
+  showToast('Gig deleted successfully', 'error');
+}
+
+/* ---- Post / Edit Modal ---- */
+function openPostModal() {
+  editingGigId = null;
+  currentTags = [];
+  document.getElementById('modalTitle').textContent = 'Post a New Gig';
+  document.getElementById('formSubmitBtn').textContent = '🚀 Publish Gig';
+  document.getElementById('gigForm').reset();
+  document.getElementById('imagePreview').style.display = 'none';
+  renderTagChips();
+  // Default type based on user role
+  const defaultType = currentUser.role === 'Hirer' ? 'job' : 'service';
+  switchGigType(defaultType, document.querySelector(`[data-type="${defaultType}"]`));
+  document.getElementById('postModal').classList.add('open');
+}
+
+function openEditModal(gigId) {
+  loadData();
+  const gig = allGigs.find(g => g.id === gigId);
+  if (!gig) return;
+  editingGigId = gigId;
+  currentTags = [...(gig.tags || [])];
+  document.getElementById('modalTitle').textContent = 'Edit Gig';
+  document.getElementById('formSubmitBtn').textContent = '💾 Save Changes';
+  document.getElementById('gigTitle').value = gig.title || '';
+  document.getElementById('gigCategory').value = gig.category || '';
+  document.getElementById('gigDesc').value = gig.desc || '';
+  document.getElementById('gigPrice').value = gig.price || '';
+  document.getElementById('gigDelivery').value = gig.delivery || '';
+  document.getElementById('gigStatus').value = gig.status || 'active';
+  const preview = document.getElementById('imagePreview');
+  if (gig.image) { preview.src = gig.image; preview.style.display = 'block'; }
+  else { preview.style.display = 'none'; }
+  switchGigType(gig.type || 'service', document.querySelector(`[data-type="${gig.type || 'service'}"]`));
+  renderTagChips();
+  document.getElementById('postModal').classList.add('open');
+}
+
+function closePostModal() {
+  document.getElementById('postModal').classList.remove('open');
+  editingGigId = null;
+  currentTags = [];
+}
+
+function switchGigType(type, btn) {
+  document.querySelectorAll('#gigTypeToggle .role-toggle-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('priceLabel').innerHTML = type === 'job'
+    ? 'Estimated Budget (CFA) <span class="form-required">*</span>'
+    : 'Price (CFA) <span class="form-required">*</span>';
+  document.getElementById('gigTitle').placeholder = type === 'job'
+    ? 'e.g. Need a logo designer for my brand'
+    : 'e.g. I will design your logo in 24hrs';
+}
+
+function submitGig(e) {
+  e.preventDefault();
+  const btn = document.getElementById('formSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Saving...';
+
+  const activeTypeBtn = document.querySelector('#gigTypeToggle .role-toggle-btn.active');
+  const type = activeTypeBtn?.dataset.type || 'service';
+  const title = document.getElementById('gigTitle').value.trim();
+  const category = document.getElementById('gigCategory').value;
+  const desc = document.getElementById('gigDesc').value.trim();
+  const price = document.getElementById('gigPrice').value;
+  const delivery = document.getElementById('gigDelivery').value;
+  const status = document.getElementById('gigStatus').value;
+  const image = document.getElementById('imagePreview').src.startsWith('data:') ? document.getElementById('imagePreview').src : null;
+
+  if (!title || !category || !desc || !price) {
+    showToast('Please fill all required fields', 'error');
+    btn.disabled = false;
+    btn.textContent = editingGigId ? '💾 Save Changes' : '🚀 Publish Gig';
+    return;
+  }
+
+  loadData();
+
+  if (editingGigId) {
+    const gig = allGigs.find(g => g.id === editingGigId);
+    if (gig) {
+      gig.title = title; gig.category = category; gig.desc = desc;
+      gig.price = price; gig.delivery = delivery; gig.status = status;
+      gig.type = type; gig.tags = [...currentTags];
+      if (image) gig.image = image;
+      gig.updatedAt = Date.now();
+    }
+    showToast('Gig updated successfully ✓', 'success');
+  } else {
+    const newGig = {
+      id: 'gig_' + Date.now(),
+      userId: currentUser.id,
+      type, title, category, desc, price, delivery, status,
+      tags: [...currentTags],
+      image,
+      likes: [], comments: [], applications: [], shares: 0,
+      createdAt: Date.now()
+    };
+    allGigs.push(newGig);
+    showToast('Gig posted successfully! 🎉', 'success');
+  }
+
+  saveData();
+  closePostModal();
+  setTimeout(() => {
+    renderGigs();
+    btn.disabled = false;
+    btn.textContent = '🚀 Publish Gig';
+  }, 300);
+}
+
+/* ---- Tags ---- */
+function addTag(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    const val = e.target.value.trim().replace(/,$/, '');
+    if (val && currentTags.length < 5 && !currentTags.includes(val)) {
+      currentTags.push(val);
+      renderTagChips();
+    }
+    e.target.value = '';
+  }
+}
+function removeTag(t) {
+  currentTags = currentTags.filter(x => x !== t);
+  renderTagChips();
+}
+function renderTagChips() {
+  const wrap = document.getElementById('tagsWrap');
+  const existing = wrap.querySelectorAll('.tag-chip');
+  existing.forEach(c => c.remove());
+  const input = document.getElementById('tagInput');
+  currentTags.forEach(t => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${escHtml(t)}<button onclick="removeTag('${escHtml(t)}')" type="button">×</button>`;
+    wrap.insertBefore(chip, input);
+  });
+}
+
+/* ---- Image Preview ---- */
+function previewImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Image too large (max 2MB)', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const preview = document.getElementById('imagePreview');
+    preview.src = ev.target.result;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ---- Toast ---- */
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span> ${msg}`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+/* ---- Scroll Reveal ---- */
+function initScrollReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('visible'); obs.unobserve(en.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+
+/* ---- Helpers ---- */
+function timeAgo(ts) {
+  const diff = Date.now() - ts;
+  const s = Math.floor(diff/1000), m = Math.floor(s/60), h = Math.floor(m/60), d = Math.floor(h/24);
+  if (d > 30) return new Date(ts).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+  if (d >= 1) return d + 'd ago';
+  if (h >= 1) return h + 'h ago';
+  if (m >= 1) return m + 'm ago';
+  return 'Just now';
+}
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ---- Logout ---- */
+function handleLogout() {
+  localStorage.removeItem('currentUser');
+  window.location.href = 'login.html';
+}
+
+/* ---- Demo seed for first run ---- */
+(function seedDemo() {
+  const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+  if (posts.length === 0 && currentUser) {
+    const demos = [
+      {
+        id:'gig_demo1', userId: currentUser.id, type:'service',
+        title:'I will design a professional logo for your business in 48hrs',
+        category:'Marketing & Creative',
+        desc:'Looking for a stunning logo that captures your brand identity? I create modern, clean, and memorable logos tailored to your vision. Includes 3 concepts, unlimited revisions, and all source files (AI, PNG, SVG).',
+        price:'15000', delivery:'2–3 days', status:'active',
+        tags:['Logo Design','Branding','Illustrator'],
+        likes:[currentUser.id], comments:[
+          {id:'c1', author:'Bih Sandra', text:'Really great work! Exactly what my boutique needed.', createdAt: Date.now()-3600000},
+          {id:'c2', author:'Mofor Tech', text:'How fast can you deliver?', createdAt: Date.now()-1800000}
+        ], applications:[], shares:4, createdAt: Date.now()-86400000*2
+      },
+      {
+        id:'gig_demo2', userId: currentUser.id, type:'job',
+        title:'Need a Data Analyst for monthly sales report — Excel & Google Sheets',
+        category:'Business & Finance',
+        desc:'Our SME in Molyko needs a sharp data analyst to process our monthly sales figures, build clear dashboards, and give actionable insights. Ongoing work — serious candidates only.',
+        price:'25000', delivery:'1 week', status:'active',
+        tags:['Excel','Data Analysis','Google Sheets'],
+        likes:[], comments:[], applications:[{id:'a1'},{id:'a2'},{id:'a3'}], shares:2, createdAt: Date.now()-86400000*5
+      },
+      {
+        id:'gig_demo3', userId: currentUser.id, type:'service',
+        title:'I will build your business website with React & Node.js — fully responsive',
+        category:'Engineering & Tech',
+        desc:'Full-stack web development at student rates. I build fast, modern, mobile-first websites and web apps for SMEs. Portfolio available on request. Tech: React, Node.js, PostgreSQL, Tailwind CSS.',
+        price:'80000', delivery:'2 weeks', status:'draft',
+        tags:['React','Node.js','Web Dev','Full-Stack'],
+        likes:[], comments:[], applications:[], shares:0, createdAt: Date.now()-86400000
+      }
+    ];
+    localStorage.setItem('posts', JSON.stringify(demos));
+    allGigs = demos;
+  }
+})();
+</script>
+</body>
+</html>

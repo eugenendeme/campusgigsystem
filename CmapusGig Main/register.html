@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join CampusGig — Create Your Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --green-deep: #0a3d2b;
+  --green-mid: #0e6641;
+  --green-vivid: #16a34a;
+  --green-bright: #22c55e;
+  --green-lime: #86efac;
+  --green-mist: #dcfce7;
+  --white: #ffffff;
+  --off-white: #f0fdf4;
+  --gray-soft: #e2e8f0;
+  --gray-text: #64748b;
+  --dark: #0f172a;
+  --error: #ef4444;
+  --grad-hero: linear-gradient(135deg, #0a3d2b 0%, #0e6641 40%, #166534 70%, #14532d 100%);
+  --grad-accent: linear-gradient(90deg, #22c55e, #86efac);
+  --shadow-btn: 0 4px 20px rgba(34,197,94,0.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--grad-hero);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  position: relative; overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none; z-index: 0;
+}
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); opacity: .18; pointer-events: none; z-index: 0;
+}
+.orb-1 { width: 500px; height: 500px; background: #22c55e; top: -150px; right: -100px; }
+.orb-2 { width: 350px; height: 350px; background: #86efac; bottom: -80px; left: -80px; }
+
+/* ===== TOP BAR ===== */
+.topbar {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 32px;
+}
+.logo {
+  font-family: 'Inter', sans-serif; font-weight: 900; font-size: 20px;
+  color: white; display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--grad-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--green-deep);
+}
+.topbar-link {
+  font-size: 13px; color: rgba(255,255,255,.7);
+  display: flex; align-items: center; gap: 6px;
+}
+.topbar-link a {
+  color: var(--green-lime); font-weight: 500; text-decoration: none;
+  transition: opacity .2s;
+}
+.topbar-link a:hover { opacity: .8; }
+
+/* ===== MAIN LAYOUT ===== */
+.auth-wrap {
+  position: relative; z-index: 5;
+  flex: 1; display: flex; align-items: flex-start; justify-content: center;
+  padding: 20px 24px 60px;
+}
+.auth-card {
+  background: rgba(255,255,255,.97);
+  border-radius: 24px; width: 100%; max-width: 520px;
+  padding: 40px 40px 36px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.25);
+  animation: cardIn .5s ease both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ===== STEPS INDICATOR ===== */
+.steps-bar {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 32px;
+}
+.step-pip {
+  display: flex; flex-direction: column; align-items: center; flex: 1;
+}
+.step-pip-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 800;
+  border: 2px solid var(--gray-soft); color: var(--gray-text);
+  background: white; transition: all .3s; position: relative; z-index: 2;
+}
+.step-pip-circle.active { background: var(--green-vivid); border-color: var(--green-vivid); color: white; }
+.step-pip-circle.done { background: var(--green-mist); border-color: var(--green-vivid); color: var(--green-vivid); }
+.step-pip-label { font-size: 10px; color: var(--gray-text); margin-top: 5px; text-align: center; white-space: nowrap; }
+.step-pip-label.active { color: var(--green-vivid); font-weight: 600; }
+.step-line { height: 2px; flex: 1; background: var(--gray-soft); margin-top: -18px; position: relative; z-index: 1; transition: background .3s; }
+.step-line.done { background: var(--green-vivid); }
+
+/* ===== FORM SECTIONS ===== */
+.form-step { display: none; }
+.form-step.active { display: block; animation: fadeUp .35s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+.auth-heading {
+  font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900;
+  color: var(--dark); margin-bottom: 6px; line-height: 1.2;
+}
+.auth-sub { font-size: 14px; color: var(--gray-text); margin-bottom: 28px; line-height: 1.6; }
+
+/* ===== ROLE SELECTOR ===== */
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+.role-card {
+  border: 2px solid var(--gray-soft); border-radius: 16px; padding: 20px 16px;
+  cursor: pointer; transition: border-color .2s, background .2s, transform .2s;
+  text-align: center; position: relative; overflow: hidden;
+}
+.role-card:hover { border-color: var(--green-vivid); transform: translateY(-2px); }
+.role-card.selected { border-color: var(--green-vivid); background: var(--off-white); }
+.role-card.selected::after {
+  content: '✓'; position: absolute; top: 10px; right: 12px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green-vivid); color: white;
+  font-size: 11px; display: flex; align-items: center; justify-content: center;
+}
+.role-emoji { font-size: 32px; margin-bottom: 10px; }
+.role-title { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800; color: var(--dark); margin-bottom: 4px; }
+.role-desc { font-size: 12px; color: var(--gray-text); line-height: 1.5; }
+
+/* ===== INPUTS ===== */
+.field { margin-bottom: 18px; }
+.field label { display: block; font-size: 13px; font-weight: 500; color: var(--dark); margin-bottom: 7px; }
+.field label span { color: var(--error); }
+.input-wrap {
+  display: flex; align-items: center;
+  border: 1.5px solid var(--gray-soft); border-radius: 12px;
+  overflow: hidden; background: var(--white); transition: border-color .2s;
+}
+.input-wrap:focus-within { border-color: var(--green-vivid); }
+.input-prefix {
+  padding: 0 12px 0 14px; font-size: 14px; color: var(--gray-text);
+  border-right: 1px solid var(--gray-soft); height: 46px;
+  display: flex; align-items: center; flex-shrink: 0; background: var(--off-white);
+  font-weight: 500;
+}
+.input-wrap input, .input-wrap select {
+  flex: 1; border: none; outline: none; padding: 12px 14px;
+  font-family: 'Inter', sans-serif; font-size: 14px; color: var(--dark);
+  background: transparent;
+}
+.input-wrap input::placeholder { color: #94a3b8; }
+.input-icon { padding: 0 12px; color: var(--gray-text); font-size: 16px; cursor: pointer; }
+.field-error { font-size: 11px; color: var(--error); margin-top: 5px; display: none; }
+.field.error .input-wrap { border-color: var(--error); }
+.field.error .field-error { display: block; }
+
+/* Password strength */
+.pw-strength { display: flex; gap: 4px; margin-top: 7px; }
+.pw-bar { flex: 1; height: 3px; border-radius: 2px; background: var(--gray-soft); transition: background .3s; }
+.pw-bar.weak { background: #ef4444; }
+.pw-bar.fair { background: #f59e0b; }
+.pw-bar.strong { background: var(--green-vivid); }
+.pw-label { font-size: 11px; color: var(--gray-text); margin-top: 4px; }
+
+/* ===== SKILL PILLARS ===== */
+.pillar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
+.pillar-card {
+  border: 1.5px solid var(--gray-soft); border-radius: 12px;
+  padding: 14px 12px; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  transition: border-color .2s, background .2s;
+}
+.pillar-card:hover { border-color: var(--green-bright); background: var(--off-white); }
+.pillar-card.selected { border-color: var(--green-vivid); background: var(--green-mist); }
+.pillar-icon { font-size: 22px; flex-shrink: 0; }
+.pillar-text h4 { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 800; color: var(--dark); }
+.pillar-text p { font-size: 11px; color: var(--gray-text); margin-top: 1px; }
+.pillar-check {
+  margin-left: auto; width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--gray-soft); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; transition: .2s; flex-shrink: 0;
+}
+.pillar-card.selected .pillar-check { background: var(--green-vivid); border-color: var(--green-vivid); color: white; }
+
+/* Sub-skills */
+.sub-skills-wrap { margin-bottom: 20px; display: none; }
+.sub-skills-wrap.show { display: block; }
+.sub-skills-label { font-size: 12px; font-weight: 500; color: var(--dark); margin-bottom: 8px; }
+.sub-skills { display: flex; flex-wrap: wrap; gap: 7px; }
+.sub-tag {
+  padding: 5px 12px; border-radius: 999px; font-size: 12px;
+  border: 1px solid var(--gray-soft); cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s; color: var(--gray-text);
+}
+.sub-tag.on { background: var(--green-vivid); border-color: var(--green-vivid); color: white; }
+
+/* ===== PHONE OTP ===== */
+.otp-wrap { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+.otp-box {
+  width: 52px; height: 60px; border: 2px solid var(--gray-soft); border-radius: 12px;
+  text-align: center; font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800;
+  color: var(--dark); outline: none; transition: border-color .2s;
+}
+.otp-box:focus { border-color: var(--green-vivid); }
+.otp-resend { text-align: center; font-size: 13px; color: var(--gray-text); margin-top: 12px; }
+.otp-resend a { color: var(--green-vivid); cursor: pointer; font-weight: 500; }
+.otp-timer { font-weight: 600; color: var(--dark); }
+
+/* ===== SUMMARY CARD ===== */
+.summary-card {
+  background: var(--off-white); border-radius: 14px; padding: 20px;
+  border: 1px solid var(--green-lime); margin-bottom: 24px;
+}
+.summary-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+.summary-row:not(:last-child) { border-bottom: 1px solid rgba(0,0,0,.05); }
+.summary-key { font-size: 12px; color: var(--gray-text); }
+.summary-val { font-size: 13px; font-weight: 600; color: var(--dark); }
+.summary-badge {
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 600;
+  background: var(--green-mist); color: var(--green-mid);
+}
+
+/* ===== CHECKBOX ===== */
+.check-wrap { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+.check-wrap input[type=checkbox] { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--green-vivid); flex-shrink: 0; }
+.check-wrap label { font-size: 13px; color: var(--gray-text); line-height: 1.55; }
+.check-wrap label a { color: var(--green-vivid); }
+
+/* ===== BUTTON ===== */
+.btn-full {
+  width: 100%; padding: 14px; border-radius: 12px;
+  background: var(--green-vivid); color: white; border: none; cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800;
+  box-shadow: var(--shadow-btn);
+  transition: background .2s, transform .2s, opacity .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-full:hover { background: var(--green-bright); transform: translateY(-1px); }
+.btn-full:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.btn-full.loading { pointer-events: none; }
+.spinner {
+  width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4);
+  border-top-color: white; border-radius: 50%;
+  animation: spin .7s linear infinite; display: none;
+}
+.btn-full.loading .spinner { display: block; }
+.btn-full.loading .btn-text { display: none; }
+
+.btn-back {
+  width: 100%; padding: 12px; border-radius: 12px;
+  background: transparent; color: var(--gray-text);
+  border: 1.5px solid var(--gray-soft); cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+  margin-top: 10px; transition: border-color .2s, color .2s;
+}
+.btn-back:hover { border-color: var(--dark); color: var(--dark); }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== DIVIDER ===== */
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-soft); }
+.divider span { font-size: 12px; color: var(--gray-text); }
+
+/* ===== SOCIAL LOGIN ===== */
+.social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.social-btn {
+  padding: 11px 16px; border-radius: 10px; border: 1.5px solid var(--gray-soft);
+  background: white; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 8px; font-size: 13px; font-weight: 500;
+  color: var(--dark); transition: border-color .2s, box-shadow .2s;
+}
+.social-btn:hover { border-color: var(--gray-text); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+/* ===== SUCCESS ===== */
+.success-screen {
+  display: none; text-align: center; padding: 20px 0;
+  animation: fadeUp .4s ease;
+}
+.success-screen.show { display: block; }
+.success-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--green-mist);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; margin: 0 auto 20px;
+  animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+.success-screen h2 { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 900; color: var(--dark); margin-bottom: 8px; }
+.success-screen p { font-size: 14px; color: var(--gray-text); line-height: 1.65; margin-bottom: 24px; }
+
+/* ===== TRUST BADGE ROW ===== */
+.trust-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-top: 20px; flex-wrap: wrap;
+}
+.trust-chip { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gray-text); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 540px) {
+  .auth-card { padding: 28px 22px 26px; }
+  .role-grid { grid-template-columns: 1fr; }
+  .pillar-grid { grid-template-columns: 1fr; }
+  .otp-box { width: 44px; height: 54px; font-size: 20px; }
+  .topbar { padding: 16px 20px; }
+  .social-btns { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="../index.html" class="logo">
+    <div class="logo-mark"><i class="fa-solid fa-bolt"></i></div>
+    CampusGig
+  </a>
+  <div class="topbar-link">
+    Already have an account? <a href="login.html">Log in</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="auth-wrap">
+  <div class="auth-card" id="authCard">
+
+    <!-- STEPS BAR -->
+    <div class="steps-bar" id="stepsBar">
+      <div class="step-pip">
+        <div class="step-pip-circle active" id="pip1">1</div>
+        <div class="step-pip-label active" id="piplabel1">Role</div>
+      </div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-pip">
+        <div class="step-pip-circle" id="pip2">2</div>
+        <div class="step-pip-label" id="piplabel2">Details</div>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-pip">
+        <div class="step-pip-circle" id="pip3">3</div>
+        <div class="step-pip-label" id="piplabel3">Skills</div>
+      </div>
+      <div class="step-line" id="line3"></div>
+      <div class="step-pip">
+        <div class="step-pip-circle" id="pip4">4</div>
+        <div class="step-pip-label" id="piplabel4">Verify</div>
+      </div>
+      <div class="step-line" id="line4"></div>
+      <div class="step-pip">
+        <div class="step-pip-circle" id="pip5">5</div>
+        <div class="step-pip-label" id="piplabel5">Done</div>
+      </div>
+    </div>
+
+    <!-- STEP 1: ROLE -->
+    <div class="form-step active" id="step1">
+      <h2 class="auth-heading">Welcome to CampusGig 👋</h2>
+      <p class="auth-sub">How do you want to use CampusGig? You can always add the other role later.</p>
+
+      <div class="role-grid">
+        <div class="role-card" id="role-earner" onclick="selectRole('earner')">
+          <div class="role-emoji">🎓</div>
+          <div class="role-title">I'm a Student / Earner</div>
+          <div class="role-desc">I have skills and want to find paid gigs from local businesses.</div>
+        </div>
+        <div class="role-card" id="role-hirer" onclick="selectRole('hirer')">
+          <div class="role-emoji">🏢</div>
+          <div class="role-title">I'm a Business / Hirer</div>
+          <div class="role-desc">I need affordable, high-quality help from talented students.</div>
+        </div>
+      </div>
+
+      <div class="divider"><span>or sign up with</span></div>
+      <div class="social-btns">
+        <button class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+          Google
+        </button>
+        <button class="social-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+      </div>
+
+      <div class="trust-row" style="margin-top:24px">
+        <div class="trust-chip">🔒 Secure sign up</div>
+        <div class="trust-chip">📱 MoMo ready</div>
+        <div class="trust-chip">✅ Free to join</div>
+      </div>
+    </div>
+
+    <!-- STEP 2: DETAILS -->
+    <div class="form-step" id="step2">
+      <h2 class="auth-heading" id="step2-heading">Create your account</h2>
+      <p class="auth-sub" id="step2-sub">Fill in your details to get started.</p>
+
+      <div class="field" id="field-name">
+        <label>Full Name <span>*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+          <input type="text" id="inp-name" placeholder="e.g. Amara Enow" autocomplete="name">
+        </div>
+        <div class="field-error">Please enter your full name.</div>
+      </div>
+
+      <div class="field" id="field-phone">
+        <label>Phone Number <span>*</span></label>
+        <div class="input-wrap">
+          <div class="input-prefix">🇨🇲 +237</div>
+          <input type="tel" id="inp-phone" placeholder="6XX XXX XXX" maxlength="9" autocomplete="tel">
+        </div>
+        <div class="field-error">Enter a valid Cameroon phone number (9 digits).</div>
+      </div>
+
+      <div class="field" id="field-email">
+        <label>Email Address <span style="color:var(--gray-text);font-weight:400">(optional)</span></label>
+        <div class="input-wrap">
+          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+          <input type="email" id="inp-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+
+      <!-- Earner-only: university -->
+      <div class="field" id="field-uni" style="display:none">
+        <label>University / Institution <span>*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon"><i class="fa-solid fa-building-columns"></i></span>
+          <select id="inp-uni">
+            <option value="">Select your institution</option>
+            <option>University of Buea (UB)</option>
+            <option>University of Yaoundé I</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field-error">Please select your institution.</div>
+      </div>
+
+      <!-- Hirer-only: business -->
+      <div class="field" id="field-biz" style="display:none">
+        <label>Business Name <span>*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon"><i class="fa-solid fa-briefcase"></i></span>
+          <input type="text" id="inp-biz" placeholder="e.g. Molyko Pharmacy" autocomplete="organization">
+        </div>
+        <div class="field-error">Please enter your business name.</div>
+      </div>
+
+      <div class="field" id="field-password">
+        <label>Password <span>*</span></label>
+        <div class="input-wrap">
+          <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+          <input type="password" id="inp-password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this.value)">
+          <span class="input-icon" onclick="togglePw('inp-password',this)" style="cursor:pointer"><i class="fa-solid fa-eye"></i></span>
+        </div>
+        <div class="pw-strength">
+          <div class="pw-bar" id="bar1"></div>
+          <div class="pw-bar" id="bar2"></div>
+          <div class="pw-bar" id="bar3"></div>
+          <div class="pw-bar" id="bar4"></div>
+        </div>
+        <div class="pw-label" id="pw-label">Enter a password</div>
+        <div class="field-error">Password must be at least 8 characters.</div>
+      </div>
+
+      <button class="btn-full" onclick="goStep3()">
+        <span class="btn-text">Continue →</span>
+        <div class="spinner"></div>
+      </button>
+      <button class="btn-back" onclick="goStep(1)">← Back</button>
+    </div>
+
+    <!-- STEP 3: SKILLS (earner) / Location (hirer) -->
+    <div class="form-step" id="step3">
+      <div id="step3-earner">
+        <h2 class="auth-heading">Choose your Skill Pillars 🎯</h2>
+        <p class="auth-sub">Select the categories that best describe what you can do. You can choose multiple.</p>
+
+        <div class="pillar-grid" id="pillarGrid">
+          <div class="pillar-card" onclick="togglePillar(this,'engineering')">
+            <div class="pillar-icon"><i class="fa-solid fa-laptop-code"></i></div>
+            <div class="pillar-text"><h4>Engineering & Tech</h4><p>Web, Mobile, Data, AI</p></div>
+            <div class="pillar-check">✓</div>
+          </div>
+          <div class="pillar-card" onclick="togglePillar(this,'business')">
+            <div class="pillar-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <div class="pillar-text"><h4>Business & Finance</h4><p>Accounting, Plans, Excel</p></div>
+            <div class="pillar-check">✓</div>
+          </div>
+          <div class="pillar-card" onclick="togglePillar(this,'marketing')">
+            <div class="pillar-icon"><i class="fa-solid fa-bullhorn"></i></div>
+            <div class="pillar-text"><h4>Marketing & Creative</h4><p>Social Media, Design, Video</p></div>
+            <div class="pillar-check">✓</div>
+          </div>
+          <div class="pillar-card" onclick="togglePillar(this,'talents')">
+            <div class="pillar-icon"><i class="fa-solid fa-star"></i></div>
+            <div class="pillar-text"><h4>Street-Smart Talents</h4><p>Barbering, Events, Sports</p></div>
+            <div class="pillar-check">✓</div>
+          </div>
+          <div class="pillar-card" onclick="togglePillar(this,'academic')">
+            <div class="pillar-icon"><i class="fa-solid fa-book"></i></div>
+            <div class="pillar-text"><h4>Academic Support</h4><p>Tutoring, Translation, Research</p></div>
+            <div class="pillar-check">✓</div>
+          </div>
+        </div>
+
+        <div class="sub-skills-wrap" id="subSkillsWrap">
+          <div class="sub-skills-label">Specific skills in your selected pillars:</div>
+          <div class="sub-skills" id="subSkillsList"></div>
+        </div>
+      </div>
+
+      <div id="step3-hirer" style="display:none">
+        <h2 class="auth-heading">Tell us about your needs 🏢</h2>
+        <p class="auth-sub">Help us match you with the right student talent in Buea.</p>
+        <div class="field">
+          <label>Your Location / Area <span>*</span></label>
+          <div class="input-wrap">
+            <span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
+            <select id="inp-location">
+              <option value="">Select your area</option>
+              <option>Molyko, Buea</option>
+              <option>Bonduma, Buea</option>
+              <option>Great Soppo, Buea</option>
+              <option>Mile 16, Buea</option>
+              <option>Buea Town</option>
+              <option>Limbe</option>
+              <option>Douala</option>
+              <option>Yaoundé</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>What skills do you usually need?</label>
+          <div class="sub-skills" id="hirerNeedTags" style="margin-top:4px">
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Web Development</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Graphic Design</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Social Media</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Accounting</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Photography</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Data Entry</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Delivery</span>
+            <span class="sub-tag" onclick="this.classList.toggle('on')">Translation</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-full" onclick="goStep4()" style="margin-top:16px">
+        <span class="btn-text">Continue →</span>
+        <div class="spinner"></div>
+      </button>
+      <button class="btn-back" onclick="goStep(2)">← Back</button>
+    </div>
+
+    <!-- STEP 4: OTP / PHONE VERIFY -->
+    <div class="form-step" id="step4">
+      <h2 class="auth-heading">Verify your number 📱</h2>
+      <p class="auth-sub" id="otp-sub">We sent a 6-digit code to <strong id="otp-phone-display"></strong>. Enter it below.</p>
+
+      <div class="otp-wrap">
+        <input class="otp-box" type="text" maxlength="1" id="otp0" oninput="otpMove(this,0)">
+        <input class="otp-box" type="text" maxlength="1" id="otp1" oninput="otpMove(this,1)">
+        <input class="otp-box" type="text" maxlength="1" id="otp2" oninput="otpMove(this,2)">
+        <input class="otp-box" type="text" maxlength="1" id="otp3" oninput="otpMove(this,3)">
+        <input class="otp-box" type="text" maxlength="1" id="otp4" oninput="otpMove(this,4)">
+        <input class="otp-box" type="text" maxlength="1" id="otp5" oninput="otpMove(this,5)">
+      </div>
+
+      <div class="otp-resend">
+        Didn't get it? <a onclick="resendOtp()">Resend</a> · <span class="otp-timer" id="otp-timer">0:30</span>
+      </div>
+
+      <div style="background:var(--green-mist);border:1px solid var(--green-lime);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--green-mid);margin:18px 0;line-height:1.6">
+        🧪 <strong>Demo mode:</strong> Use code <strong>123456</strong> to verify.
+      </div>
+
+      <div class="check-wrap">
+        <input type="checkbox" id="terms" checked>
+        <label for="terms">I agree to CampusGig's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I understand my Trust Score starts at 0 and grows with each gig.</label>
+      </div>
+
+      <button class="btn-full" id="verifyBtn" onclick="verifyOtp()">
+        <span class="btn-text">Verify & Create Account</span>
+        <div class="spinner"></div>
+      </button>
+      <button class="btn-back" onclick="goStep(3)">← Back</button>
+    </div>
+
+    <!-- STEP 5: SUCCESS -->
+    <div class="form-step" id="step5">
+      <div class="success-screen show">
+        <div class="success-icon">🎉</div>
+        <h2>You're in, <span id="success-name">Amara</span>!</h2>
+        <p>Your CampusGig account is live. Your Trust Score starts at <strong>0</strong> — every gig you complete makes it grow. Let's find your first opportunity.</p>
+
+        <div class="summary-card" id="success-summary">
+          <!-- filled by JS -->
+        </div>
+
+        <button class="btn-full" onclick="goToDashboard()">
+          <span class="btn-text">Go to My Feed 🚀</span>
+          <div class="spinner"></div>
+        </button>
+
+        <div class="trust-row">
+          <div class="trust-chip">⭐ Trust Score: 0</div>
+          <div class="trust-chip">🔐 Escrow Ready</div>
+          <div class="trust-chip">📱 MoMo Linked</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /auth-card -->
+</div><!-- /auth-wrap -->
+
+<script>
+// ===== LOCAL STORAGE HELPER =====
+const LS = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+// ===== STATE =====
+const state = {
+  role: null,
+  currentStep: 1,
+  selectedPillars: new Set(),
+  selectedSubSkills: new Set(),
+  otpCode: '123456',
+  timerInterval: null
+};
+
+const SUB_SKILLS = {
+  engineering: ['React','Node.js','Python','Data Analysis','UI/UX','Mobile Dev','Cybersecurity','SQL'],
+  business: ['Accounting','Business Plans','Excel','Financial Reporting','Market Research','Payroll'],
+  marketing: ['Social Media','Logo Design','Video Editing','Photography','Brand Strategy','Copywriting'],
+  talents: ['Barbering','Event Planning','Dance Coaching','Football Scouting','Hair Styling','MC'],
+  academic: ['Tutoring','Translation','Proofreading','Research Assistance','Assignment Help'],
+  other: ['Custom Skill']
+};
+
+// ===== ROLE SELECT =====
+function selectRole(role) {
+  state.role = role;
+  document.getElementById('role-earner').classList.toggle('selected', role === 'earner');
+  document.getElementById('role-hirer').classList.toggle('selected', role === 'hirer');
+  setTimeout(() => goStep(2), 300);
+}
+
+// Check URL param for pre-selected role
+const urlRole = new URLSearchParams(window.location.search).get('role');
+if (urlRole) { setTimeout(() => selectRole(urlRole), 100); }
+
+// ===== STEPS =====
+function goStep(n) {
+  document.querySelectorAll('.form-step').forEach((el,i) => el.classList.toggle('active', i+1 === n));
+  state.currentStep = n;
+  updateStepBar(n);
+
+  if (n === 2) setupStep2();
+  if (n === 3) setupStep3();
+  if (n === 4) setupStep4();
+}
+
+function updateStepBar(n) {
+  for (let i = 1; i <= 5; i++) {
+    const pip = document.getElementById(`pip${i}`);
+    const label = document.getElementById(`piplabel${i}`);
+    pip.className = 'step-pip-circle';
+    label.className = 'step-pip-label';
+    if (i < n) { pip.classList.add('done'); pip.textContent = '✓'; }
+    else if (i === n) { pip.classList.add('active'); label.classList.add('active'); pip.textContent = i; }
+    else pip.textContent = i;
+  }
+  for (let i = 1; i <= 4; i++) {
+    const line = document.getElementById(`line${i}`);
+    if (line) line.classList.toggle('done', i < n);
+  }
+}
+
+function setupStep2() {
+  const isEarner = state.role === 'earner';
+  document.getElementById('step2-heading').textContent = isEarner ? 'Build your Earner profile' : 'Set up your Hirer account';
+  document.getElementById('step2-sub').textContent = isEarner
+    ? 'Your profile is your digital CV — make it count.'
+    : 'Tell us about your business so students can trust you.';
+  document.getElementById('field-uni').style.display = isEarner ? '' : 'none';
+  document.getElementById('field-biz').style.display = isEarner ? 'none' : '';
+}
+
+function setupStep3() {
+  document.getElementById('step3-earner').style.display = state.role === 'earner' ? '' : 'none';
+  document.getElementById('step3-hirer').style.display = state.role === 'hirer' ? '' : 'none';
+}
+
+function setupStep4() {
+  const phone = document.getElementById('inp-phone').value;
+  document.getElementById('otp-phone-display').textContent = `+237 ${phone}`;
+  startOtpTimer();
+  setTimeout(() => document.getElementById('otp0').focus(), 100);
+}
+
+// ===== VALIDATION =====
+function validateStep2() {
+  let ok = true;
+  const name = document.getElementById('inp-name').value.trim();
+  const phone = document.getElementById('inp-phone').value.trim();
+  const pw = document.getElementById('inp-password').value;
+  const uni = document.getElementById('inp-uni').value;
+  const biz = document.getElementById('inp-biz').value.trim();
+
+  setErr('field-name', !name);
+  setErr('field-phone', phone.length !== 9 || !/^\d+$/.test(phone));
+  setErr('field-password', pw.length < 8);
+  if (state.role === 'earner') setErr('field-uni', !uni);
+  if (state.role === 'hirer') setErr('field-biz', !biz);
+
+  return name && phone.length === 9 && pw.length >= 8
+    && (state.role !== 'earner' || uni)
+    && (state.role !== 'hirer' || biz);
+}
+
+function setErr(id, hasErr) {
+  document.getElementById(id)?.classList.toggle('error', hasErr);
+}
+
+function goStep3() { if (validateStep2()) goStep(3); }
+function goStep4() { goStep(4); }
+
+// ===== PASSWORD STRENGTH =====
+function checkStrength(pw) {
+  const bars = [document.getElementById('bar1'),document.getElementById('bar2'),document.getElementById('bar3'),document.getElementById('bar4')];
+  const label = document.getElementById('pw-label');
+  bars.forEach(b => b.className = 'pw-bar');
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/\d/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const levels = ['','weak','fair','strong','strong'];
+  const labels = ['Enter a password','Weak — add more characters','Fair — try a number or symbol','Strong — nice!','Very strong 💪'];
+  for (let i = 0; i < score; i++) bars[i].classList.add(levels[score]);
+  label.textContent = labels[score];
+}
+
+function togglePw(id, el) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  el.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+// ===== PILLARS =====
+function togglePillar(card, key) {
+  card.classList.toggle('selected');
+  if (card.classList.contains('selected')) state.selectedPillars.add(key);
+  else { state.selectedPillars.delete(key); }
+  renderSubSkills();
+}
+
+function renderSubSkills() {
+  const wrap = document.getElementById('subSkillsWrap');
+  const list = document.getElementById('subSkillsList');
+  if (state.selectedPillars.size === 0) { wrap.classList.remove('show'); return; }
+  wrap.classList.add('show');
+  list.innerHTML = '';
+  state.selectedPillars.forEach(key => {
+    (SUB_SKILLS[key] || []).forEach(skill => {
+      const tag = document.createElement('span');
+      tag.className = 'sub-tag' + (state.selectedSubSkills.has(skill) ? ' on' : '');
+      tag.textContent = skill;
+      tag.onclick = () => { tag.classList.toggle('on'); state.selectedSubSkills[tag.classList.contains('on') ? 'add' : 'delete'](skill); };
+      list.appendChild(tag);
+    });
+  });
+}
+
+// ===== OTP =====
+function otpMove(input, idx) {
+  input.value = input.value.replace(/\D/,'');
+  if (input.value && idx < 5) document.getElementById(`otp${idx+1}`).focus();
+  if (!input.value && idx > 0) document.getElementById(`otp${idx-1}`).focus();
+}
+
+function getOtpValue() {
+  return Array.from({length:6}, (_,i) => document.getElementById(`otp${i}`).value).join('');
+}
+
+function startOtpTimer() {
+  if (state.timerInterval) clearInterval(state.timerInterval);
+  let secs = 30;
+  const el = document.getElementById('otp-timer');
+  el.textContent = `0:30`;
+  state.timerInterval = setInterval(() => {
+    secs--;
+    el.textContent = `0:${secs.toString().padStart(2,'0')}`;
+    if (secs <= 0) { clearInterval(state.timerInterval); el.textContent = ''; }
+  }, 1000);
+}
+
+function resendOtp() { startOtpTimer(); }
+
+function verifyOtp() {
+  const entered = getOtpValue();
+  if (entered !== state.otpCode) {
+    document.querySelectorAll('.otp-box').forEach(b => { b.style.borderColor='var(--error)'; });
+    setTimeout(() => document.querySelectorAll('.otp-box').forEach(b => b.style.borderColor=''), 1200);
+    return;
+  }
+  if (!document.getElementById('terms').checked) { alert('Please accept the Terms of Service to continue.'); return; }
+
+  const btn = document.getElementById('verifyBtn');
+  btn.classList.add('loading');
+  setTimeout(() => { btn.classList.remove('loading'); saveUserAndFinish(); }, 1400);
+}
+
+// ===== SAVE USER =====
+function saveUserAndFinish() {
+  const user = {
+    id: 'u_' + Date.now(),
+    name: document.getElementById('inp-name').value.trim(),
+    phone: '+237' + document.getElementById('inp-phone').value.trim(),
+    email: document.getElementById('inp-email').value.trim(),
+    password: document.getElementById('inp-password').value,
+    role: state.role,
+    institution: document.getElementById('inp-uni')?.value || '',
+    business: document.getElementById('inp-biz')?.value || '',
+    pillars: Array.from(state.selectedPillars),
+    skills: Array.from(state.selectedSubSkills),
+    trustScore: 0,
+    verified: false,
+    joinedAt: new Date().toISOString(),
+    avatar: document.getElementById('inp-name').value.trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()
+  };
+
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  users.push(user);
+  localStorage.setItem('users', JSON.stringify(users));
+  localStorage.setItem('currentUser', JSON.stringify(user));
+
+  // Show success
+  const firstName = user.name.split(' ')[0];
+  document.getElementById('success-name').textContent = firstName;
+  document.getElementById('success-summary').innerHTML = `
+    <div class="summary-row"><span class="summary-key">Name</span><span class="summary-val">${user.name}</span></div>
+    <div class="summary-row"><span class="summary-key">Role</span><span class="summary-badge">${user.role === 'earner' ? '🎓 Earner' : '🏢 Hirer'}</span></div>
+    ${user.institution ? `<div class="summary-row"><span class="summary-key">Institution</span><span class="summary-val">${user.institution}</span></div>` : ''}
+    ${user.business ? `<div class="summary-row"><span class="summary-key">Business</span><span class="summary-val">${user.business}</span></div>` : ''}
+    <div class="summary-row"><span class="summary-key">Phone</span><span class="summary-val">${user.phone}</span></div>
+    <div class="summary-row"><span class="summary-key">Trust Score</span><span class="summary-val">0 (building…)</span></div>
+  `;
+
+  goStep(5);
+
+  // Update success screen for role
+  if (user.role === 'hirer') {
+    document.querySelector('#step5 .success-screen p').innerHTML =
+      'Your CampusGig <strong>Hirer</strong> account is live! Post your first job and start receiving applications from talented students. Your Credibility Score grows with every successful hire.';
+    document.querySelector('#step5 .btn-full .btn-text').textContent = 'Go to My Hirer Profile 🏢';
+    document.querySelector('#step5 .trust-row').innerHTML = `
+      <div class="trust-chip">🏢 Hirer Account</div>
+      <div class="trust-chip">🔐 Escrow Ready</div>
+      <div class="trust-chip">📱 MoMo Linked</div>`;
+  }
+}
+
+function goToDashboard() {
+  const btn = event.currentTarget;
+  btn.classList.add('loading');
+  const user = LS.get('currentUser') || {};
+  const dest = user.role === 'hirer' ? 'hirer-profile.html' : 'feed.html';
+  setTimeout(() => { window.location.href = dest; }, 800);
+}
+</script>
+</body>
+</html>

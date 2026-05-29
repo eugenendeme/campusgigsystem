@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusGig — Hirer Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --green-deep: #0a3d2b;
+  --green-mid: #0e6641;
+  --green-vivid: #16a34a;
+  --green-bright: #22c55e;
+  --green-lime: #86efac;
+  --green-mist: #dcfce7;
+  --white: #ffffff;
+  --off-white: #f0fdf4;
+  --gray-soft: #e2e8f0;
+  --gray-text: #64748b;
+  --dark: #0f172a;
+  --grad-hero: linear-gradient(135deg, #0a3d2b 0%, #0e6641 40%, #166534 70%, #14532d 100%);
+  --grad-card: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  --grad-accent: linear-gradient(90deg, #22c55e, #86efac);
+  --grad-green: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --shadow-card: 0 8px 32px rgba(22,163,74,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-btn: 0 4px 20px rgba(34,197,94,0.4);
+  --sidebar-w: 260px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: #f8fafc; color: var(--dark); overflow-x: hidden; }
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; font-family: 'Inter', sans-serif; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--green-lime); border-radius: 99px; }
+
+/* ===== REVEAL ANIMATIONS ===== */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(10,61,43,0.97); backdrop-filter: blur(12px);
+  padding: 0 24px; height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.nav-logo {
+  font-family: 'Inter', sans-serif; font-weight: 800; font-size: 22px;
+  color: var(--white); display: flex; align-items: center; gap: 8px;
+}
+.nav-logo-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--grad-accent); display: inline-block; }
+.nav-links-bar { display: flex; align-items: center; gap: 6px; }
+.nav-links-bar a { color: rgba(255,255,255,0.75); font-size: 14px; padding: 6px 14px; border-radius: 999px; transition: all 0.2s; }
+.nav-links-bar a:hover, .nav-links-bar a.active { color: var(--white); background: rgba(255,255,255,0.1); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--grad-card); display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 13px; color: white;
+  border: 2px solid var(--green-bright); cursor: pointer;
+}
+.hirer-badge-nav {
+  background: linear-gradient(90deg,#0e6641,#16a34a);
+  color: white; font-size: 11px; font-weight: 700; padding: 3px 10px;
+  border-radius: 999px; letter-spacing: 0.05em;
+}
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+.hamburger span { width: 22px; height: 2px; background: white; border-radius: 2px; transition: 0.3s; }
+
+/* ===== LAYOUT ===== */
+.page-wrapper { display: flex; min-height: 100vh; padding-top: 60px; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed; top: 60px; left: 0; bottom: 0;
+  width: var(--sidebar-w); background: var(--white);
+  border-right: 1px solid var(--gray-soft);
+  display: flex; flex-direction: column;
+  padding: 24px 0; overflow-y: auto; z-index: 150;
+  transition: transform 0.3s ease;
+}
+.sidebar-user {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--gray-soft);
+  display: flex; align-items: center; gap: 12px;
+}
+.sidebar-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--grad-card); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: white; font-size: 16px; overflow: hidden;
+}
+.sidebar-name { font-weight: 600; font-size: 14px; color: var(--dark); }
+.sidebar-role {
+  font-size: 11px; font-weight: 700; color: var(--green-mid);
+  background: var(--green-mist); padding: 2px 8px; border-radius: 999px;
+  display: inline-block; margin-top: 2px;
+}
+.sidebar-nav { padding: 16px 12px; flex: 1; }
+.sidebar-nav a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px; border-radius: var(--radius-sm);
+  color: var(--gray-text); font-size: 14px; font-weight: 400;
+  transition: all 0.2s; margin-bottom: 2px;
+}
+.sidebar-nav a:hover { background: var(--green-mist); color: var(--green-mid); }
+.sidebar-nav a.active { background: var(--green-mist); color: var(--green-deep); font-weight: 600; }
+.sidebar-nav a .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+.sidebar-post-btn {
+  margin: 0 12px 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--grad-card); color: white;
+  padding: 12px 16px; border-radius: var(--radius-md);
+  font-size: 14px; font-weight: 700; border: none;
+  box-shadow: var(--shadow-btn); transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.sidebar-post-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(22,163,74,0.45); }
+.sidebar-bottom { padding: 16px 12px 0; border-top: 1px solid var(--gray-soft); }
+.sidebar-bottom a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px; border-radius: var(--radius-sm);
+  color: var(--gray-text); font-size: 14px; transition: all 0.2s;
+}
+.sidebar-bottom a:hover { background: #fee2e2; color: #dc2626; }
+
+/* ===== MAIN CONTENT ===== */
+.main-content { margin-left: var(--sidebar-w); flex: 1; min-width: 0; padding: 0 0 60px; }
+
+/* ===== COVER ===== */
+.cover-section {
+  position: relative; height: 220px;
+  background: var(--grad-hero); overflow: hidden;
+}
+.cover-section::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+/* decorative orbs */
+.cover-section::after {
+  content: ''; position: absolute; width: 350px; height: 350px;
+  border-radius: 50%; background: rgba(34,197,94,0.15);
+  filter: blur(60px); top: -100px; right: -60px; pointer-events: none;
+}
+#coverImageEl {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none;
+}
+.cover-edit-btn {
+  position: absolute; bottom: 14px; right: 14px;
+  background: rgba(0,0,0,0.45); backdrop-filter: blur(8px);
+  color: white; border: 1px solid rgba(255,255,255,0.3);
+  padding: 7px 16px; border-radius: 999px; font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+}
+.cover-edit-btn:hover { background: rgba(0,0,0,0.65); }
+input[type="file"] { display: none; }
+
+/* ===== PROFILE HEADER ===== */
+.profile-header-wrap { background: var(--white); border-bottom: 1px solid var(--gray-soft); }
+.profile-header { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+.avatar-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-top: -52px; padding-bottom: 16px; flex-wrap: wrap; gap: 12px;
+}
+.profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.profile-avatar {
+  width: 110px; height: 110px; border-radius: 20px;
+  background: var(--grad-card);
+  border: 4px solid var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', sans-serif; font-weight: 900; font-size: 36px; color: white;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18); overflow: hidden;
+}
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.avatar-edit-overlay {
+  position: absolute; inset: 4px; border-radius: 16px;
+  background: rgba(0,0,0,0); display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; cursor: pointer;
+}
+.avatar-edit-overlay:hover { background: rgba(0,0,0,0.4); }
+.avatar-edit-overlay span { color: white; font-size: 22px; opacity: 0; transition: opacity 0.2s; }
+.avatar-edit-overlay:hover span { opacity: 1; }
+.hirer-type-badge {
+  position: absolute; bottom: -8px; right: -8px;
+  background: linear-gradient(135deg,#0e6641,#16a34a);
+  color: white; font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 999px; border: 2px solid white;
+  letter-spacing: 0.06em; white-space: nowrap;
+}
+.header-actions { display: flex; align-items: center; gap: 8px; padding-top: 52px; }
+.btn-post-job {
+  background: var(--grad-card); color: white;
+  padding: 9px 20px; border-radius: 999px;
+  font-size: 14px; font-weight: 700; border: none;
+  box-shadow: var(--shadow-btn); transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Inter', sans-serif;
+}
+.btn-post-job:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(22,163,74,0.45); }
+.btn-edit-profile {
+  background: white; color: var(--dark);
+  padding: 9px 20px; border-radius: 999px;
+  font-size: 14px; font-weight: 700;
+  border: 1.5px solid var(--gray-soft); transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.btn-edit-profile:hover { border-color: var(--green-vivid); color: var(--green-vivid); }
+.btn-dots {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid var(--gray-soft); background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--gray-text); position: relative; transition: all 0.2s;
+}
+.btn-dots:hover { border-color: var(--green-vivid); }
+.dots-menu {
+  position: absolute; top: 46px; right: 0;
+  background: white; border: 1px solid var(--gray-soft);
+  border-radius: var(--radius-md); min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  display: none; z-index: 99; overflow: hidden;
+}
+.dots-menu.open { display: block; }
+.dots-menu a, .dots-menu button {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px; font-size: 14px; color: var(--dark);
+  border: none; background: none; width: 100%; text-align: left; transition: background 0.15s;
+}
+.dots-menu a:hover, .dots-menu button:hover { background: var(--green-mist); }
+.dots-menu .logout-btn { color: #dc2626; }
+.dots-menu .logout-btn:hover { background: #fee2e2; }
+.dots-divider { height: 1px; background: var(--gray-soft); margin: 4px 0; }
+
+/* Profile info */
+.profile-info { padding: 4px 0 20px; }
+.profile-name-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.profile-name { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 26px; color: var(--dark); }
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 999px;
+  background: #dbeafe; color: #1d4ed8; font-size: 12px; font-weight: 600;
+}
+.hirer-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--green-mist); color: var(--green-deep); font-size: 12px; font-weight: 600;
+}
+.profile-tagline { font-size: 15px; color: var(--gray-text); margin: 4px 0 6px; }
+.profile-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--gray-text); }
+.profile-meta span { display: flex; align-items: center; gap: 5px; }
+
+/* Stats strip */
+.stats-strip {
+  display: flex; gap: 0;
+  border-top: 1px solid var(--gray-soft);
+  margin: 0 -24px; padding: 0 24px;
+}
+.stat-strip-item { padding: 14px 24px 14px 0; display: flex; flex-direction: column; gap: 1px; }
+.stat-strip-num {
+  font-family: 'Inter', sans-serif; font-weight: 900; font-size: 20px; color: var(--dark);
+}
+.stat-strip-label { font-size: 12px; color: var(--gray-text); }
+
+/* ===== PROFILE BODY ===== */
+.profile-body {
+  max-width: 960px; margin: 0 auto;
+  padding: 24px 24px 0;
+  display: grid; grid-template-columns: 1fr 340px; gap: 20px;
+}
+
+/* ===== CARDS ===== */
+.profile-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-soft); padding: 24px;
+  box-shadow: var(--shadow-card); margin-bottom: 20px;
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.card-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 17px; color: var(--dark); }
+.card-edit-btn {
+  background: none; border: 1.5px solid var(--gray-soft);
+  color: var(--gray-text); padding: 5px 14px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; transition: all 0.2s;
+}
+.card-edit-btn:hover { border-color: var(--green-vivid); color: var(--green-vivid); }
+.about-text { font-size: 15px; color: var(--gray-text); line-height: 1.75; }
+.about-empty { font-size: 14px; color: #94a3b8; font-style: italic; }
+
+/* ===== JOB LISTINGS ===== */
+.jobs-list { display: flex; flex-direction: column; gap: 12px; }
+.job-card {
+  border: 1.5px solid var(--gray-soft); border-radius: var(--radius-md);
+  padding: 16px; transition: all 0.2s; cursor: pointer;
+}
+.job-card:hover { border-color: var(--green-lime); box-shadow: 0 4px 20px rgba(22,163,74,0.1); }
+.job-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.job-title { font-weight: 700; font-size: 15px; color: var(--dark); }
+.job-status-chip {
+  font-size: 11px; font-weight: 700; padding: 3px 10px;
+  border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+}
+.chip-active { background: var(--green-mist); color: var(--green-mid); }
+.chip-closed { background: #f1f5f9; color: var(--gray-text); }
+.chip-draft { background: #fef3c7; color: #d97706; }
+.job-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--gray-text); margin-bottom: 10px; }
+.job-meta span { display: flex; align-items: center; gap: 4px; }
+.job-desc { font-size: 13px; color: var(--gray-text); line-height: 1.6; margin-bottom: 12px; }
+.job-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.job-budget { font-family: 'Inter', sans-serif; font-weight: 800; color: var(--green-vivid); font-size: 16px; }
+.job-applicants { font-size: 12px; color: var(--gray-text); display: flex; align-items: center; gap: 6px; }
+.applicants-avatars { display: flex; }
+.applicants-avatars .mini-av {
+  width: 20px; height: 20px; border-radius: 50%; border: 2px solid white;
+  background: var(--grad-card); display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 700; color: white; margin-left: -6px;
+}
+.applicants-avatars .mini-av:first-child { margin-left: 0; }
+.job-actions { display: flex; gap: 6px; }
+.job-action-btn {
+  background: none; border: 1.5px solid var(--gray-soft);
+  color: var(--gray-text); padding: 5px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600; transition: all 0.2s;
+}
+.job-action-btn:hover { border-color: var(--green-vivid); color: var(--green-vivid); }
+.job-action-btn.danger:hover { border-color: #ef4444; color: #ef4444; }
+
+/* empty state */
+.empty-state { text-align: center; padding: 36px 20px; }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 17px; color: var(--dark); margin-bottom: 6px; }
+.empty-desc { font-size: 13px; color: var(--gray-text); line-height: 1.6; margin-bottom: 16px; }
+.empty-cta {
+  background: var(--grad-card); color: white; border: none;
+  padding: 10px 22px; border-radius: 999px; font-size: 14px; font-weight: 600;
+  box-shadow: var(--shadow-btn); transition: all 0.2s;
+}
+.empty-cta:hover { transform: translateY(-1px); }
+
+/* ===== APPLICATIONS ===== */
+.apps-list { display: flex; flex-direction: column; gap: 10px; }
+.app-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px; border-radius: var(--radius-md);
+  border: 1px solid var(--gray-soft); transition: all 0.2s;
+}
+.app-card:hover { border-color: var(--green-lime); background: var(--off-white); }
+.app-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--grad-card); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 15px; color: white;
+}
+.app-info { flex: 1; min-width: 0; }
+.app-name { font-weight: 700; font-size: 14px; color: var(--dark); }
+.app-skill { font-size: 12px; color: var(--gray-text); margin-top: 1px; }
+.app-for { font-size: 12px; color: var(--green-mid); font-weight: 500; margin-top: 2px; }
+.app-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.app-status { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+.status-pending { background: #fef3c7; color: #d97706; }
+.status-reviewed { background: #e0f2fe; color: #0369a1; }
+.status-hired { background: var(--green-mist); color: var(--green-mid); }
+.status-rejected { background: #fee2e2; color: #dc2626; }
+.app-time { font-size: 11px; color: #94a3b8; }
+.app-actions { display: flex; gap: 6px; margin-top: 6px; }
+.btn-hire {
+  background: var(--green-vivid); color: white; border: none;
+  padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-hire:hover { background: var(--green-mid); }
+.btn-decline {
+  background: none; border: 1.5px solid #e2e8f0; color: var(--gray-text);
+  padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-decline:hover { border-color: #ef4444; color: #ef4444; }
+.view-all-link {
+  display: block; text-align: center; margin-top: 14px;
+  font-size: 13px; color: var(--green-vivid); font-weight: 600;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* ===== HIRING HISTORY ===== */
+.history-list { display: flex; flex-direction: column; gap: 0; }
+.history-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--gray-soft);
+}
+.history-item:last-child { border-bottom: none; }
+.history-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--grad-card); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; color: white;
+}
+.history-info { flex: 1; }
+.history-name { font-weight: 600; font-size: 14px; color: var(--dark); }
+.history-gig { font-size: 12px; color: var(--gray-text); }
+.history-right { text-align: right; }
+.history-amount { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 14px; color: var(--dark); }
+.history-stars { color: #fbbf24; font-size: 12px; }
+
+/* ===== RIGHT SIDEBAR ===== */
+.right-sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+/* Credibility Score Card */
+.cred-score-card {
+  background: var(--grad-hero); border-radius: var(--radius-lg);
+  padding: 24px; color: white; box-shadow: var(--shadow-card);
+  position: relative; overflow: hidden;
+}
+.cred-score-card::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.cs-inner { position: relative; z-index: 1; }
+.cs-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--green-lime); margin-bottom: 6px; }
+.cs-num { font-family: 'Inter', sans-serif; font-size: 56px; font-weight: 900; color: white; line-height: 1; margin-bottom: 4px; }
+.cs-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 12px; }
+.cs-bar-wrap { height: 8px; background: rgba(255,255,255,0.15); border-radius: 99px; margin: 12px 0; }
+.cs-bar { height: 100%; border-radius: 99px; background: var(--grad-accent); transition: width 1.2s ease; }
+.cs-breakdown { display: flex; flex-direction: column; gap: 7px; margin-top: 12px; }
+.cs-row { display: flex; justify-content: space-between; font-size: 12px; }
+.cs-row span:first-child { color: rgba(255,255,255,0.65); }
+.cs-row span:last-child { color: white; font-weight: 600; }
+.cs-boost-btn {
+  width: 100%; margin-top: 16px; background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25); color: white;
+  padding: 9px; border-radius: 999px; font-size: 13px; font-weight: 600;
+  transition: all 0.2s;
+}
+.cs-boost-btn:hover { background: rgba(255,255,255,0.22); }
+
+/* Hiring Preferences Card */
+.pref-row { display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--gray-soft); }
+.pref-row:last-child { border-bottom: none; }
+.pref-key { color: var(--gray-text); }
+.pref-val { font-weight: 600; color: var(--dark); text-align: right; }
+
+/* Skill tags */
+.skill-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.skill-tag {
+  background: var(--green-mist); color: var(--green-mid);
+  font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
+}
+
+/* Quick Actions Card */
+.quick-actions { display: flex; flex-direction: column; gap: 8px; }
+.quick-action-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: var(--radius-md);
+  border: 1.5px solid var(--gray-soft); background: white;
+  font-size: 14px; font-weight: 500; color: var(--dark);
+  transition: all 0.2s; text-align: left;
+}
+.quick-action-btn:hover { border-color: var(--green-vivid); color: var(--green-vivid); background: var(--off-white); }
+.qa-icon { font-size: 20px; width: 28px; text-align: center; }
+.quick-action-btn.primary-qa {
+  background: var(--grad-card); color: white; border-color: transparent;
+  box-shadow: var(--shadow-btn);
+}
+.quick-action-btn.primary-qa:hover { transform: translateY(-1px); color: white; }
+
+/* ===== MODALS ===== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px); z-index: 1000;
+  display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: white; border-radius: var(--radius-lg);
+  max-width: 580px; width: 100%; max-height: 90vh;
+  overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  animation: modalIn 0.3s ease both;
+}
+@keyframes modalIn { from{opacity:0;transform:scale(0.96) translateY(12px)} to{opacity:1;transform:none} }
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 24px 28px 0;
+}
+.modal-title { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 20px; color: var(--dark); }
+.modal-close {
+  width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--gray-soft);
+  background: none; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--gray-text); transition: all 0.2s;
+}
+.modal-close:hover { border-color: #ef4444; color: #ef4444; }
+.modal-body { padding: 20px 28px 28px; }
+.form-group { margin-bottom: 18px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 7px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; border: 1.5px solid var(--gray-soft); border-radius: var(--radius-md);
+  padding: 11px 14px; font-family: 'Inter', sans-serif; font-size: 14px;
+  color: var(--dark); background: white; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-vivid); }
+.form-textarea { min-height: 80px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-footer { display: flex; gap: 10px; justify-content: flex-end; padding-top: 12px; border-top: 1px solid var(--gray-soft); }
+.btn-cancel {
+  background: none; border: 1.5px solid var(--gray-soft); color: var(--gray-text);
+  padding: 10px 20px; border-radius: 999px; font-size: 14px; font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-cancel:hover { border-color: #ef4444; color: #ef4444; }
+.btn-save {
+  background: var(--grad-card); color: white; border: none;
+  padding: 10px 22px; border-radius: 999px; font-size: 14px; font-weight: 700;
+  box-shadow: var(--shadow-btn); transition: all 0.2s;
+}
+.btn-save:hover { transform: translateY(-1px); }
+
+/* ===== MESSAGE PANEL ===== */
+.message-panel {
+  position: fixed; right: -400px; top: 60px; bottom: 0; width: 380px;
+  background: white; border-left: 1px solid var(--gray-soft);
+  display: flex; flex-direction: column; z-index: 180;
+  transition: right 0.3s ease; box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+}
+.message-panel.open { right: 0; }
+.msg-header {
+  padding: 18px 20px; border-bottom: 1px solid var(--gray-soft);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.msg-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 18px; }
+.msg-close { background: none; border: none; font-size: 20px; color: var(--gray-text); }
+.msg-conv-list { flex: 1; overflow-y: auto; }
+.msg-conv-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; cursor: pointer; transition: background 0.15s;
+  border-bottom: 1px solid var(--gray-soft);
+}
+.msg-conv-item:hover, .msg-conv-item.active { background: var(--off-white); }
+.msg-conv-avatar {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--grad-card);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: white; font-size: 14px; flex-shrink: 0;
+}
+.msg-conv-name { font-weight: 600; font-size: 14px; color: var(--dark); }
+.msg-conv-preview { font-size: 12px; color: var(--gray-text); margin-top: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 220px; }
+.msg-chat-area { display: none; flex-direction: column; height: 100%; }
+.msg-chat-area.open { display: flex; }
+.msg-chat-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--gray-soft);
+  display: flex; align-items: center; gap: 10px;
+}
+.msg-back { background: none; border: none; font-size: 18px; cursor: pointer; }
+.msg-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg-bubble {
+  max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; position: relative;
+}
+.msg-bubble.sent { background: var(--green-vivid); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg-bubble.recv { background: #f1f5f9; color: var(--dark); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg-time { font-size: 10px; opacity: 0.65; margin-top: 4px; }
+.msg-input-row { padding: 14px 20px; border-top: 1px solid var(--gray-soft); display: flex; gap: 8px; }
+.msg-input-field {
+  flex: 1; border: 1.5px solid var(--gray-soft); border-radius: 999px;
+  padding: 10px 16px; font-size: 14px; font-family: 'Inter', sans-serif; outline: none;
+  transition: border-color 0.2s;
+}
+.msg-input-field:focus { border-color: var(--green-vivid); }
+.msg-send-btn {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--green-vivid);
+  color: white; border: none; font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.msg-send-btn:hover { background: var(--green-mid); }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--dark); color: white; padding: 12px 24px; border-radius: 999px;
+  font-size: 14px; font-weight: 500; z-index: 9999;
+  transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: var(--green-deep); }
+
+/* ===== MOBILE OVERLAY ===== */
+.mobile-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 140;
+}
+.mobile-overlay.open { display: block; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .profile-body { grid-template-columns: 1fr; }
+  .right-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.mobile-open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .nav-links-bar { display: none; }
+  .hamburger { display: flex; }
+  .right-sidebar { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .stats-strip { overflow-x: auto; }
+  .header-actions { padding-top: 4px; }
+  .avatar-row { margin-top: -36px; }
+}
+@media (max-width: 480px) {
+  .profile-header { padding: 0 16px; }
+  .profile-body { padding: 16px 16px 0; }
+  .modal-body { padding: 16px 20px 24px; }
+  .modal-header { padding: 20px 20px 0; }
+}
+
+/* fade in animation */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+</style>
+</head>
+<body>
+
+<!-- ===== MOBILE OVERLAY ===== -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <a href="feed.html" class="nav-logo">
+    <span class="nav-logo-dot"></span>CampusGig
+  </a>
+  <div class="nav-links-bar">
+    <a href="feed.html"><i class="fa-solid fa-newspaper" style="margin-right: 4px;"></i> Feed</a>
+    <a href="hirer-profile.html" class="active"><i class="fa-solid fa-user" style="margin-right: 4px;"></i> Profile</a>
+    <a href="#" onclick="openMessagePanel()"><i class="fa-solid fa-comments" style="margin-right: 4px;"></i> Messages</a>
+    <a href="#">🔍 Find Talent</a>
+  </div>
+  <div class="nav-right">
+    <span class="hirer-badge-nav">🏢 HIRER</span>
+    <div class="nav-avatar" id="navAvatar">?</div>
+  </div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+    <div>
+      <div class="sidebar-name" id="sidebarName">Loading…</div>
+      <div class="sidebar-role">🏢 Hirer</div>
+    </div>
+  </div>
+
+  <button class="sidebar-post-btn" onclick="openModal('postJobModal')">
+    <i class="fa-solid fa-plus"></i> Post a New Job
+  </button>
+
+  <nav class="sidebar-nav">
+    <a href="feed.html"><span class="nav-icon"><i class="fa-solid fa-newspaper"></i></span> Gig Feed</a>
+    <a href="hirer-profile.html" class="active"><span class="nav-icon"><i class="fa-solid fa-user"></i></span> My Profile</a>
+    <a href="#" onclick="scrollToSection('jobsSection')"><span class="nav-icon"><i class="fa-solid fa-briefcase"></i></span> My Job Listings</a>
+    <a href="#" onclick="scrollToSection('appsSection')"><span class="nav-icon"><i class="fa-solid fa-list-check"></i></span> Applications</a>
+    <a href="#" onclick="scrollToSection('historySection')"><span class="nav-icon"><i class="fa-solid fa-check"></i></span> Hired Earners</a>
+    <a href="#" onclick="openMessagePanel()"><span class="nav-icon"><i class="fa-solid fa-comments"></i></span> Messages</a>
+    <a href="#"><span class="nav-icon">🔍</span> Browse Talent</a>
+    <a href="#"><span class="nav-icon"><i class="fa-solid fa-gear"></i></span> Settings</a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="#" id="sidebarLogout">
+      <span class="nav-icon">🚪</span> Log Out
+    </a>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content">
+
+  <!-- COVER -->
+  <div class="cover-section" id="coverSection">
+    <img id="coverImageEl" alt="Cover">
+    <button class="cover-edit-btn" id="coverEditBtn">
+      <i class="fa-solid fa-pen-to-square"></i>
+      Edit Cover
+    </button>
+    <input type="file" id="coverInput" accept="image/*">
+  </div>
+
+  <!-- PROFILE HEADER -->
+  <div class="profile-header-wrap">
+    <div class="profile-header">
+      <div class="avatar-row">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="profileAvatar">
+            <img id="avatarImg" alt="">
+            <span id="avatarInitials">?</span>
+          </div>
+          <div class="avatar-edit-overlay" onclick="document.getElementById('avatarInput').click()">
+            <span>📷</span>
+          </div>
+          <div class="hirer-type-badge" id="businessTypeBadge">🏢 HIRER</div>
+          <input type="file" id="avatarInput" accept="image/*">
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-post-job" onclick="openModal('postJobModal')">
+            <i class="fa-solid fa-plus"></i> Post a Job
+          </button>
+          <button class="btn-edit-profile" onclick="openModal('editProfileModal')">
+            <i class="fa-solid fa-pen-to-square"></i> Edit Profile
+          </button>
+          <div class="btn-dots" id="dotsBtn">
+            <i class="fa-solid fa-ellipsis"></i>
+            <div class="dots-menu" id="dotsMenu">
+              <button onclick="openModal('editProfileModal')"><i class="fa-solid fa-pen"></i> Edit Profile</button>
+              <button onclick="openModal('postJobModal')"><i class="fa-solid fa-plus"></i> Post a Job</button>
+              <button onclick="openModal('prefsModal')"><i class="fa-solid fa-gear"></i> Preferences</button>
+              <div class="dots-divider"></div>
+              <button onclick="openMessagePanel()"><i class="fa-solid fa-comment"></i> Messages</button>
+              <div class="dots-divider"></div>
+              <button class="logout-btn" id="dotsLogout"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <div class="profile-name" id="displayName">My Business</div>
+          <span class="hirer-tag" id="hirerTagEl">🏢 Hirer</span>
+          <span class="verified-badge" id="verifiedBadgeEl" style="display:none">✓ Verified</span>
+        </div>
+        <div class="profile-tagline" id="displayTagline">Business / Employer on CampusGig</div>
+        <div class="profile-meta">
+          <span id="locationEl" style="display:none"><i class="fa-solid fa-location-dot"></i> <span id="locationTxt"></span></span>
+          <span id="websiteEl" style="display:none"><i class="fa-solid fa-globe"></i> <span id="websiteTxt"></span></span>
+          <span id="joinedEl"><i class="fa-solid fa-calendar-day"></i> Joined <span id="joinedTxt"></span></span>
+          <span id="industryEl" style="display:none">🏷️ <span id="industryTxt"></span></span>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="stats-strip">
+        <div class="stat-strip-item">
+          <div class="stat-strip-num" id="statJobsPosted">0</div>
+          <div class="stat-strip-label">Jobs Posted</div>
+        </div>
+        <div class="stat-strip-item" style="margin-left:24px">
+          <div class="stat-strip-num" id="statActiveJobs">0</div>
+          <div class="stat-strip-label">Active Jobs</div>
+        </div>
+        <div class="stat-strip-item" style="margin-left:24px">
+          <div class="stat-strip-num" id="statHired">0</div>
+          <div class="stat-strip-label">Earners Hired</div>
+        </div>
+        <div class="stat-strip-item" style="margin-left:24px">
+          <div class="stat-strip-num" id="statSpent">0</div>
+          <div class="stat-strip-label">CFA Spent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE BODY -->
+  <div class="profile-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="left-col">
+
+      <!-- About -->
+      <div class="profile-card reveal" style="animation:fadeUp 0.5s ease both">
+        <div class="card-header">
+          <div class="card-title">About the Company</div>
+          <button class="card-edit-btn" onclick="openModal('editProfileModal')">Edit</button>
+        </div>
+        <div id="aboutContent">
+          <p class="about-empty">Tell earners about your business — what you do, what you're looking for, and why they should work with you.</p>
+        </div>
+        <div class="skill-tags" id="needTagsEl" style="margin-top:14px; display:none"></div>
+      </div>
+
+      <!-- Active Job Listings -->
+      <div class="profile-card reveal" id="jobsSection">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-briefcase"></i> Active Job Listings</div>
+          <button class="card-edit-btn" onclick="openModal('postJobModal')"><i class="fa-solid fa-plus"></i> Post Job</button>
+        </div>
+        <div id="jobsContent">
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+            <div class="empty-title">No active jobs yet</div>
+            <div class="empty-desc">Post your first job and start receiving applications from talented earners in minutes.</div>
+            <button class="empty-cta" onclick="openModal('postJobModal')"><i class="fa-solid fa-plus"></i> Post Your First Job</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Applications -->
+      <div class="profile-card reveal" id="appsSection">
+        <div class="card-header">
+          <div class="card-title"><i class="fa-solid fa-inbox"></i> Recent Applications</div>
+          <button class="card-edit-btn" onclick="showAllApps()">View All</button>
+        </div>
+        <div id="appsContent">
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fa-solid fa-bell-slash"></i></div>
+            <div class="empty-title">No applications yet</div>
+            <div class="empty-desc">Applications from earners will appear here once you post a job.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hiring History -->
+      <div class="profile-card reveal" id="historySection">
+        <div class="card-header">
+          <div class="card-title">✅ Hiring History</div>
+          <span style="font-size:13px;color:var(--gray-text)" id="historyCount">0 completed hires</span>
+        </div>
+        <div id="historyContent">
+          <div class="empty-state" style="padding:24px 0">
+            <div class="empty-icon" style="font-size:36px"><i class="fa-solid fa-handshake-angle"></i></div>
+            <div class="empty-title" style="font-size:15px">No completed hires yet</div>
+            <div class="empty-desc">Your hiring history will show here after you hire and complete work with earners.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="right-sidebar">
+
+      <!-- Credibility Score -->
+      <div class="cred-score-card reveal">
+        <div class="cs-inner">
+          <div class="cs-label">Credibility Score</div>
+          <div class="cs-num" id="credScore">0</div>
+          <div class="cs-sub">Your reputation as a hirer on CampusGig</div>
+          <div class="cs-bar-wrap">
+            <div class="cs-bar" id="credBar" style="width:0%"></div>
+          </div>
+          <div class="cs-breakdown">
+            <div class="cs-row"><span>Company Verified</span><span id="cs-verified">✗ No</span></div>
+            <div class="cs-row"><span>Jobs Completed</span><span id="cs-completed">0</span></div>
+            <div class="cs-row"><span>Avg. Payment Time</span><span id="cs-payment">N/A</span></div>
+            <div class="cs-row"><span>Response Rate</span><span id="cs-response">N/A</span></div>
+            <div class="cs-row"><span>Earner Rating</span><span id="cs-rating">—</span></div>
+          </div>
+          <button class="cs-boost-btn" onclick="openModal('verifyModal')"><i class="fa-solid fa-rocket"></i> Boost Your Score</button>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="profile-card reveal" style="animation-delay:0.1s">
+        <div class="card-header" style="margin-bottom:14px">
+          <div class="card-title">Quick Actions</div>
+        </div>
+        <div class="quick-actions">
+          <button class="quick-action-btn primary-qa" onclick="openModal('postJobModal')">
+            <span class="qa-icon"><i class="fa-solid fa-plus"></i></span> Post a New Job
+          </button>
+          <button class="quick-action-btn" onclick="openMessagePanel()">
+            <span class="qa-icon"><i class="fa-solid fa-comment"></i></span> View Messages
+          </button>
+          <button class="quick-action-btn" onclick="scrollToSection('appsSection')">
+            <span class="qa-icon"><i class="fa-solid fa-inbox"></i></span> Review Applications
+          </button>
+          <button class="quick-action-btn" onclick="openModal('verifyModal')">
+            <span class="qa-icon"><i class="fa-solid fa-circle-check"></i></span> Verify Company
+          </button>
+          <a class="quick-action-btn" href="feed.html">
+            <span class="qa-icon"><i class="fa-solid fa-magnifying-glass"></i></span> Browse Talent Feed
+          </a>
+        </div>
+      </div>
+
+      <!-- Hiring Preferences -->
+      <div class="profile-card reveal" id="prefsCard" style="animation-delay:0.15s">
+        <div class="card-header" style="margin-bottom:14px">
+          <div class="card-title">Hiring Preferences</div>
+          <button class="card-edit-btn" onclick="openModal('prefsModal')"><i class="fa-solid fa-pen"></i> Edit</button>
+        </div>
+        <div id="prefsContent">
+          <div class="pref-row">
+            <span class="pref-key">Location</span>
+            <span class="pref-val" id="pref-location">Not set</span>
+          </div>
+          <div class="pref-row">
+            <span class="pref-key">Budget Range</span>
+            <span class="pref-val" id="pref-budget">Not set</span>
+          </div>
+          <div class="pref-row">
+            <span class="pref-key">Work Type</span>
+            <span class="pref-val" id="pref-worktype">Not set</span>
+          </div>
+          <div style="margin-top:12px">
+            <div style="font-size:12px;color:var(--gray-text);font-weight:600;margin-bottom:8px;">Skills Usually Needed</div>
+            <div class="skill-tags" id="prefSkillTags">
+              <span style="font-size:12px;color:#94a3b8;font-style:italic">Not set yet</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- ===== MODALS ===== -->
+
+<!-- POST JOB MODAL -->
+<div class="modal-overlay" id="postJobModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Post a New Job</div>
+      <button class="modal-close" onclick="closeModal('postJobModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Job Title *</label>
+        <input class="form-input" id="jobTitle" placeholder="e.g. Social Media Manager for our café">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-select" id="jobCategory">
+            <option value="">Select category</option>
+            <option>Web Development</option>
+            <option>Graphic Design</option>
+            <option>Social Media</option>
+            <option>Accounting</option>
+            <option>Photography / Video</option>
+            <option>Data Entry</option>
+            <option>Translation</option>
+            <option>Delivery / Logistics</option>
+            <option>Tutoring / Teaching</option>
+            <option>Event Support</option>
+            <option>Marketing</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Budget (CFA) *</label>
+          <input class="form-input" id="jobBudget" type="number" placeholder="e.g. 15000">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Job Description *</label>
+        <textarea class="form-textarea" id="jobDesc" style="min-height:100px" placeholder="Describe the job clearly — what needs to be done, deliverables expected, and any requirements…"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Deadline</label>
+          <input class="form-input" id="jobDeadline" type="date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Work Type</label>
+          <select class="form-select" id="jobWorkType">
+            <option value="">Select…</option>
+            <option>Remote</option>
+            <option>On-site (Buea)</option>
+            <option>On-site (Douala)</option>
+            <option>On-site (Yaoundé)</option>
+            <option>Flexible</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Additional Requirements</label>
+        <input class="form-input" id="jobReqs" placeholder="e.g. Must have own laptop, Available weekends">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('postJobModal')">Cancel</button>
+        <button class="btn-save" onclick="saveJob()"><i class="fa-solid fa-paper-plane"></i> Post Job</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-overlay" id="editProfileModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Edit Hirer Profile</div>
+      <button class="modal-close" onclick="closeModal('editProfileModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Company / Business Name *</label>
+        <input class="form-input" id="editName" placeholder="e.g. Molyko Pharmacy">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tagline</label>
+        <input class="form-input" id="editTagline" placeholder="e.g. Leading pharmacy in Buea serving students daily">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Industry / Business Type</label>
+          <select class="form-select" id="editIndustry">
+            <option value="">Select industry</option>
+            <option>Retail / Commerce</option>
+            <option>Food & Beverage</option>
+            <option>Healthcare / Pharmacy</option>
+            <option>Tech / Software</option>
+            <option>Education / Training</option>
+            <option>Marketing Agency</option>
+            <option>Finance / Accounting</option>
+            <option>Events & Entertainment</option>
+            <option>Media & Publishing</option>
+            <option>Hospitality & Tourism</option>
+            <option>NGO / Non-profit</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <select class="form-select" id="editLocation">
+            <option value="">Select location</option>
+            <option>Molyko, Buea</option>
+            <option>Bonduma, Buea</option>
+            <option>Great Soppo, Buea</option>
+            <option>Mile 16, Buea</option>
+            <option>Buea Town</option>
+            <option>Limbe</option>
+            <option>Douala</option>
+            <option>Yaoundé</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company Website (optional)</label>
+        <input class="form-input" id="editWebsite" placeholder="https://mybusiness.cm">
+      </div>
+      <div class="form-group">
+        <label class="form-label">About Your Company</label>
+        <textarea class="form-textarea" id="editAbout" style="min-height:110px" placeholder="Describe what your business does, what you're looking for in earners, and what it's like to work with you…"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('editProfileModal')">Cancel</button>
+        <button class="btn-save" onclick="saveProfile()"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HIRING PREFERENCES MODAL -->
+<div class="modal-overlay" id="prefsModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ Hiring Preferences</div>
+      <button class="modal-close" onclick="closeModal('prefsModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Preferred Location</label>
+          <select class="form-select" id="prefLocInput">
+            <option value="">Any location</option>
+            <option>Molyko, Buea</option>
+            <option>Bonduma, Buea</option>
+            <option>Buea (any area)</option>
+            <option>Limbe</option>
+            <option>Douala</option>
+            <option>Yaoundé</option>
+            <option>Remote OK</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Typical Budget Range</label>
+          <select class="form-select" id="prefBudgetInput">
+            <option value="">Not specified</option>
+            <option>Under 5,000 CFA</option>
+            <option>5,000 – 15,000 CFA</option>
+            <option>15,000 – 50,000 CFA</option>
+            <option>50,000 – 100,000 CFA</option>
+            <option>100,000+ CFA</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Preferred Work Type</label>
+        <select class="form-select" id="prefWorkInput">
+          <option value="">No preference</option>
+          <option>Remote only</option>
+          <option>On-site only</option>
+          <option>Either Remote or On-site</option>
+          <option>Project-based / One-off</option>
+          <option>Recurring / Part-time</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Skills You Usually Need (tap to select)</label>
+        <div id="prefSkillInput" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Web Dev</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Graphic Design</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Social Media</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Accounting</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Photography</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Data Entry</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Translation</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Delivery</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Copywriting</span>
+          <span class="pref-skill-opt" onclick="this.classList.toggle('on')" style="border:1.5px solid var(--gray-soft);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer">Video Editing</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('prefsModal')">Cancel</button>
+        <button class="btn-save" onclick="savePrefs()"><i class="fa-solid fa-floppy-disk"></i> Save Preferences</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VERIFY MODAL -->
+<div class="modal-overlay" id="verifyModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Verify Your Business</div>
+      <button class="modal-close" onclick="closeModal('verifyModal')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--green-mist);border:1px solid var(--green-lime);border-radius:var(--radius-md);padding:14px;margin-bottom:18px;">
+        <div style="font-weight:700;color:var(--green-deep);margin-bottom:4px;">Why Verify?</div>
+        <div style="font-size:13px;color:var(--green-mid);line-height:1.6">Verified businesses receive more applications, rank higher in search, and earn +20 credibility score points. Earners trust verified hirers 3× more.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Business Registration Number (optional)</label>
+        <input class="form-input" id="verifyRegNo" placeholder="e.g. RC/BUE/2023/B/1234">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Business Type</label>
+        <select class="form-select" id="verifyBizType">
+          <option>Sole Trader / Freelancer</option>
+          <option>SME / Small Business</option>
+          <option>NGO / Non-profit</option>
+          <option>Corporation</option>
+          <option>School / Institution</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Upload Business Document (optional)</label>
+        <input class="form-input" type="file" accept=".pdf,.jpg,.png">
+        <div style="font-size:11px;color:var(--gray-text);margin-top:4px;">Trade license, receipt, or any document confirming your business</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal('verifyModal')">Cancel</button>
+        <button class="btn-save" onclick="submitVerification()"><i class="fa-solid fa-paper-plane"></i> Submit for Verification</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MESSAGE PANEL ===== -->
+<div class="message-panel" id="messagePanel">
+  <!-- Conversation list -->
+  <div id="msgListView" style="display:flex;flex-direction:column;height:100%">
+    <div class="msg-header">
+      <div class="msg-title">Messages</div>
+      <button class="msg-close" onclick="closeMessagePanel()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="msg-conv-list" id="msgConvList"></div>
+  </div>
+  <!-- Chat view -->
+  <div class="msg-chat-area" id="msgChatView">
+    <div class="msg-chat-header">
+      <button class="msg-back" onclick="backToConvList()"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="msg-conv-avatar" id="msgRecipientAv">?</div>
+      <div>
+        <div style="font-weight:700;font-size:14px" id="msgRecipientName">Name</div>
+        <div style="font-size:12px;color:var(--gray-text)" id="msgRecipientStatus">🟢 Active</div>
+      </div>
+    </div>
+    <div class="msg-messages" id="msgMessages"></div>
+    <div class="msg-input-row">
+      <input class="msg-input-field" id="msgInput" placeholder="Type a message…" onkeydown="if(event.key==='Enter') sendMessage()">
+      <button class="msg-send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Saved successfully</div>
+
+<script>
+/* ===== LOCAL STORAGE HELPER ===== */
+const LS = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+/* ===== STATE ===== */
+let currentUser = null;
+let hirerData = {};
+let activeConv = null;
+
+/* ===== INIT ===== */
+function init() {
+  // Load current user
+  currentUser = LS.get('currentUser');
+
+  // If no user or not a hirer, redirect
+  if (!currentUser || !currentUser.id) {
+    window.location.href = 'register.html';
+    return;
+  }
+  if (currentUser.role !== 'hirer') {
+    window.location.href = 'profile.html';
+    return;
+  }
+
+  // Load hirer-specific data
+  hirerData = LS.get('hirerData_' + currentUser.id) || getDefaultHirerData();
+
+  // Pre-populate from registration
+  if (!hirerData.name && currentUser.name) hirerData.name = currentUser.name;
+  if (!hirerData.business && currentUser.business) hirerData.business = currentUser.business;
+  if (!hirerData.location && currentUser.institution) hirerData.location = currentUser.institution;
+
+  renderAll();
+  initEvents();
+  initScrollReveal();
+  renderMessageConvs();
+
+  // Animate credibility bar after paint
+  setTimeout(() => {
+    const score = calcCredScore();
+    document.getElementById('credBar').style.width = score + '%';
+  }, 400);
+}
+
+function getDefaultHirerData() {
+  return {
+    name: '',
+    business: '',
+    tagline: '',
+    about: '',
+    location: '',
+    website: '',
+    industry: '',
+    verified: false,
+    verificationPending: false,
+    coverSrc: null,
+    avatarSrc: null,
+    jobs: [],
+    applications: [],
+    history: [],
+    prefs: { location: '', budget: '', worktype: '', skills: [] },
+    needSkills: []
+  };
+}
+
+/* ===== RENDER ALL ===== */
+function renderAll() {
+  renderProfileHeader();
+  renderAbout();
+  renderJobs();
+  renderApplications();
+  renderHistory();
+  renderStats();
+  renderPrefs();
+  renderCredScore();
+}
+
+function renderProfileHeader() {
+  const name = hirerData.business || hirerData.name || currentUser.name || 'My Business';
+  const initials = getInitials(name);
+
+  // Navbar & sidebar
+  document.getElementById('navAvatar').textContent = initials;
+  document.getElementById('sidebarAvatar').textContent = initials;
+  document.getElementById('sidebarName').textContent = name;
+  document.getElementById('displayName').textContent = name;
+
+  // Avatar
+  document.getElementById('avatarInitials').textContent = initials;
+  if (hirerData.avatarSrc) {
+    const img = document.getElementById('avatarImg');
+    img.src = hirerData.avatarSrc; img.style.display = 'block';
+    document.getElementById('avatarInitials').style.display = 'none';
+  }
+
+  // Cover
+  if (hirerData.coverSrc) {
+    const el = document.getElementById('coverImageEl');
+    el.src = hirerData.coverSrc; el.style.display = 'block';
+  }
+
+  // Tagline
+  document.getElementById('displayTagline').textContent =
+    hirerData.tagline || (hirerData.industry ? hirerData.industry + ' · Hirer on CampusGig' : 'Business / Hirer on CampusGig');
+
+  // Meta
+  if (hirerData.location) {
+    document.getElementById('locationEl').style.display = 'flex';
+    document.getElementById('locationTxt').textContent = hirerData.location;
+  }
+  if (hirerData.website) {
+    document.getElementById('websiteEl').style.display = 'flex';
+    document.getElementById('websiteTxt').textContent = hirerData.website.replace(/^https?:\/\//, '');
+  }
+  if (hirerData.industry) {
+    document.getElementById('industryEl').style.display = 'flex';
+    document.getElementById('industryTxt').textContent = hirerData.industry;
+  }
+  document.getElementById('joinedTxt').textContent = formatJoined(currentUser.joinedAt);
+
+  // Verified badge
+  if (hirerData.verified) {
+    document.getElementById('verifiedBadgeEl').style.display = 'inline-flex';
+  }
+
+  // Business type badge
+  if (hirerData.industry) {
+    document.getElementById('businessTypeBadge').textContent = '🏢 ' + (hirerData.industry.split('/')[0].trim().toUpperCase());
+  }
+
+  // Edit modal pre-fill
+  document.getElementById('editName').value = hirerData.business || hirerData.name || '';
+  document.getElementById('editTagline').value = hirerData.tagline || '';
+  document.getElementById('editAbout').value = hirerData.about || '';
+  document.getElementById('editWebsite').value = hirerData.website || '';
+  if (hirerData.industry) {
+    const sel = document.getElementById('editIndustry');
+    [...sel.options].forEach(o => { if (o.text === hirerData.industry) o.selected = true; });
+  }
+  if (hirerData.location) {
+    const sel = document.getElementById('editLocation');
+    [...sel.options].forEach(o => { if (o.text === hirerData.location) o.selected = true; });
+  }
+}
+
+function renderAbout() {
+  const el = document.getElementById('aboutContent');
+  if (hirerData.about) {
+    el.innerHTML = `<p class="about-text">${hirerData.about}</p>`;
+  } else {
+    el.innerHTML = `<p class="about-empty">Tell earners about your business — what you do, what you're looking for, and why they should work with you. <span style="color:var(--green-vivid);cursor:pointer;font-style:normal;font-weight:600" onclick="openModal('editProfileModal')">Add description →</span></p>`;
+  }
+
+  // Need skills
+  if (hirerData.needSkills && hirerData.needSkills.length) {
+    const tagsEl = document.getElementById('needTagsEl');
+    tagsEl.style.display = 'flex';
+    tagsEl.innerHTML = hirerData.needSkills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+  }
+}
+
+function renderJobs() {
+  const el = document.getElementById('jobsContent');
+  const jobs = hirerData.jobs || [];
+  if (!jobs.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <div class="empty-title">No active jobs yet</div>
+      <div class="empty-desc">Post your first job and start receiving applications from talented earners.</div>
+      <button class="empty-cta" onclick="openModal('postJobModal')">➕ Post Your First Job</button>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="jobs-list">${jobs.map((j, i) => `
+    <div class="job-card">
+      <div class="job-card-top">
+        <div class="job-title">${j.title}</div>
+        <span class="job-status-chip chip-${j.status || 'active'}">${j.status === 'closed' ? '🔒 Closed' : j.status === 'draft' ? '📝 Draft' : '🟢 Active'}</span>
+      </div>
+      <div class="job-meta">
+        <span>📂 ${j.category || 'General'}</span>
+        ${j.workType ? `<span>📍 ${j.workType}</span>` : ''}
+        ${j.deadline ? `<span>⏰ Due ${formatDate(j.deadline)}</span>` : ''}
+        <span>📅 Posted ${formatJoined(j.postedAt)}</span>
+      </div>
+      <div class="job-desc">${(j.desc || '').slice(0, 160)}${j.desc && j.desc.length > 160 ? '…' : ''}</div>
+      <div class="job-footer">
+        <div class="job-budget">${formatCFA(j.budget)}</div>
+        <div class="job-applicants">
+          <div class="applicants-avatars">
+            ${(j.applicants || []).slice(0,3).map(a => `<div class="mini-av">${getInitials(a)}</div>`).join('')}
+          </div>
+          ${(j.applicants || []).length} applicant${(j.applicants || []).length !== 1 ? 's' : ''}
+        </div>
+      </div>
+      <div class="job-actions" style="margin-top:10px">
+        <button class="job-action-btn" onclick="viewApplicants(${i})">👥 View Applications</button>
+        <button class="job-action-btn" onclick="editJob(${i})">✏️ Edit</button>
+        <button class="job-action-btn danger" onclick="closeJob(${i})">${j.status === 'closed' ? '🔓 Reopen' : '🔒 Close'}</button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderApplications() {
+  const el = document.getElementById('appsContent');
+  const apps = (hirerData.applications || []).slice(0, 5);
+  if (!apps.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <div class="empty-title">No applications yet</div>
+      <div class="empty-desc">Applications from earners will appear here once you post a job.</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="apps-list">
+    ${apps.map((a, i) => `
+    <div class="app-card">
+      <div class="app-avatar">${getInitials(a.name)}</div>
+      <div class="app-info">
+        <div class="app-name">${a.name}</div>
+        <div class="app-skill">${a.skill}</div>
+        <div class="app-for">Applied for: ${a.forJob}</div>
+        ${a.status === 'pending' ? `<div class="app-actions">
+          <button class="btn-hire" onclick="hireApplicant(${i})">✅ Hire</button>
+          <button class="btn-decline" onclick="declineApplicant(${i})">✕ Decline</button>
+        </div>` : ''}
+      </div>
+      <div class="app-meta">
+        <span class="app-status status-${a.status}">${{pending:'⏳ Pending',reviewed:'👁 Reviewed',hired:'✅ Hired',rejected:'✕ Declined'}[a.status]}</span>
+        <span class="app-time">${formatTime(a.ts)}</span>
+      </div>
+    </div>`).join('')}
+  </div>
+  ${hirerData.applications.length > 5 ? `<div class="view-all-link" onclick="showAllApps()">View all ${hirerData.applications.length} applications →</div>` : ''}`;
+}
+
+function renderHistory() {
+  const el = document.getElementById('historyContent');
+  const hist = hirerData.history || [];
+  document.getElementById('historyCount').textContent = hist.length + ' completed hire' + (hist.length !== 1 ? 's' : '');
+  if (!hist.length) {
+    el.innerHTML = `<div class="empty-state" style="padding:24px 0">
+      <div class="empty-icon" style="font-size:36px">🤝</div>
+      <div class="empty-title" style="font-size:15px">No completed hires yet</div>
+      <div class="empty-desc">Your hiring history will build here after you hire earners and complete jobs.</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="history-list">
+    ${hist.map(h => `<div class="history-item">
+      <div class="history-avatar">${getInitials(h.name)}</div>
+      <div class="history-info">
+        <div class="history-name">${h.name}</div>
+        <div class="history-gig">${h.gig}</div>
+      </div>
+      <div class="history-right">
+        <div class="history-amount">${formatCFA(h.amount)}</div>
+        <div class="history-stars">${'★'.repeat(h.rating || 5)}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderStats() {
+  const jobs = hirerData.jobs || [];
+  const hist = hirerData.history || [];
+  const spent = hist.reduce((s, h) => s + (h.amount || 0), 0);
+  document.getElementById('statJobsPosted').textContent = jobs.length;
+  document.getElementById('statActiveJobs').textContent = jobs.filter(j => j.status !== 'closed').length;
+  document.getElementById('statHired').textContent = hist.length;
+  document.getElementById('statSpent').textContent = spent >= 1000 ? (spent / 1000).toFixed(0) + 'k' : spent;
+}
+
+function renderPrefs() {
+  const p = hirerData.prefs || {};
+  document.getElementById('pref-location').textContent = p.location || 'Not set';
+  document.getElementById('pref-budget').textContent = p.budget || 'Not set';
+  document.getElementById('pref-worktype').textContent = p.worktype || 'Not set';
+
+  const tagsEl = document.getElementById('prefSkillTags');
+  if (p.skills && p.skills.length) {
+    tagsEl.innerHTML = p.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+  } else {
+    tagsEl.innerHTML = '<span style="font-size:12px;color:#94a3b8;font-style:italic">Not set yet</span>';
+  }
+
+  // Pre-fill modal
+  if (p.location) {
+    const sel = document.getElementById('prefLocInput');
+    [...sel.options].forEach(o => { if (o.text === p.location) o.selected = true; });
+  }
+  if (p.budget) {
+    const sel = document.getElementById('prefBudgetInput');
+    [...sel.options].forEach(o => { if (o.text === p.budget) o.selected = true; });
+  }
+  if (p.worktype) {
+    const sel = document.getElementById('prefWorkInput');
+    [...sel.options].forEach(o => { if (o.text === p.worktype) o.selected = true; });
+  }
+  if (p.skills && p.skills.length) {
+    document.querySelectorAll('.pref-skill-opt').forEach(tag => {
+      tag.classList.toggle('on', p.skills.includes(tag.textContent));
+    });
+  }
+
+  // Style selected skill opts
+  document.querySelectorAll('.pref-skill-opt').forEach(tag => {
+    tag.addEventListener('click', () => {
+      const on = tag.classList.contains('on');
+      tag.style.background = on ? 'var(--green-mist)' : '';
+      tag.style.borderColor = on ? 'var(--green-vivid)' : '';
+      tag.style.color = on ? 'var(--green-mid)' : '';
+      tag.style.fontWeight = on ? '600' : '';
+    });
+    // apply initial style
+    if (tag.classList.contains('on')) {
+      tag.style.background = 'var(--green-mist)';
+      tag.style.borderColor = 'var(--green-vivid)';
+      tag.style.color = 'var(--green-mid)';
+      tag.style.fontWeight = '600';
+    }
+  });
+}
+
+function renderCredScore() {
+  const score = calcCredScore();
+  document.getElementById('credScore').textContent = score;
+  document.getElementById('cs-verified').textContent = hirerData.verified ? '✅ Yes' : (hirerData.verificationPending ? '⏳ Pending' : '✗ No');
+  document.getElementById('cs-completed').textContent = (hirerData.history || []).length;
+
+  const hist = hirerData.history || [];
+  if (hist.length) {
+    const avgRating = hist.reduce((s, h) => s + (h.rating || 5), 0) / hist.length;
+    document.getElementById('cs-rating').textContent = '★'.repeat(Math.round(avgRating)) + ' ' + avgRating.toFixed(1);
+    document.getElementById('cs-payment').textContent = '< 24 hrs';
+    document.getElementById('cs-response').textContent = '100%';
+  }
+}
+
+function calcCredScore() {
+  let score = 0;
+  if (hirerData.verified) score += 25;
+  if (hirerData.business || hirerData.name) score += 10;
+  if (hirerData.about) score += 10;
+  if (hirerData.location) score += 5;
+  if (hirerData.industry) score += 5;
+  if (hirerData.website) score += 5;
+  score += Math.min((hirerData.jobs || []).length * 5, 15);
+  score += Math.min((hirerData.history || []).length * 5, 25);
+  return Math.min(score, 100);
+}
+
+/* ===== SAVE ACTIONS ===== */
+function saveProfile() {
+  const name = document.getElementById('editName').value.trim();
+  if (!name) { showToast('❌ Please enter a business name', false); return; }
+  hirerData.business = name;
+  hirerData.name = name;
+  hirerData.tagline = document.getElementById('editTagline').value.trim();
+  hirerData.about = document.getElementById('editAbout').value.trim();
+  hirerData.website = document.getElementById('editWebsite').value.trim();
+  hirerData.industry = document.getElementById('editIndustry').value;
+  hirerData.location = document.getElementById('editLocation').value;
+
+  // Update user name in currentUser
+  currentUser.name = name; currentUser.business = name;
+  LS.set('currentUser', currentUser);
+
+  saveHirerData();
+  renderAll();
+  closeModal('editProfileModal');
+  showToast('✅ Profile saved!');
+}
+
+function saveJob() {
+  const title = document.getElementById('jobTitle').value.trim();
+  const category = document.getElementById('jobCategory').value;
+  const desc = document.getElementById('jobDesc').value.trim();
+  const budget = document.getElementById('jobBudget').value;
+  if (!title || !category || !desc || !budget) {
+    showToast('❌ Please fill all required fields', false);
+    return;
+  }
+  const job = {
+    title, category, desc, budget: parseInt(budget),
+    deadline: document.getElementById('jobDeadline').value,
+    workType: document.getElementById('jobWorkType').value,
+    requirements: document.getElementById('jobReqs').value.trim(),
+    status: 'active',
+    postedAt: new Date().toISOString(),
+    applicants: []
+  };
+  if (!hirerData.jobs) hirerData.jobs = [];
+  hirerData.jobs.unshift(job);
+  saveHirerData();
+  renderJobs(); renderStats(); renderCredScore();
+  closeModal('postJobModal');
+  // Reset form
+  ['jobTitle','jobDesc','jobBudget','jobReqs','jobDeadline'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('jobCategory').value = '';
+  document.getElementById('jobWorkType').value = '';
+  showToast('🚀 Job posted! Earners will see it in the feed.');
+}
+
+function savePrefs() {
+  hirerData.prefs = {
+    location: document.getElementById('prefLocInput').value,
+    budget: document.getElementById('prefBudgetInput').value,
+    worktype: document.getElementById('prefWorkInput').value,
+    skills: [...document.querySelectorAll('.pref-skill-opt.on')].map(t => t.textContent)
+  };
+  saveHirerData();
+  renderPrefs();
+  closeModal('prefsModal');
+  showToast('✅ Preferences saved!');
+}
+
+function closeJob(i) {
+  const j = hirerData.jobs[i];
+  j.status = j.status === 'closed' ? 'active' : 'closed';
+  saveHirerData();
+  renderJobs(); renderStats();
+  showToast(j.status === 'closed' ? '🔒 Job closed.' : '🟢 Job reopened!');
+}
+
+function editJob(i) {
+  const j = hirerData.jobs[i];
+  document.getElementById('jobTitle').value = j.title;
+  document.getElementById('jobCategory').value = j.category;
+  document.getElementById('jobDesc').value = j.desc;
+  document.getElementById('jobBudget').value = j.budget;
+  document.getElementById('jobDeadline').value = j.deadline || '';
+  document.getElementById('jobWorkType').value = j.workType || '';
+  document.getElementById('jobReqs').value = j.requirements || '';
+  hirerData.jobs.splice(i, 1);
+  saveHirerData();
+  openModal('postJobModal');
+}
+
+function hireApplicant(i) {
+  const app = hirerData.applications[i];
+  app.status = 'hired';
+  // Add to history
+  if (!hirerData.history) hirerData.history = [];
+  hirerData.history.unshift({ name: app.name, gig: app.forJob, amount: 0, rating: 5, ts: Date.now() });
+  saveHirerData();
+  renderApplications(); renderHistory(); renderStats(); renderCredScore();
+  showToast('🎉 ' + app.name + ' has been hired!');
+}
+
+function declineApplicant(i) {
+  hirerData.applications[i].status = 'rejected';
+  saveHirerData();
+  renderApplications();
+  showToast('✕ Application declined.');
+}
+
+function viewApplicants(i) { scrollToSection('appsSection'); }
+function showAllApps() { scrollToSection('appsSection'); }
+
+function submitVerification() {
+  hirerData.verificationPending = true;
+  saveHirerData();
+  renderCredScore();
+  closeModal('verifyModal');
+  showToast('📤 Verification submitted! We\'ll review within 24 hrs.');
+}
+
+/* ===== COVER & AVATAR ===== */
+function initEvents() {
+  document.getElementById('coverEditBtn').addEventListener('click', () => document.getElementById('coverInput').click());
+  document.getElementById('coverInput').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      hirerData.coverSrc = ev.target.result;
+      const el = document.getElementById('coverImageEl');
+      el.src = ev.target.result; el.style.display = 'block';
+      saveHirerData();
+    };
+    r.readAsDataURL(file);
+  });
+
+  document.getElementById('avatarInput').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      hirerData.avatarSrc = ev.target.result;
+      const img = document.getElementById('avatarImg');
+      img.src = ev.target.result; img.style.display = 'block';
+      document.getElementById('avatarInitials').style.display = 'none';
+      document.getElementById('sidebarAvatar').innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      saveHirerData();
+    };
+    r.readAsDataURL(file);
+  });
+
+  // Dots menu
+  document.getElementById('dotsBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    document.getElementById('dotsMenu').classList.toggle('open');
+  });
+  document.addEventListener('click', () => document.getElementById('dotsMenu').classList.remove('open'));
+
+  // Logout
+  ['dotsLogout','sidebarLogout'].forEach(id => {
+    document.getElementById(id).addEventListener('click', () => {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'register.html';
+    });
+  });
+
+  // Hamburger
+  document.getElementById('hamburgerBtn').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('mobile-open');
+    document.getElementById('mobileOverlay').classList.toggle('open');
+  });
+  document.getElementById('mobileOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('mobile-open');
+    document.getElementById('mobileOverlay').classList.remove('open');
+  });
+
+  // Pref skill opt styling on open
+  document.getElementById('prefsModal').addEventListener('click', () => {
+    document.querySelectorAll('.pref-skill-opt').forEach(tag => {
+      const on = tag.classList.contains('on');
+      tag.style.background = on ? 'var(--green-mist)' : '';
+      tag.style.borderColor = on ? 'var(--green-vivid)' : '';
+      tag.style.color = on ? 'var(--green-mid)' : '';
+      tag.style.fontWeight = on ? '600' : '';
+    });
+  });
+}
+
+/* ===== MODALS ===== */
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+/* ===== MESSAGES ===== */
+const fakeContacts = [
+  { id: 'earner1', name: 'Amara Enow', initials: 'AE', lastMsg: 'Hello! I saw your job post and I\'m interested.', time: '10:32' },
+  { id: 'earner2', name: 'Brice Nkemelu', initials: 'BN', lastMsg: 'I can start immediately!', time: 'Yesterday' }
+];
+
+function openMessagePanel() {
+  document.getElementById('messagePanel').classList.add('open');
+}
+function closeMessagePanel() {
+  document.getElementById('messagePanel').classList.remove('open');
+}
+
+function renderMessageConvs() {
+  const list = document.getElementById('msgConvList');
+  const allMsgs = LS.get('campusgig_messages') || {};
+  const convs = Object.keys(allMsgs).length
+    ? Object.keys(allMsgs).map(id => {
+        const conv = allMsgs[id];
+        const last = conv[conv.length - 1] || {};
+        return { id, name: id, initials: getInitials(id), lastMsg: last.text || '', time: formatTime(last.ts) };
+      })
+    : fakeContacts;
+  list.innerHTML = '';
+  convs.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'msg-conv-item' + (activeConv === c.id ? ' active' : '');
+    div.innerHTML = `<div class="msg-conv-avatar">${c.initials}</div>
+      <div style="overflow:hidden;flex:1">
+        <div class="msg-conv-name">${c.name}</div>
+        <div class="msg-conv-preview">${c.lastMsg}</div>
+      </div>`;
+    div.addEventListener('click', () => openConv(c));
+    list.appendChild(div);
+  });
+}
+
+function openConv(c) {
+  activeConv = c.id;
+  document.getElementById('msgListView').style.display = 'none';
+  const chatView = document.getElementById('msgChatView');
+  chatView.classList.add('open');
+  document.getElementById('msgRecipientAv').textContent = c.initials;
+  document.getElementById('msgRecipientName').textContent = c.name;
+  document.getElementById('msgRecipientStatus').textContent = '🟢 Active now';
+
+  const allMsgs = LS.get('campusgig_messages') || {};
+  const conv = allMsgs[c.id] || (c.id === 'earner1' ? [
+    { senderId: 'earner1', text: "Hello! I saw your job post and I'm very interested.", ts: Date.now() - 3600000 },
+    { senderId: 'me', text: 'Great! Tell me more about your experience.', ts: Date.now() - 3500000 }
+  ] : c.id === 'earner2' ? [
+    { senderId: 'earner2', text: 'I can start immediately! When do we begin?', ts: Date.now() - 86400000 }
+  ] : []);
+
+  const msgsEl = document.getElementById('msgMessages');
+  msgsEl.innerHTML = '';
+  conv.forEach(m => appendBubble(m.text, m.senderId === 'me', msgsEl, m.ts));
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+function backToConvList() {
+  document.getElementById('msgListView').style.display = 'flex';
+  document.getElementById('msgChatView').classList.remove('open');
+  activeConv = null;
+}
+
+function sendMessage() {
+  const input = document.getElementById('msgInput');
+  const text = input.value.trim();
+  if (!text || !activeConv) return;
+  const ts = Date.now();
+  const allMsgs = LS.get('campusgig_messages') || {};
+  if (!allMsgs[activeConv]) allMsgs[activeConv] = [];
+  allMsgs[activeConv].push({ senderId: 'me', text, ts });
+  LS.set('campusgig_messages', allMsgs);
+  const msgsEl = document.getElementById('msgMessages');
+  appendBubble(text, true, msgsEl, ts);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  input.value = '';
+}
+
+function appendBubble(text, sent, container, ts) {
+  const div = document.createElement('div');
+  div.className = 'msg-bubble ' + (sent ? 'sent' : 'recv');
+  div.innerHTML = `${text}<div class="msg-time">${formatTime(ts)}</div>`;
+  container.appendChild(div);
+}
+
+/* ===== HELPERS ===== */
+function getInitials(name) {
+  if (!name) return '?';
+  return name.trim().split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function formatCFA(n) {
+  if (!n) return 'Negotiable';
+  return parseInt(n).toLocaleString('fr-CM') + ' CFA';
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+function formatJoined(iso) {
+  if (!iso) return 'recently';
+  return new Date(iso).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
+
+function formatTime(ts) {
+  if (!ts) return '';
+  return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function saveHirerData() {
+  LS.set('hirerData_' + currentUser.id, hirerData);
+}
+
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+}
+
+function showToast(msg, success = true) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (success ? ' success' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  els.forEach(el => io.observe(el));
+}
+
+/* ===== SEED DEMO DATA (only for brand-new profiles) ===== */
+function seedDemoIfEmpty() {
+  if (hirerData.jobs && hirerData.jobs.length) return; // already has data
+  // Add sample applications so UI looks populated
+  hirerData.applications = [
+    { name: 'Amara Enow', skill: 'Web Developer · React, Node.js', forJob: 'Website Redesign', status: 'pending', ts: Date.now() - 7200000 },
+    { name: 'Grace Timah', skill: 'Graphic Designer · Illustrator, Canva', forJob: 'Logo Design', status: 'reviewed', ts: Date.now() - 86400000 }
+  ];
+  saveHirerData();
+}
+
+/* Start */
+init();
+</script>
+</body>
+</html>

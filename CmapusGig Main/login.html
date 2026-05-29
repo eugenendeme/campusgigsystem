@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — CampusGig</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --green-deep: #0a3d2b;
+  --green-mid: #0e6641;
+  --green-vivid: #16a34a;
+  --green-bright: #22c55e;
+  --green-lime: #86efac;
+  --green-mist: #dcfce7;
+  --white: #ffffff;
+  --off-white: #f0fdf4;
+  --gray-soft: #e2e8f0;
+  --gray-text: #64748b;
+  --dark: #0f172a;
+  --error: #ef4444;
+  --grad-hero: linear-gradient(135deg, #0a3d2b 0%, #0e6641 40%, #166534 70%, #14532d 100%);
+  --grad-accent: linear-gradient(90deg, #22c55e, #86efac);
+  --shadow-btn: 0 4px 20px rgba(34,197,94,0.4);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--grad-hero);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  position: relative; overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none; z-index: 0;
+}
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); opacity: .18; pointer-events: none; z-index: 0;
+}
+.orb-1 { width: 480px; height: 480px; background: #22c55e; top: -130px; left: -80px; }
+.orb-2 { width: 340px; height: 340px; background: #86efac; bottom: -60px; right: -80px; }
+
+.topbar {
+  position: relative; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 32px;
+}
+.logo {
+  font-family: 'Inter', sans-serif; font-weight: 800; font-size: 20px;
+  color: white; display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--grad-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--green-deep);
+}
+.topbar-link { font-size: 13px; color: rgba(255,255,255,.7); }
+.topbar-link a { color: var(--green-lime); font-weight: 500; text-decoration: none; transition: opacity .2s; }
+.topbar-link a:hover { opacity: .8; }
+
+.auth-wrap {
+  position: relative; z-index: 5;
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 20px 24px 60px;
+}
+.auth-card {
+  background: rgba(255,255,255,.97);
+  border-radius: 24px; width: 100%; max-width: 440px;
+  padding: 40px 40px 36px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.25);
+  animation: cardIn .5s ease both;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Welcome back graphic */
+.login-hero {
+  text-align: center; margin-bottom: 28px;
+}
+.login-avatar-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--green-mist);
+  border: 3px solid var(--green-lime);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; margin: 0 auto 14px;
+}
+.auth-heading {
+  font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800;
+  color: var(--dark); margin-bottom: 4px;
+}
+.auth-sub { font-size: 13px; color: var(--gray-text); line-height: 1.6; }
+
+/* Toggle phone/email */
+.login-toggle {
+  display: flex; background: var(--off-white); border-radius: 10px;
+  padding: 4px; gap: 4px; margin-bottom: 22px;
+}
+.toggle-btn {
+  flex: 1; padding: 9px; border-radius: 7px; border: none;
+  background: transparent; font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500; color: var(--gray-text);
+  cursor: pointer; transition: background .2s, color .2s;
+}
+.toggle-btn.active { background: white; color: var(--dark); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 13px; font-weight: 500; color: var(--dark); margin-bottom: 6px; }
+.input-wrap {
+  display: flex; align-items: center;
+  border: 1.5px solid var(--gray-soft); border-radius: 12px;
+  overflow: hidden; background: white; transition: border-color .2s;
+}
+.input-wrap:focus-within { border-color: var(--green-vivid); }
+.input-prefix {
+  padding: 0 12px 0 14px; font-size: 14px; color: var(--gray-text);
+  border-right: 1px solid var(--gray-soft); height: 46px;
+  display: flex; align-items: center; flex-shrink: 0; background: var(--off-white);
+  font-weight: 500;
+}
+.input-wrap input {
+  flex: 1; border: none; outline: none; padding: 12px 14px;
+  font-family: 'Inter', sans-serif; font-size: 14px; color: var(--dark);
+}
+.input-wrap input::placeholder { color: #94a3b8; }
+.input-icon { padding: 0 12px; color: var(--gray-text); font-size: 16px; cursor: pointer; }
+.field-error { font-size: 11px; color: var(--error); margin-top: 5px; display: none; }
+.field.error .input-wrap { border-color: var(--error); }
+.field.error .field-error { display: block; }
+
+.forgot-row { text-align: right; margin-top: -8px; margin-bottom: 16px; }
+.forgot-row a { font-size: 12px; color: var(--green-vivid); text-decoration: none; }
+
+/* Error alert */
+.alert-error {
+  background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
+  padding: 12px 14px; font-size: 13px; color: #b91c1c;
+  margin-bottom: 16px; display: none; align-items: center; gap: 8px;
+}
+.alert-error.show { display: flex; }
+
+.btn-full {
+  width: 100%; padding: 14px; border-radius: 12px;
+  background: var(--green-vivid); color: white; border: none; cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 800;
+  box-shadow: var(--shadow-btn);
+  transition: background .2s, transform .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-full:hover { background: var(--green-bright); transform: translateY(-1px); }
+.spinner {
+  width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4);
+  border-top-color: white; border-radius: 50%;
+  animation: spin .7s linear infinite; display: none;
+}
+.btn-full.loading .spinner { display: block; }
+.btn-full.loading .btn-text { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-soft); }
+.divider span { font-size: 12px; color: var(--gray-text); }
+
+.social-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.social-btn {
+  padding: 11px 16px; border-radius: 10px; border: 1.5px solid var(--gray-soft);
+  background: white; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 8px; font-size: 13px; font-weight: 500;
+  color: var(--dark); transition: border-color .2s, box-shadow .2s;
+}
+.social-btn:hover { border-color: var(--gray-text); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+
+.bottom-link {
+  text-align: center; margin-top: 20px;
+  font-size: 13px; color: var(--gray-text);
+}
+.bottom-link a { color: var(--green-vivid); font-weight: 500; text-decoration: none; }
+
+/* Demo hint */
+.demo-hint {
+  background: var(--green-mist); border: 1px solid var(--green-lime);
+  border-radius: 10px; padding: 12px 14px; font-size: 12px;
+  color: var(--green-mid); margin-bottom: 18px; line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .auth-card { padding: 28px 22px 26px; }
+  .topbar { padding: 16px 20px; }
+  .social-btns { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="topbar">
+  <a href="../index.html" class="logo">
+    <div class="logo-mark"><i class="fa-solid fa-bolt"></i></div>
+    CampusGig
+  </a>
+  <div class="topbar-link">
+    New here? <a href="register.html">Create account</a>
+  </div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+
+    <div class="login-hero">
+      <div class="login-avatar-ring">👋</div>
+      <h2 class="auth-heading">Welcome back</h2>
+      <p class="auth-sub">Log in to your CampusGig account</p>
+    </div>
+
+    <!-- Toggle -->
+    <div class="login-toggle">
+      <button class="toggle-btn active" id="tab-phone" onclick="switchTab('phone')">📱 Phone</button>
+      <button class="toggle-btn" id="tab-email" onclick="switchTab('email')">✉️ Email</button>
+    </div>
+
+    <!-- Demo hint -->
+    <div class="demo-hint">
+      🧪 <strong>Demo:</strong> Register an account first, then log in with your phone + password.
+      Or use <strong>+237 600000000</strong> / <strong>demo1234</strong> to try the demo.
+    </div>
+
+    <!-- Error alert -->
+    <div class="alert-error" id="loginError">
+      <span>⚠️</span> <span id="loginErrorMsg">Invalid phone number or password.</span>
+    </div>
+
+    <!-- Phone login -->
+    <div id="phoneForm">
+      <div class="field" id="field-phone">
+        <label>Phone Number</label>
+        <div class="input-wrap">
+          <div class="input-prefix"><i class="fa-solid fa-phone" style="font-size: 13px; margin-right: 6px;"></i> +237</div>
+          <input type="tel" id="inp-phone" placeholder="6XX XXX XXX" maxlength="9" autocomplete="tel">
+        </div>
+        <div class="field-error">Enter a valid phone number.</div>
+      </div>
+    </div>
+
+    <!-- Email login -->
+    <div id="emailForm" style="display:none">
+      <div class="field" id="field-email">
+        <label>Email Address</label>
+        <div class="input-wrap">
+          <span class="input-icon"><i class="fa-solid fa-envelope"></i></span>
+          <input type="email" id="inp-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field-error">Enter a valid email address.</div>
+      </div>
+    </div>
+
+    <div class="field" id="field-password">
+      <label>Password</label>
+      <div class="input-wrap">
+        <span class="input-icon"><i class="fa-solid fa-lock"></i></span>
+        <input type="password" id="inp-password" placeholder="Your password" autocomplete="current-password">
+        <span class="input-icon" onclick="togglePw()" style="cursor:pointer"><i class="fa-solid fa-eye"></i></span>
+      </div>
+      <div class="field-error">Please enter your password.</div>
+    </div>
+
+    <div class="forgot-row"><a href="#">Forgot password?</a></div>
+
+    <button class="btn-full" id="loginBtn" onclick="handleLogin()">
+      <span class="btn-text">Log In →</span>
+      <div class="spinner"></div>
+    </button>
+
+    <div class="divider"><span>or continue with</span></div>
+    <div class="social-btns">
+      <button class="social-btn">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+        Google
+      </button>
+      <button class="social-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </button>
+    </div>
+
+    <div class="bottom-link">
+      Don't have an account? <a href="register.html">Join CampusGig →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let loginMode = 'phone';
+
+function switchTab(mode) {
+  loginMode = mode;
+  document.getElementById('tab-phone').classList.toggle('active', mode === 'phone');
+  document.getElementById('tab-email').classList.toggle('active', mode === 'email');
+  document.getElementById('phoneForm').style.display = mode === 'phone' ? '' : 'none';
+  document.getElementById('emailForm').style.display = mode === 'email' ? '' : 'none';
+  hideError();
+}
+
+function togglePw() {
+  const inp = document.getElementById('inp-password');
+  const btn = event.currentTarget;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+function showError(msg) {
+  document.getElementById('loginError').classList.add('show');
+  document.getElementById('loginErrorMsg').textContent = msg;
+}
+function hideError() { document.getElementById('loginError').classList.remove('show'); }
+
+function handleLogin() {
+  hideError();
+  const pw = document.getElementById('inp-password').value;
+  if (!pw) { document.getElementById('field-password').classList.add('error'); return; }
+  document.getElementById('field-password').classList.remove('error');
+
+  const btn = document.getElementById('loginBtn');
+  btn.classList.add('loading');
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    // Add demo user seed
+    const demoUser = { id:'demo', name:'Demo User', phone:'+237600000000', email:'demo@campusgig.com', password:'demo1234', role:'earner', trustScore:42, verified:true, avatar:'DU', pillars:['engineering'], skills:['React','Node.js'] };
+
+    let found = null;
+    if (loginMode === 'phone') {
+      const phone = document.getElementById('inp-phone').value.trim();
+      if (!phone) { document.getElementById('field-phone').classList.add('error'); return; }
+      const full = '+237' + phone;
+      found = users.find(u => u.phone === full && u.password === pw) || (full === demoUser.phone && pw === demoUser.password ? demoUser : null);
+    } else {
+      const email = document.getElementById('inp-email').value.trim();
+      if (!email) { document.getElementById('field-email').classList.add('error'); return; }
+      found = users.find(u => u.email === email && u.password === pw) || (email === demoUser.email && pw === demoUser.password ? demoUser : null);
+    }
+
+    if (found) {
+      localStorage.setItem('currentUser', JSON.stringify(found));
+      window.location.href = 'feed.html';
+    } else {
+      showError('Incorrect phone number or password. Please try again.');
+    }
+  }, 1000);
+}
+
+// Enter key
+document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+</script>
+</body>
+</html>

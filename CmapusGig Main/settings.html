@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusGig — Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ===== CSS VARIABLES ===== */
+:root {
+  --green-deep:   #0a3d2b;
+  --green-mid:    #0e6641;
+  --green-vivid:  #16a34a;
+  --green-bright: #22c55e;
+  --green-lime:   #86efac;
+  --green-mist:   #dcfce7;
+  --white:        #ffffff;
+  --off-white:    #f0fdf4;
+  --gray-soft:    #e2e8f0;
+  --gray-mid:     #cbd5e1;
+  --gray-text:    #64748b;
+  --dark:         #0f172a;
+  --danger:       #ef4444;
+  --danger-light: #fef2f2;
+  --warning:      #f59e0b;
+  --info:         #3b82f6;
+
+  --grad-hero:    linear-gradient(135deg,#0a3d2b 0%,#0e6641 40%,#166534 70%,#14532d 100%);
+  --grad-card:    linear-gradient(135deg,#16a34a 0%,#15803d 100%);
+  --grad-accent:  linear-gradient(90deg,#22c55e,#86efac);
+  --grad-green:   linear-gradient(135deg,#dcfce7 0%,#bbf7d0 100%);
+
+  --radius-sm:  8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  40px;
+
+  --shadow-card:  0 8px 32px rgba(22,163,74,.10), 0 2px 8px rgba(0,0,0,.05);
+  --shadow-btn:   0 4px 20px rgba(34,197,94,.35);
+  --shadow-glass: 0 8px 32px rgba(10,61,43,.15);
+
+  --sidebar-w:  260px;
+  --topbar-h:   64px;
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif; background:var(--off-white); color:var(--dark); overflow-x:hidden; min-height:100vh; }
+a { text-decoration:none; color:inherit; }
+img { display:block; max-width:100%; }
+button { font-family:'Inter',sans-serif; cursor:pointer; border:none; }
+input, select, textarea { font-family:'Inter',sans-serif; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--green-lime); border-radius:99px; }
+
+/* ===== PAGE LOAD ANIMATIONS ===== */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+@keyframes slideRight {
+  from { opacity:0; transform:translateX(-20px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity:0; transform:scale(.95); }
+  to   { opacity:1; transform:scale(1); }
+}
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50%      { opacity:.5; }
+}
+@keyframes shimmer {
+  0%   { background-position:-200% 0; }
+  100% { background-position:200% 0; }
+}
+
+/* ===== LAYOUT ===== */
+.app-shell { display:flex; min-height:100vh; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width:var(--sidebar-w);
+  background:var(--grad-hero);
+  position:fixed;
+  top:0; left:0; bottom:0;
+  z-index:300;
+  display:flex;
+  flex-direction:column;
+  padding:28px 0 24px;
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+}
+.sidebar-logo {
+  display:flex; align-items:center; gap:10px;
+  padding:0 24px 28px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.sidebar-logo .logo-mark {
+  width:36px; height:36px; border-radius:10px;
+  background:var(--grad-accent);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Inter',sans-serif; font-weight:900; font-size:16px;
+  color:var(--green-deep);
+}
+.sidebar-logo .logo-text {
+  font-family:'Inter',sans-serif; font-weight:800; font-size:20px;
+  color:var(--white);
+}
+.sidebar-nav { flex:1; padding:20px 0; overflow-y:auto; }
+.nav-section-label {
+  font-size:10px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; color:rgba(255,255,255,.35);
+  padding:0 24px; margin-bottom:8px; margin-top:20px;
+}
+.nav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:11px 24px;
+  color:rgba(255,255,255,.65);
+  font-size:14px; font-weight:400;
+  transition:all .2s;
+  border-left:3px solid transparent;
+  position:relative;
+}
+.nav-item:hover { color:var(--white); background:rgba(255,255,255,.06); }
+.nav-item.active {
+  color:var(--white);
+  background:rgba(255,255,255,.1);
+  border-left-color:var(--green-bright);
+  font-weight:500;
+}
+.nav-item .nav-icon {
+  width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0;
+}
+.nav-badge {
+  margin-left:auto;
+  background:var(--green-vivid);
+  color:white; font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:99px;
+}
+.sidebar-bottom {
+  padding:20px 24px 0;
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.sidebar-user {
+  display:flex; align-items:center; gap:12px;
+  padding:12px;
+  background:rgba(255,255,255,.07);
+  border-radius:var(--radius-md);
+  border:1px solid rgba(255,255,255,.1);
+  cursor:pointer;
+  transition:background .2s;
+}
+.sidebar-user:hover { background:rgba(255,255,255,.12); }
+.sidebar-avatar {
+  width:38px; height:38px; border-radius:50%;
+  background:var(--grad-accent);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Inter',sans-serif; font-weight:800; font-size:14px;
+  color:var(--green-deep); flex-shrink:0;
+}
+.sidebar-user-info { flex:1; min-width:0; }
+.sidebar-user-name {
+  font-size:13px; font-weight:600; color:white;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sidebar-user-role { font-size:11px; color:rgba(255,255,255,.45); }
+.sidebar-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.5); z-index:299;
+  backdrop-filter:blur(4px);
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  position:fixed; top:0; right:0;
+  left:var(--sidebar-w);
+  height:var(--topbar-h);
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--gray-soft);
+  z-index:200;
+  display:flex; align-items:center;
+  padding:0 28px;
+  gap:16px;
+  transition:left .35s cubic-bezier(.4,0,.2,1);
+}
+.topbar-hamburger {
+  display:none;
+  width:40px; height:40px; border-radius:var(--radius-sm);
+  background:transparent;
+  align-items:center; justify-content:center;
+  flex-direction:column; gap:5px;
+}
+.topbar-hamburger span {
+  width:22px; height:2px;
+  background:var(--green-deep); border-radius:2px;
+  transition:.3s;
+}
+.topbar-title {
+  font-family:'Inter',sans-serif; font-weight:800; font-size:18px;
+  color:var(--dark);
+}
+.topbar-sub { font-size:13px; color:var(--gray-text); margin-left:4px; }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:12px; }
+.topbar-icon-btn {
+  width:38px; height:38px; border-radius:50%;
+  background:var(--off-white); border:1px solid var(--gray-soft);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; transition:all .2s;
+}
+.topbar-icon-btn:hover { background:var(--green-mist); border-color:var(--green-lime); }
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  flex:1;
+  margin-left:var(--sidebar-w);
+  margin-top:var(--topbar-h);
+  padding:32px 28px 60px;
+  transition:margin-left .35s cubic-bezier(.4,0,.2,1);
+  min-width:0;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+  margin-bottom:32px;
+  animation:fadeUp .5s ease both;
+}
+.page-header h1 {
+  font-family:'Inter',sans-serif;
+  font-size:clamp(22px,3vw,30px);
+  font-weight:900; color:var(--dark);
+  margin-bottom:6px;
+}
+.page-header p { font-size:14px; color:var(--gray-text); }
+
+/* ===== SETTINGS LAYOUT ===== */
+.settings-shell {
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:24px;
+  align-items:start;
+}
+
+/* ===== SETTINGS MENU ===== */
+.settings-menu {
+  background:var(--white);
+  border-radius:var(--radius-lg);
+  padding:12px;
+  box-shadow:var(--shadow-card);
+  position:sticky;
+  top:calc(var(--topbar-h) + 32px);
+  animation:slideRight .5s .1s ease both;
+  opacity:0;
+  animation-fill-mode:forwards;
+}
+.menu-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px;
+  border-radius:var(--radius-sm);
+  font-size:13px; font-weight:400;
+  color:var(--gray-text);
+  cursor:pointer;
+  transition:all .2s;
+  border:none; background:transparent;
+  width:100%; text-align:left;
+}
+.menu-item:hover { background:var(--off-white); color:var(--dark); }
+.menu-item.active {
+  background:var(--green-mist);
+  color:var(--green-mid);
+  font-weight:600;
+}
+.menu-item .mi-icon { font-size:16px; flex-shrink:0; }
+.menu-divider { height:1px; background:var(--gray-soft); margin:8px 0; }
+.menu-item.danger:hover { background:var(--danger-light); color:var(--danger); }
+
+/* ===== SETTINGS PANELS ===== */
+.settings-panels { display:flex; flex-direction:column; gap:20px; }
+
+.settings-panel {
+  background:var(--white);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+  animation:fadeUp .5s ease both;
+  opacity:0;
+  animation-fill-mode:forwards;
+}
+.settings-panel:nth-child(1) { animation-delay:.15s; }
+.settings-panel:nth-child(2) { animation-delay:.25s; }
+.settings-panel:nth-child(3) { animation-delay:.35s; }
+.settings-panel:nth-child(4) { animation-delay:.45s; }
+.settings-panel:nth-child(5) { animation-delay:.55s; }
+
+.panel-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 24px 18px;
+  border-bottom:1px solid var(--gray-soft);
+}
+.panel-header-left { display:flex; align-items:center; gap:12px; }
+.panel-header-icon {
+  width:40px; height:40px; border-radius:var(--radius-sm);
+  background:var(--grad-green);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+}
+.panel-header-icon.danger { background:var(--danger-light); }
+.panel-header h2 {
+  font-family:'Syne',sans-serif;
+  font-size:16px; font-weight:700; color:var(--dark);
+}
+.panel-header p { font-size:12px; color:var(--gray-text); margin-top:2px; }
+.panel-body { padding:24px; }
+
+/* ===== FORM ELEMENTS ===== */
+.form-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+.form-grid.single { grid-template-columns:1fr; }
+.form-group { display:flex; flex-direction:column; gap:7px; }
+.form-group.span2 { grid-column:span 2; }
+label {
+  font-size:13px; font-weight:500; color:var(--dark);
+  display:flex; align-items:center; gap:6px;
+}
+label .required { color:var(--danger); font-size:12px; }
+.input-wrap { position:relative; }
+.input-wrap .input-icon {
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  font-size:16px; pointer-events:none;
+}
+.input-wrap input,
+.input-wrap select {
+  padding-left:42px;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="number"],
+select,
+textarea {
+  width:100%;
+  padding:11px 16px;
+  border:1.5px solid var(--gray-soft);
+  border-radius:var(--radius-sm);
+  font-size:14px; color:var(--dark);
+  background:var(--off-white);
+  outline:none;
+  transition:border-color .2s, box-shadow .2s, background .2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color:var(--green-vivid);
+  background:var(--white);
+  box-shadow:0 0 0 3px rgba(22,163,74,.1);
+}
+input.error { border-color:var(--danger); }
+input.error:focus { box-shadow:0 0 0 3px rgba(239,68,68,.1); }
+input.success { border-color:var(--green-bright); }
+.field-hint { font-size:11px; color:var(--gray-text); }
+.field-error { font-size:11px; color:var(--danger); display:none; }
+.field-error.show { display:block; }
+
+/* Password input toggle */
+.pw-wrap { position:relative; }
+.pw-wrap input { padding-right:44px; }
+.pw-toggle {
+  position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:var(--gray-text);
+  cursor:pointer; font-size:18px; padding:0; line-height:1;
+  transition:color .2s;
+}
+.pw-toggle:hover { color:var(--green-vivid); }
+
+/* Password strength */
+.pw-strength { margin-top:8px; }
+.pw-strength-bar {
+  height:4px; border-radius:2px;
+  background:var(--gray-soft); overflow:hidden; margin-bottom:6px;
+}
+.pw-strength-fill {
+  height:100%; border-radius:2px; width:0;
+  transition:width .4s, background .4s;
+}
+.pw-strength-label { font-size:11px; color:var(--gray-text); }
+
+/* ===== AVATAR UPLOAD ===== */
+.avatar-section {
+  display:flex; align-items:center; gap:20px;
+  padding:20px 24px;
+  background:var(--off-white);
+  border-bottom:1px solid var(--gray-soft);
+}
+.avatar-preview {
+  width:72px; height:72px; border-radius:50%;
+  background:var(--grad-card);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Inter',sans-serif; font-weight:800; font-size:26px;
+  color:white; flex-shrink:0;
+  position:relative; overflow:hidden;
+  border:3px solid var(--white);
+  box-shadow:var(--shadow-card);
+}
+.avatar-preview img {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+}
+.avatar-info { flex:1; }
+.avatar-info h4 { font-size:14px; font-weight:600; color:var(--dark); margin-bottom:4px; }
+.avatar-info p { font-size:12px; color:var(--gray-text); margin-bottom:12px; }
+.avatar-btns { display:flex; gap:10px; flex-wrap:wrap; }
+.btn-upload {
+  padding:8px 16px; border-radius:var(--radius-xl);
+  background:var(--green-vivid); color:white;
+  font-size:13px; font-weight:500;
+  transition:background .2s, transform .2s;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.btn-upload:hover { background:var(--green-bright); transform:translateY(-1px); }
+.btn-remove {
+  padding:8px 16px; border-radius:var(--radius-xl);
+  background:transparent; color:var(--gray-text);
+  border:1.5px solid var(--gray-soft); font-size:13px;
+  transition:all .2s;
+}
+.btn-remove:hover { border-color:var(--danger); color:var(--danger); }
+#avatarInput { display:none; }
+
+/* ===== TOGGLE SWITCH ===== */
+.toggle-item {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:16px; padding:14px 0;
+  border-bottom:1px solid var(--gray-soft);
+}
+.toggle-item:last-child { border-bottom:none; padding-bottom:0; }
+.toggle-item:first-child { padding-top:0; }
+.toggle-info { flex:1; }
+.toggle-info h4 { font-size:14px; font-weight:500; color:var(--dark); margin-bottom:3px; }
+.toggle-info p  { font-size:12px; color:var(--gray-text); line-height:1.5; }
+.toggle-switch {
+  position:relative; flex-shrink:0;
+  width:46px; height:26px;
+}
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; inset:0;
+  background:var(--gray-mid); border-radius:26px;
+  cursor:pointer; transition:.3s;
+}
+.toggle-slider::before {
+  content:'';
+  position:absolute; left:3px; top:3px;
+  width:20px; height:20px; border-radius:50%;
+  background:white;
+  transition:.3s;
+  box-shadow:0 2px 4px rgba(0,0,0,.15);
+}
+.toggle-switch input:checked + .toggle-slider { background:var(--green-vivid); }
+.toggle-switch input:checked + .toggle-slider::before { transform:translateX(20px); }
+
+/* ===== SAVE / ACTION BUTTONS ===== */
+.panel-actions {
+  display:flex; align-items:center; justify-content:flex-end;
+  gap:12px; padding:18px 24px;
+  border-top:1px solid var(--gray-soft);
+  flex-wrap:wrap;
+}
+.btn-save {
+  padding:10px 28px; border-radius:var(--radius-xl);
+  background:var(--grad-card); color:white;
+  font-family:'Inter',sans-serif; font-size:14px; font-weight:800;
+  box-shadow:var(--shadow-btn);
+  transition:transform .2s, opacity .2s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-save:hover { transform:translateY(-1px); opacity:.9; }
+.btn-save:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+.btn-cancel {
+  padding:10px 22px; border-radius:var(--radius-xl);
+  background:transparent; color:var(--gray-text);
+  border:1.5px solid var(--gray-soft); font-size:14px;
+  transition:all .2s;
+}
+.btn-cancel:hover { border-color:var(--gray-text); color:var(--dark); }
+.btn-danger {
+  padding:10px 22px; border-radius:var(--radius-xl);
+  background:var(--danger-light); color:var(--danger);
+  border:1.5px solid rgba(239,68,68,.2);
+  font-size:14px; font-weight:600;
+  transition:all .2s;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.btn-danger:hover { background:var(--danger); color:white; }
+
+/* ===== SAVED TOAST ===== */
+.toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:var(--dark); color:white;
+  padding:12px 24px; border-radius:var(--radius-xl);
+  font-size:14px; font-weight:500;
+  display:flex; align-items:center; gap:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+  z-index:999;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), opacity .4s;
+  opacity:0; pointer-events:none;
+  white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+.toast-icon { font-size:18px; }
+.toast.success .toast-icon::before { content:'✅'; }
+.toast.error .toast-icon::before { content:'❌'; }
+.toast.info  .toast-icon::before { content:'ℹ️'; }
+
+/* ===== CONFIRM MODAL ===== */
+.modal-overlay {
+  position:fixed; inset:0;
+  background:rgba(10,61,43,.45);
+  backdrop-filter:blur(6px);
+  z-index:500;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  opacity:0; pointer-events:none;
+  transition:opacity .3s;
+}
+.modal-overlay.open { opacity:1; pointer-events:all; }
+.modal-box {
+  background:var(--white); border-radius:var(--radius-lg);
+  padding:28px 24px; width:100%; max-width:400px;
+  box-shadow:0 24px 64px rgba(0,0,0,.2);
+  transform:scale(.92); transition:transform .3s;
+  animation:none;
+}
+.modal-overlay.open .modal-box { transform:scale(1); }
+.modal-box h3 {
+  font-family:'Inter',sans-serif; font-size:18px; font-weight:800;
+  margin-bottom:10px; color:var(--dark);
+}
+.modal-box p { font-size:14px; color:var(--gray-text); line-height:1.6; margin-bottom:24px; }
+.modal-btns { display:flex; gap:12px; justify-content:flex-end; flex-wrap:wrap; }
+
+/* ===== DANGER ZONE ===== */
+.danger-zone { border:1.5px solid rgba(239,68,68,.25); }
+.danger-zone .panel-header { background:var(--danger-light); }
+.danger-zone .panel-header h2 { color:var(--danger); }
+.danger-item {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:16px; padding:16px 0;
+  border-bottom:1px solid rgba(239,68,68,.1);
+}
+.danger-item:last-child { border-bottom:none; padding-bottom:0; }
+.danger-item:first-child { padding-top:0; }
+.danger-item-info h4 { font-size:14px; font-weight:500; color:var(--dark); margin-bottom:3px; }
+.danger-item-info p  { font-size:12px; color:var(--gray-text); }
+
+/* ===== CONNECTED ACCOUNTS ===== */
+.connected-item {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 0; border-bottom:1px solid var(--gray-soft);
+}
+.connected-item:last-child { border-bottom:none; padding-bottom:0; }
+.connected-item:first-child { padding-top:0; }
+.connected-icon {
+  width:40px; height:40px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; background:var(--off-white); flex-shrink:0;
+}
+.connected-info { flex:1; min-width:0; }
+.connected-info h4 { font-size:14px; font-weight:500; color:var(--dark); }
+.connected-info p  { font-size:12px; color:var(--gray-text); }
+.connected-status {
+  font-size:11px; font-weight:600;
+  padding:4px 10px; border-radius:99px;
+}
+.connected-status.linked {
+  background:var(--green-mist); color:var(--green-mid);
+}
+.connected-status.unlinked {
+  background:var(--off-white); color:var(--gray-text);
+  border:1px solid var(--gray-soft); cursor:pointer;
+  transition:all .2s;
+}
+.connected-status.unlinked:hover {
+  background:var(--green-mist); color:var(--green-mid);
+  border-color:var(--green-lime);
+}
+
+/* ===== SESSION CARDS ===== */
+.session-item {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 0; border-bottom:1px solid var(--gray-soft);
+}
+.session-item:last-child { border-bottom:none; padding-bottom:0; }
+.session-item:first-child { padding-top:0; }
+.session-icon {
+  width:40px; height:40px; border-radius:var(--radius-sm);
+  background:var(--off-white); border:1px solid var(--gray-soft);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
+.session-info { flex:1; min-width:0; }
+.session-info h4 {
+  font-size:13px; font-weight:500; color:var(--dark);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.session-info p { font-size:11px; color:var(--gray-text); }
+.session-current {
+  font-size:11px; font-weight:600; padding:3px 9px;
+  border-radius:99px; background:var(--green-mist); color:var(--green-mid);
+  white-space:nowrap;
+}
+.btn-revoke {
+  font-size:11px; font-weight:600; padding:4px 10px;
+  border-radius:99px; background:transparent;
+  border:1px solid rgba(239,68,68,.3); color:var(--danger);
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.btn-revoke:hover { background:var(--danger); color:white; }
+
+/* ===== PROFILE COMPLETION ===== */
+.completion-bar-wrap {
+  background:var(--off-white); border-radius:99px;
+  height:8px; overflow:hidden; margin:12px 0 8px;
+}
+.completion-bar-fill {
+  height:100%; border-radius:99px;
+  background:var(--grad-accent);
+  transition:width 1s cubic-bezier(.4,0,.2,1);
+}
+.completion-label {
+  display:flex; justify-content:space-between;
+  font-size:12px; color:var(--gray-text);
+}
+.completion-steps { margin-top:16px; display:flex; flex-direction:column; gap:8px; }
+.completion-step {
+  display:flex; align-items:center; gap:10px;
+  font-size:13px;
+}
+.step-check {
+  width:20px; height:20px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px;
+}
+.step-check.done { background:var(--green-mist); color:var(--green-vivid); }
+.step-check.todo { background:var(--gray-soft); color:var(--gray-text); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:1024px) {
+  .sidebar { transform:translateX(-100%); }
+  .sidebar.open { transform:translateX(0); }
+  .sidebar-overlay { display:block; }
+  .topbar { left:0; }
+  .main-content { margin-left:0; }
+  .topbar-hamburger { display:flex; }
+  .settings-shell { grid-template-columns:1fr; }
+  .settings-menu { position:static; display:none; }
+  .settings-menu.mobile-open { display:flex; flex-direction:row; flex-wrap:wrap; gap:4px; padding:8px; }
+  .settings-menu.mobile-open .menu-item { flex:1; min-width:120px; justify-content:center; }
+  .settings-menu.mobile-open .menu-divider { width:100%; height:1px; }
+}
+@media (max-width:768px) {
+  .main-content { padding:24px 16px 60px; }
+  .topbar { padding:0 16px; }
+  .form-grid { grid-template-columns:1fr; }
+  .form-group.span2 { grid-column:span 1; }
+  .avatar-section { flex-direction:column; align-items:flex-start; }
+  .avatar-section { gap:14px; }
+  .panel-actions { padding:14px 16px; }
+  .panel-body { padding:16px; }
+  .panel-header { padding:16px; }
+  .settings-mobile-tabs {
+    display:flex; gap:6px; flex-wrap:nowrap;
+    overflow-x:auto; padding-bottom:8px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .settings-mobile-tabs::-webkit-scrollbar { display:none; }
+  .tab-pill {
+    flex-shrink:0; padding:8px 16px; border-radius:99px;
+    font-size:12px; font-weight:500; cursor:pointer;
+    background:var(--white); border:1.5px solid var(--gray-soft);
+    color:var(--gray-text); white-space:nowrap;
+    transition:all .2s;
+  }
+  .tab-pill.active {
+    background:var(--green-vivid); color:white; border-color:var(--green-vivid);
+  }
+}
+@media (max-width:400px) {
+  .btn-save, .btn-cancel, .btn-danger { font-size:13px; padding:9px 18px; }
+  .page-header h1 { font-size:20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">CG</div>
+    <span class="logo-text">CampusGig</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <a class="nav-item" href="feed.html">
+      <span class="nav-icon"><i class="fa-solid fa-magnifying-glass"></i></span> Discover
+    </a>
+    <a class="nav-item" href="profile.html">
+      <span class="nav-icon"><i class="fa-solid fa-user"></i></span> My Profile
+    </a>
+    <a class="nav-item" href="mygigs.html">
+      <span class="nav-icon"><i class="fa-solid fa-briefcase"></i></span> My Gigs
+    </a>
+    <a class="nav-item" href="applications.html">
+      <span class="nav-icon"><i class="fa-solid fa-list-check"></i></span> Applications
+      <span class="nav-badge" id="appBadge">3</span>
+    </a>
+    <div class="nav-section-label">Finance</div>
+    <a class="nav-item" href="wallet.html">
+      <span class="nav-icon"><i class="fa-solid fa-wallet"></i></span> Escrow Wallet
+    </a>
+    <div class="nav-section-label">Account</div>
+    <a class="nav-item" href="messages.html">
+      <span class="nav-icon"><i class="fa-solid fa-comments"></i></span> Messages
+      <span class="nav-badge" id="msgBadge">2</span>
+    </a>
+    <a class="nav-item active" href="settings.html">
+      <span class="nav-icon"><i class="fa-solid fa-gear"></i></span> Settings
+    </a>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="sidebar-user" id="sidebarUser">
+      <div class="sidebar-avatar" id="sidebarAvatar">--</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+        <div class="sidebar-user-role" id="sidebarRole">--</div>
+      </div>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <button class="topbar-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div>
+    <span class="topbar-title">Settings</span>
+    <span class="topbar-sub">Manage your account</span>
+  </div>
+  <div class="topbar-right">
+    <button class="topbar-icon-btn" title="Notifications" onclick="window.location.href='feed.html'"><i class="fa-solid fa-house"></i></button>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>Account Settings</h1>
+    <p>Manage your profile, security, and preferences</p>
+  </div>
+
+  <!-- Mobile tabs (shows on small screens instead of side menu) -->
+  <!-- <div class="settings-mobile-tabs" id="mobileTabs">
+    <div class="tab-pill active" data-target="profile-panel" onclick="scrollToPanel(this,'profile-panel')">Profile</div>
+    <div class="tab-pill" data-target="security-panel" onclick="scrollToPanel(this,'security-panel')">Security</div>
+    <div class="tab-pill" data-target="notif-panel" onclick="scrollToPanel(this,'notif-panel')">Notifications</div>
+    <div class="tab-pill" data-target="privacy-panel" onclick="scrollToPanel(this,'privacy-panel')">Privacy</div>
+    <div class="tab-pill" data-target="connected-panel" onclick="scrollToPanel(this,'connected-panel')">Connected</div>
+    <div class="tab-pill" data-target="sessions-panel" onclick="scrollToPanel(this,'sessions-panel')">Sessions</div>
+    <div class="tab-pill" data-target="danger-panel" onclick="scrollToPanel(this,'danger-panel')">Danger</div>
+  </div> -->
+
+  <div class="settings-shell">
+
+    <!-- SIDE MENU (desktop) -->
+    <aside class="settings-menu" id="settingsMenu">
+      <button class="menu-item active" onclick="scrollToPanel(this,'profile-panel')">
+        <span class="mi-icon"><i class="fa-solid fa-user"></i></span> Profile Info
+      </button>
+      <button class="menu-item" onclick="scrollToPanel(this,'security-panel')">
+        <span class="mi-icon"><i class="fa-solid fa-lock"></i></span> Security
+      </button>
+      <button class="menu-item" onclick="scrollToPanel(this,'notif-panel')">
+        <span class="mi-icon"><i class="fa-solid fa-bell"></i></span> Notifications
+      </button>
+      <button class="menu-item" onclick="scrollToPanel(this,'privacy-panel')">
+        <span class="mi-icon"><i class="fa-solid fa-shield-halved"></i></span> Privacy
+      </button>
+      <button class="menu-item" onclick="scrollToPanel(this,'connected-panel')">
+        <span class="mi-icon"><i class="fa-solid fa-link"></i></span> Connected Accounts
+      </button>
+      <button class="menu-item" onclick="scrollToPanel(this,'sessions-panel')">
+        <span class="mi-icon"><i class="fa-solid fa-mobile-screen-button"></i></span> Active Sessions
+      </button>
+      <div class="menu-divider"></div>
+      <button class="menu-item danger" onclick="showLogoutModal()">
+        <span class="mi-icon"><i class="fa-solid fa-right-from-bracket"></i></span> Log Out
+      </button>
+    </aside>
+
+    <!-- PANELS -->
+    <div class="settings-panels">
+
+      <!-- ===== PROFILE INFO ===== -->
+      <div class="settings-panel" id="profile-panel">
+        <div class="avatar-section">
+          <div class="avatar-preview" id="avatarPreview">
+            <span id="avatarInitials">--</span>
+            <img id="avatarImg" src="" alt="" style="display:none">
+          </div>
+          <div class="avatar-info">
+            <h4>Profile Photo</h4>
+            <p>JPG, PNG or GIF · Max 5 MB</p>
+            <div class="avatar-btns">
+              <label class="btn-upload" for="avatarInput"><i class="fa-solid fa-camera"></i> Upload Photo</label>
+              <button class="btn-remove" id="removeAvatarBtn">Remove</button>
+            </div>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*">
+        </div>
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon"><i class="fa-solid fa-user"></i></div>
+            <div>
+              <h2>Profile Information</h2>
+              <p>Update your personal details</p>
+            </div>
+          </div>
+          <!-- Completion badge -->
+          <div id="completionBadge" style="font-size:12px;font-weight:600;color:var(--green-vivid)"></div>
+        </div>
+        <!-- Profile completion bar -->
+        <div style="padding:0 24px 4px">
+          <div class="completion-bar-wrap">
+            <div class="completion-bar-fill" id="completionFill" style="width:0%"></div>
+          </div>
+          <div class="completion-label">
+            <span>Profile Completion</span>
+            <span id="completionPct">0%</span>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name <span class="required">*</span></label>
+              <div class="input-wrap">
+                <span class="input-icon"><i class="fa-solid fa-user"></i></span>
+                <input type="text" id="fullName" placeholder="e.g. Amara Enow">
+              </div>
+              <span class="field-error" id="nameErr">Name is required</span>
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <div class="input-wrap">
+                <span class="input-icon"><i class="fa-solid fa-phone"></i></span>
+                <input type="tel" id="phoneNum" placeholder="e.g. 6XXXXXXXX">
+              </div>
+            </div>
+            <div class="form-group span2">
+              <label>Bio / About</label>
+              <textarea id="userBio" rows="3" placeholder="Tell hirers about yourself..." style="padding:11px 16px;resize:vertical;border:1.5px solid var(--gray-soft);border-radius:var(--radius-sm);background:var(--off-white);outline:none;transition:border-color .2s,box-shadow .2s;width:100%;"></textarea>
+              <span class="field-hint">Max 200 characters</span>
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <div class="input-wrap">
+                <span class="input-icon"><i class="fa-solid fa-location-dot"></i></span>
+                <input type="text" id="userLocation" placeholder="e.g. Buea, Cameroon">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select id="userRole">
+                <option value="earner">Earner (Student/Youth)</option>
+                <option value="hirer">Hirer (Business Owner)</option>
+              </select>
+            </div>
+            <div class="form-group span2" id="skillRow">
+              <label>Primary Skill Category</label>
+              <select id="skillCategory">
+                <option value="">Select a skill category...</option>
+                <option value="engineering">Engineering & Tech</option>
+                <option value="business">Business & Finance</option>
+                <option value="marketing">Marketing & Creative</option>
+                <option value="talents">Street-Smart Talents</option>
+                <option value="academic">Academic Support</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn-cancel" onclick="loadUserData()">Reset</button>
+          <button class="btn-save" onclick="saveProfileInfo()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== SECURITY ===== -->
+      <div class="settings-panel" id="security-panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon"><i class="fa-solid fa-lock"></i></div>
+            <div>
+              <h2>Security</h2>
+              <p>Manage your password and 2FA</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label>Current Password <span class="required">*</span></label>
+              <div class="pw-wrap">
+                <input type="password" id="currentPw" placeholder="Enter current password">
+                <button class="pw-toggle" onclick="togglePw('currentPw',this)"><i class="fa-solid fa-eye"></i></button>
+              </div>
+              <span class="field-error" id="currentPwErr">Incorrect current password</span>
+            </div>
+            <div class="form-group">
+              <label>New Password <span class="required">*</span></label>
+              <div class="pw-wrap">
+                <input type="password" id="newPw" placeholder="New password" oninput="checkPwStrength(this.value)">
+                <button class="pw-toggle" onclick="togglePw('newPw',this)"><i class="fa-solid fa-eye"></i></button>
+              </div>
+              <div class="pw-strength">
+                <div class="pw-strength-bar">
+                  <div class="pw-strength-fill" id="pwStrengthFill"></div>
+                </div>
+                <div class="pw-strength-label" id="pwStrengthLabel">Enter a password</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password <span class="required">*</span></label>
+              <div class="pw-wrap">
+                <input type="password" id="confirmPw" placeholder="Confirm new password">
+                <button class="pw-toggle" onclick="togglePw('confirmPw',this)"><i class="fa-solid fa-eye"></i></button>
+              </div>
+              <span class="field-error" id="confirmPwErr">Passwords do not match</span>
+            </div>
+          </div>
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--gray-soft)">
+            <h4 style="font-size:14px;font-weight:600;margin-bottom:16px;color:var(--dark)">Two-Factor Authentication</h4>
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <h4>SMS Verification</h4>
+                <p>Receive a code on your phone when logging in from a new device</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle2fa">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn-cancel" onclick="clearPwFields()">Clear</button>
+          <button class="btn-save" onclick="savePassword()">
+            <i class="fa-solid fa-shield-halved"></i> Update Password
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== NOTIFICATIONS ===== -->
+      <div class="settings-panel" id="notif-panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon"><i class="fa-solid fa-bell"></i></div>
+            <div>
+              <h2>Notifications</h2>
+              <p>Choose what alerts you receive</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>New Gig Applications</h4>
+              <p>Get notified when someone applies to your posted gig</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifApplications" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>New Messages</h4>
+              <p>Alert when you receive a new direct message</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifMessages" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Escrow Updates</h4>
+              <p>Notifications when funds are locked, released, or disputed</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifEscrow" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>New Reviews</h4>
+              <p>Be alerted when a client leaves you a review</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifReviews" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Platform Updates & Tips</h4>
+              <p>Occasional tips, feature announcements, and CampusGig news</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifPlatform">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Weekly Gig Digest</h4>
+              <p>Summary of trending gigs matching your skills each Monday</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifDigest">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn-save" onclick="saveNotifications()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Preferences
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== PRIVACY ===== -->
+      <div class="settings-panel" id="privacy-panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <div>
+              <h2>Privacy</h2>
+              <p>Control who sees your information</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Public Profile</h4>
+              <p>Allow anyone on CampusGig to view your profile and services</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="privacyPublic" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Show Online Status</h4>
+              <p>Let others see when you were last active on the platform</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="privacyOnline" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Show Trust Score</h4>
+              <p>Display your trust score on your public profile</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="privacyScore" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Appear in Search Results</h4>
+              <p>Allow hirers to find you through skill-based searches</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="privacySearch" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Allow Direct Messages</h4>
+              <p>Let any verified user message you first</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="privacyDM" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn-save" onclick="savePrivacy()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Privacy Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== CONNECTED ACCOUNTS ===== -->
+      <div class="settings-panel" id="connected-panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon"><i class="fa-solid fa-link"></i></div>
+            <div>
+              <h2>Connected Accounts</h2>
+              <p>Link external services to your profile</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="connected-item">
+            <div class="connected-icon">📱</div>
+            <div class="connected-info">
+              <h4>Mobile Money (MTN)</h4>
+              <p id="momoStatus">Link your MoMo number to receive payments</p>
+            </div>
+            <span class="connected-status unlinked" id="momoBtn" onclick="linkAccount('momo')">Link</span>
+          </div>
+          <div class="connected-item">
+            <div class="connected-icon">🟠</div>
+            <div class="connected-info">
+              <h4>Orange Money</h4>
+              <p id="orangeStatus">Link your Orange Money account</p>
+            </div>
+            <span class="connected-status unlinked" id="orangeBtn" onclick="linkAccount('orange')">Link</span>
+          </div>
+          <div class="connected-item">
+            <div class="connected-icon">🎓</div>
+            <div class="connected-info">
+              <h4>University Email (UB)</h4>
+              <p id="uniStatus">Verify your student status with your university email</p>
+            </div>
+            <span class="connected-status unlinked" id="uniBtn" onclick="linkAccount('uni')">Verify</span>
+          </div>
+          <div class="connected-item">
+            <div class="connected-icon">🐦</div>
+            <div class="connected-info">
+              <h4>Twitter / X</h4>
+              <p id="twitterStatus">Connect for social proof on your profile</p>
+            </div>
+            <span class="connected-status unlinked" id="twitterBtn" onclick="linkAccount('twitter')">Connect</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ACTIVE SESSIONS ===== -->
+      <div class="settings-panel" id="sessions-panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+            <div>
+              <h2>Active Sessions</h2>
+              <p>Devices currently logged into your account</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="session-item">
+            <div class="session-icon">💻</div>
+            <div class="session-info">
+              <h4>Chrome on Windows</h4>
+              <p>Buea, Cameroon · Active now</p>
+            </div>
+            <span class="session-current">This device</span>
+          </div>
+          <div class="session-item">
+            <div class="session-icon">📱</div>
+            <div class="session-info">
+              <h4>Android Phone</h4>
+              <p>Molyko, Buea · 2 days ago</p>
+            </div>
+            <button class="btn-revoke" onclick="revokeSession(this)">Revoke</button>
+          </div>
+          <div class="session-item">
+            <div class="session-icon">💻</div>
+            <div class="session-info">
+              <h4>Firefox on MacOS</h4>
+              <p>Douala, Cameroon · 5 days ago</p>
+            </div>
+            <button class="btn-revoke" onclick="revokeSession(this)">Revoke</button>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button class="btn-danger" onclick="showRevokeAllModal()">
+            <i class="fa-solid fa-ban"></i> Revoke All Other Sessions
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== DANGER ZONE ===== -->
+      <div class="settings-panel danger-zone" id="danger-panel">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <div class="panel-header-icon danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+              <h2 style="color:var(--danger)">Danger Zone</h2>
+              <p>Irreversible account actions</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="danger-item">
+            <div class="danger-item-info">
+              <h4>Deactivate Account</h4>
+              <p>Temporarily hide your profile and gigs. You can reactivate anytime.</p>
+            </div>
+            <button class="btn-danger" onclick="showDeactivateModal()">Deactivate</button>
+          </div>
+          <div class="danger-item">
+            <div class="danger-item-info">
+              <h4>Delete Account</h4>
+              <p>Permanently delete your account, gigs, reviews, and all data. This cannot be undone.</p>
+            </div>
+            <button class="btn-danger" onclick="showDeleteModal()">Delete</button>
+          </div>
+          <div class="danger-item">
+            <div class="danger-item-info">
+              <h4>Export My Data</h4>
+              <p>Download a copy of all your CampusGig data (JSON format).</p>
+            </div>
+            <button class="btn-danger" style="border-color:rgba(100,116,139,.3);color:var(--gray-text);background:var(--off-white);" onclick="exportData()">Export</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /settings-panels -->
+  </div><!-- /settings-shell -->
+</main>
+
+<!-- ===== TOAST ===== -->
+<div class="toast success" id="toast">
+  <span class="toast-icon"></span>
+  <span id="toastMsg">Changes saved successfully</span>
+</div>
+
+<!-- ===== MODALS ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox">
+    <h3 id="modalTitle">Confirm Action</h3>
+    <p id="modalBody">Are you sure?</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-danger" id="modalConfirmBtn" onclick="modalConfirmAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================================================
+   CAMPUSGIG — SETTINGS PAGE JS
+   =================================================== */
+
+let currentUser = null;
+let pendingAction = null;
+
+/* ---- INIT ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  loadCurrentUser();
+  loadUserData();
+  loadNotificationPrefs();
+  loadPrivacyPrefs();
+  loadConnectedAccounts();
+  initAvatarUpload();
+  calcCompletion();
+  initScrollObserver();
+  syncBadges();
+});
+
+/* ---- LOAD USER ---- */
+function loadCurrentUser() {
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  if (!currentUser) { window.location.href = 'login.html'; return; }
+
+  const initials = (currentUser.name || currentUser.phone || 'U')
+    .split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+  document.getElementById('sidebarAvatar').textContent = initials;
+  document.getElementById('avatarInitials').textContent = initials;
+  document.getElementById('sidebarName').textContent = currentUser.name || currentUser.phone;
+  document.getElementById('sidebarRole').textContent = currentUser.role === 'earner' ? 'Earner ✦' : 'Hirer ✦';
+
+  // Saved avatar
+  if (currentUser.avatar) {
+    const img = document.getElementById('avatarImg');
+    img.src = currentUser.avatar;
+    img.style.display = 'block';
+    document.getElementById('avatarInitials').style.display = 'none';
+  }
+}
+
+/* ---- LOAD FORM DATA ---- */
+function loadUserData() {
+  if (!currentUser) return;
+  document.getElementById('fullName').value    = currentUser.name     || '';
+  document.getElementById('phoneNum').value    = currentUser.phone    || '';
+  document.getElementById('userBio').value     = currentUser.bio      || '';
+  document.getElementById('userLocation').value= currentUser.location || '';
+  document.getElementById('userRole').value    = currentUser.role     || 'earner';
+  document.getElementById('skillCategory').value = currentUser.skillCategory || '';
+
+  toggleSkillRow(currentUser.role);
+  document.getElementById('userRole').addEventListener('change', e => toggleSkillRow(e.target.value));
+
+  calcCompletion();
+}
+
+function toggleSkillRow(role) {
+  document.getElementById('skillRow').style.display = role === 'earner' ? '' : 'none';
+}
+
+/* ---- PROFILE COMPLETION ---- */
+function calcCompletion() {
+  if (!currentUser) return;
+  const checks = [
+    { key:'name',      test: !!currentUser.name },
+    { key:'phone',     test: !!currentUser.phone },
+    { key:'bio',       test: !!currentUser.bio },
+    { key:'location',  test: !!currentUser.location },
+    { key:'avatar',    test: !!currentUser.avatar },
+    { key:'skill',     test: currentUser.role === 'hirer' || !!currentUser.skillCategory },
+  ];
+  const done = checks.filter(c => c.test).length;
+  const pct  = Math.round((done / checks.length) * 100);
+
+  document.getElementById('completionFill').style.width = pct + '%';
+  document.getElementById('completionPct').textContent  = pct + '%';
+  document.getElementById('completionBadge').textContent = pct === 100 ? '✅ Complete' : `${pct}% done`;
+}
+
+/* ---- SAVE PROFILE INFO ---- */
+function saveProfileInfo() {
+  const name  = document.getElementById('fullName').value.trim();
+  let valid   = true;
+
+  if (!name) {
+    document.getElementById('nameErr').classList.add('show');
+    document.getElementById('fullName').classList.add('error');
+    valid = false;
+  } else {
+    document.getElementById('nameErr').classList.remove('show');
+    document.getElementById('fullName').classList.remove('error');
+  }
+  if (!valid) return;
+
+  currentUser.name          = name;
+  currentUser.phone         = document.getElementById('phoneNum').value.trim();
+  currentUser.bio           = document.getElementById('userBio').value.trim();
+  currentUser.location      = document.getElementById('userLocation').value.trim();
+  currentUser.role          = document.getElementById('userRole').value;
+  currentUser.skillCategory = document.getElementById('skillCategory').value;
+
+  persistUser();
+  calcCompletion();
+  showToast('Profile updated successfully ✦', 'success');
+}
+
+/* ---- PASSWORD ---- */
+function togglePw(id, btn) {
+  const input = document.getElementById(id);
+  input.type  = input.type === 'password' ? 'text' : 'password';
+  btn.innerHTML = input.type === 'password' ? '<i class="fa-solid fa-eye"></i>' : '<i class="fa-solid fa-eye-slash"></i>';
+}
+
+function checkPwStrength(pw) {
+  const fill  = document.getElementById('pwStrengthFill');
+  const label = document.getElementById('pwStrengthLabel');
+  let score   = 0;
+  if (pw.length >= 8)          score++;
+  if (/[A-Z]/.test(pw))        score++;
+  if (/[0-9]/.test(pw))        score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const configs = [
+    { w:'0%',   color:'var(--gray-soft)',    text:'Enter a password' },
+    { w:'25%',  color:'var(--danger)',       text:'Weak' },
+    { w:'50%',  color:'var(--warning)',      text:'Fair' },
+    { w:'75%',  color:'var(--info)',         text:'Good' },
+    { w:'100%', color:'var(--green-bright)', text:'Strong 💪' },
+  ];
+  const c = configs[score];
+  fill.style.width      = c.w;
+  fill.style.background = c.color;
+  label.textContent     = c.text;
+  label.style.color     = c.color;
+}
+
+function clearPwFields() {
+  ['currentPw','newPw','confirmPw'].forEach(id => {
+    document.getElementById(id).value = '';
+    document.getElementById(id).type  = 'password';
+  });
+  document.getElementById('pwStrengthFill').style.width = '0%';
+  document.getElementById('pwStrengthLabel').textContent = 'Enter a password';
+}
+
+function savePassword() {
+  const current = document.getElementById('currentPw').value;
+  const newPw   = document.getElementById('newPw').value;
+  const confirm = document.getElementById('confirmPw').value;
+
+  let valid = true;
+
+  if (!current || current !== (currentUser.password || '')) {
+    document.getElementById('currentPwErr').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('currentPwErr').classList.remove('show');
+  }
+
+  if (newPw !== confirm) {
+    document.getElementById('confirmPwErr').classList.add('show');
+    valid = false;
+  } else {
+    document.getElementById('confirmPwErr').classList.remove('show');
+  }
+
+  if (newPw.length < 6) {
+    showToast('Password must be at least 6 characters', 'error');
+    return;
+  }
+
+  if (!valid) return;
+
+  currentUser.password = newPw;
+  persistUser();
+  clearPwFields();
+  showToast('Password updated successfully 🔒', 'success');
+}
+
+/* ---- NOTIFICATIONS ---- */
+function loadNotificationPrefs() {
+  const prefs = JSON.parse(localStorage.getItem('notifPrefs') || '{}');
+  const defaults = {
+    notifApplications: true,
+    notifMessages:     true,
+    notifEscrow:       true,
+    notifReviews:      true,
+    notifPlatform:     false,
+    notifDigest:       false,
+  };
+  Object.assign(defaults, prefs);
+  Object.entries(defaults).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.checked = val;
+  });
+}
+
+function saveNotifications() {
+  const ids = ['notifApplications','notifMessages','notifEscrow','notifReviews','notifPlatform','notifDigest'];
+  const prefs = {};
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) prefs[id] = el.checked;
+  });
+  localStorage.setItem('notifPrefs', JSON.stringify(prefs));
+  showToast('Notification preferences saved', 'success');
+}
+
+/* ---- PRIVACY ---- */
+function loadPrivacyPrefs() {
+  const prefs = JSON.parse(localStorage.getItem('privacyPrefs') || '{}');
+  const defaults = {
+    privacyPublic: true,
+    privacyOnline: true,
+    privacyScore:  true,
+    privacySearch: true,
+    privacyDM:     true,
+  };
+  Object.assign(defaults, prefs);
+  Object.entries(defaults).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.checked = val;
+  });
+}
+
+function savePrivacy() {
+  const ids = ['privacyPublic','privacyOnline','privacyScore','privacySearch','privacyDM'];
+  const prefs = {};
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) prefs[id] = el.checked;
+  });
+  localStorage.setItem('privacyPrefs', JSON.stringify(prefs));
+  showToast('Privacy settings saved 🛡️', 'success');
+}
+
+/* ---- CONNECTED ACCOUNTS ---- */
+function loadConnectedAccounts() {
+  const linked = JSON.parse(localStorage.getItem('linkedAccounts') || '{}');
+  const map = {
+    momo:    { status:'momoStatus',    btn:'momoBtn',    linked:'MTN MoMo linked ✓',          unlinked:'Link your MoMo number to receive payments' },
+    orange:  { status:'orangeStatus',  btn:'orangeBtn',  linked:'Orange Money linked ✓',        unlinked:'Link your Orange Money account' },
+    uni:     { status:'uniStatus',     btn:'uniBtn',     linked:'University email verified ✓',  unlinked:'Verify your student status with your university email' },
+    twitter: { status:'twitterStatus', btn:'twitterBtn', linked:'Twitter / X connected ✓',      unlinked:'Connect for social proof on your profile' },
+  };
+  Object.entries(map).forEach(([key, cfg]) => {
+    if (linked[key]) {
+      document.getElementById(cfg.status).textContent = cfg.linked;
+      const btn = document.getElementById(cfg.btn);
+      btn.textContent = 'Linked';
+      btn.classList.remove('unlinked');
+      btn.classList.add('linked');
+    }
+  });
+}
+
+function linkAccount(type) {
+  const btn = document.getElementById(type + 'Btn');
+  if (btn.classList.contains('linked')) return;
+
+  const linked = JSON.parse(localStorage.getItem('linkedAccounts') || '{}');
+  linked[type] = true;
+  localStorage.setItem('linkedAccounts', JSON.stringify(linked));
+
+  const msgs = {
+    momo:    'MTN MoMo linked ✓',
+    orange:  'Orange Money linked ✓',
+    uni:     'University email verified ✓',
+    twitter: 'Twitter / X connected ✓',
+  };
+  document.getElementById(type + 'Status').textContent = msgs[type];
+  btn.textContent = 'Linked';
+  btn.classList.remove('unlinked');
+  btn.classList.add('linked');
+  showToast('Account linked successfully 🔗', 'success');
+}
+
+/* ---- SESSIONS ---- */
+function revokeSession(btn) {
+  const item = btn.closest('.session-item');
+  item.style.transition = 'opacity .3s, transform .3s';
+  item.style.opacity    = '0';
+  item.style.transform  = 'translateX(20px)';
+  setTimeout(() => item.remove(), 300);
+  showToast('Session revoked', 'info');
+}
+
+/* ---- AVATAR UPLOAD ---- */
+function initAvatarUpload() {
+  const input = document.getElementById('avatarInput');
+  input.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { showToast('File too large (max 5 MB)', 'error'); return; }
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const data = ev.target.result;
+      currentUser.avatar = data;
+      persistUser();
+
+      const img = document.getElementById('avatarImg');
+      img.src = data;
+      img.style.display = 'block';
+      document.getElementById('avatarInitials').style.display = 'none';
+      document.getElementById('sidebarAvatar').innerHTML = `<img src="${data}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+
+      showToast('Photo updated 📷', 'success');
+      calcCompletion();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('removeAvatarBtn').addEventListener('click', () => {
+    delete currentUser.avatar;
+    persistUser();
+    document.getElementById('avatarImg').style.display = 'none';
+    document.getElementById('avatarInitials').style.display = '';
+    const initials = (currentUser.name || currentUser.phone || 'U')
+      .split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('sidebarAvatar').textContent = initials;
+    showToast('Photo removed', 'info');
+    calcCompletion();
+  });
+}
+
+/* ---- SCROLL TO PANEL ---- */
+function scrollToPanel(btn, targetId) {
+  // Update active states
+  document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+  if (btn.classList.contains('menu-item')) btn.classList.add('active');
+
+  document.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+  if (btn.classList.contains('tab-pill')) btn.classList.add('active');
+
+  const target = document.getElementById(targetId);
+  if (!target) return;
+  const topOff = target.getBoundingClientRect().top + window.scrollY - 80;
+  window.scrollTo({ top: topOff, behavior: 'smooth' });
+}
+
+/* ---- SCROLL OBSERVER (animation) ---- */
+function initScrollObserver() {
+  const panels = document.querySelectorAll('.settings-panel');
+  if (!('IntersectionObserver' in window)) {
+    panels.forEach(p => p.style.opacity = '1');
+    return;
+  }
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animationPlayState = 'running';
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  panels.forEach(p => {
+    p.style.animationPlayState = 'paused';
+    io.observe(p);
+  });
+}
+
+/* ---- MODALS ---- */
+function openModal(title, body, confirmLabel, action) {
+  document.getElementById('modalTitle').textContent   = title;
+  document.getElementById('modalBody').textContent    = body;
+  document.getElementById('modalConfirmBtn').textContent = confirmLabel;
+  document.getElementById('modalOverlay').classList.add('open');
+  pendingAction = action;
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  pendingAction = null;
+}
+function modalConfirmAction() {
+  if (pendingAction) pendingAction();
+  closeModal();
+}
+
+function showLogoutModal() {
+  openModal('Log Out', 'Are you sure you want to log out of CampusGig?', 'Log Out', () => {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'login.html';
+  });
+}
+
+function showRevokeAllModal() {
+  openModal(
+    'Revoke All Sessions',
+    'This will log you out of all other devices. You will remain logged in here.',
+    'Revoke All',
+    () => {
+      document.querySelectorAll('.btn-revoke').forEach(btn => {
+        const item = btn.closest('.session-item');
+        item.style.transition = 'opacity .3s';
+        item.style.opacity = '0';
+        setTimeout(() => item.remove(), 300);
+      });
+      showToast('All other sessions revoked', 'success');
+    }
+  );
+}
+
+function showDeactivateModal() {
+  openModal(
+    'Deactivate Account',
+    'Your profile will be hidden and you won\'t appear in searches. You can reactivate anytime by logging back in.',
+    'Deactivate',
+    () => {
+      currentUser.deactivated = true;
+      persistUser();
+      showToast('Account deactivated. Log back in to reactivate.', 'info');
+    }
+  );
+}
+
+function showDeleteModal() {
+  openModal(
+    '⚠️ Delete Account',
+    'This will permanently delete your account, gigs, reviews, and all data. This CANNOT be undone.',
+    'Delete Forever',
+    () => {
+      const users = JSON.parse(localStorage.getItem('users') || '[]')
+        .filter(u => u.id !== currentUser.id);
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.removeItem('currentUser');
+      showToast('Account deleted. Redirecting...', 'error');
+      setTimeout(() => window.location.href = 'index.html', 2000);
+    }
+  );
+}
+
+/* ---- EXPORT DATA ---- */
+function exportData() {
+  const data = {
+    user:         currentUser,
+    posts:        JSON.parse(localStorage.getItem('posts')        || '[]').filter(p => p.userId === currentUser.id),
+    applications: JSON.parse(localStorage.getItem('applications') || '[]').filter(a => a.userId === currentUser.id || a.gigOwnerId === currentUser.id),
+    messages:     JSON.parse(localStorage.getItem('messages')     || '[]').filter(m => m.senderId === currentUser.id || m.receiverId === currentUser.id),
+    wallet:       JSON.parse(localStorage.getItem('wallet_' + currentUser.id) || 'null'),
+    exportedAt:   new Date().toISOString(),
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `campusgig_data_${currentUser.id}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported 📦', 'success');
+}
+
+/* ---- PERSIST USER ---- */
+function persistUser() {
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const idx   = users.findIndex(u => u.id === currentUser.id);
+  if (idx > -1) users[idx] = currentUser;
+  else users.push(currentUser);
+  localStorage.setItem('users', JSON.stringify(users));
+  // Update sidebar name
+  document.getElementById('sidebarName').textContent = currentUser.name || currentUser.phone;
+}
+
+/* ---- TOAST ---- */
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.className = `toast ${type}`;
+  void toast.offsetWidth;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ---- SYNC NAV BADGES ---- */
+function syncBadges() {
+  const apps  = JSON.parse(localStorage.getItem('applications') || '[]');
+  const msgs  = JSON.parse(localStorage.getItem('messages')     || '[]');
+  if (!currentUser) return;
+
+  const pendingApps = apps.filter(a => a.gigOwnerId === currentUser.id && a.status === 'pending').length;
+  const unread      = msgs.filter(m => m.receiverId === currentUser.id && !m.read).length;
+
+  const appBadge = document.getElementById('appBadge');
+  const msgBadge = document.getElementById('msgBadge');
+  if (appBadge) appBadge.textContent = pendingApps || '';
+  if (appBadge) appBadge.style.display = pendingApps ? '' : 'none';
+  if (msgBadge) msgBadge.textContent = unread || '';
+  if (msgBadge) msgBadge.style.display = unread ? '' : 'none';
+}
+
+/* ---- HAMBURGER / SIDEBAR ---- */
+const hamburger = document.getElementById('hamburger');
+const sidebar   = document.getElementById('sidebar');
+const overlay   = document.getElementById('sidebarOverlay');
+
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.style.display = 'none';
+});
+
+/* ---- CLOSE MODAL ON OUTSIDE CLICK ---- */
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+/* ---- SIDEBAR USER CLICK ---- */
+document.getElementById('sidebarUser').addEventListener('click', () => {
+  window.location.href = 'profile.html';
+});
+</script>
+</body>
+</html>

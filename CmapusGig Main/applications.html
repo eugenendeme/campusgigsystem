@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Applications — CampusGig</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      --green-deep:   #0a3d2b;
+      --green-mid:    #0e6641;
+      --green-vivid:  #16a34a;
+      --green-bright: #22c55e;
+      --green-lime:   #86efac;
+      --green-mist:   #dcfce7;
+      --white:        #ffffff;
+      --off-white:    #f0fdf4;
+      --gray-soft:    #e2e8f0;
+      --gray-text:    #64748b;
+      --dark:         #0f172a;
+      --grad-hero:    linear-gradient(135deg,#0a3d2b 0%,#0e6641 40%,#166534 70%,#14532d 100%);
+      --grad-card:    linear-gradient(135deg,#16a34a 0%,#15803d 100%);
+      --grad-accent:  linear-gradient(90deg,#22c55e,#86efac);
+      --radius-sm:    8px;
+      --radius-md:    16px;
+      --radius-lg:    24px;
+      --shadow-card:  0 8px 32px rgba(22,163,74,.12),0 2px 8px rgba(0,0,0,.06);
+      --shadow-btn:   0 4px 20px rgba(34,197,94,.4);
+      --sidebar-w:    260px;
+      --header-h:     64px;
+    }
+
+    /* ===== RESET ===== */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Inter',sans-serif;background:var(--off-white);color:var(--dark);overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+    button { font-family: 'Inter', sans-serif; }
+    
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--green-lime);border-radius:99px;}
+    /* ===== LAYOUT SHELL ===== */
+    .shell{display:flex;min-height:100vh;}
+
+    /* ===== SIDEBAR ===== */
+    .sidebar{
+      width:var(--sidebar-w);
+      background:var(--grad-hero);
+      position:fixed;top:0;left:0;height:100vh;
+      display:flex;flex-direction:column;
+      z-index:200;
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+      overflow-y:auto;
+      padding-bottom:24px;
+    }
+    .sidebar-logo{
+      padding:24px 24px 20px;
+      font-family:'Inter',sans-serif;font-size:22px;font-weight:800;color:var(--white);
+      display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.08);
+      flex-shrink:0;
+    }
+    .logo-dot{width:10px;height:10px;border-radius:50%;background:var(--grad-accent);display:inline-block;flex-shrink:0;}
+    .sidebar-nav{flex:1;padding:16px 12px;}
+    .nav-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:8px 12px 6px;margin-top:8px;}
+    .nav-item{
+      display:flex;align-items:center;gap:14px;
+      padding:11px 14px;border-radius:var(--radius-sm);
+      color:rgba(255,255,255,.75);font-size:14px;font-weight:400;
+      cursor:pointer;transition:background .2s,color .2s;margin-bottom:2px;
+    }
+    .nav-item:hover{background:rgba(255,255,255,.08);color:var(--white);}
+    .nav-item.active{background:rgba(34,197,94,.18);color:var(--green-lime);font-weight:500;}
+    .nav-item .icon{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+    .nav-item svg{width:18px;height:18px;flex-shrink:0;}
+    .sidebar-footer{padding:16px 12px 0;}
+    .sidebar-user{
+      display:flex;align-items:center;gap:10px;
+      padding:12px 14px;border-radius:var(--radius-sm);
+      background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+      cursor:pointer;transition:background .2s;
+    }
+    .sidebar-user:hover{background:rgba(255,255,255,.12);}
+    .s-avatar{width:36px;height:36px;border-radius:50%;background:var(--grad-card);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:13px;flex-shrink:0;}
+    .s-name{font-size:13px;font-weight:500;color:var(--white);}
+    .s-role{font-size:11px;color:rgba(255,255,255,.45);}
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;backdrop-filter:blur(2px);}
+    .overlay.show{display:block;}
+
+    /* ===== MAIN CONTENT ===== */
+    .main{
+      margin-left:var(--sidebar-w);
+      flex:1;min-width:0;
+      display:flex;flex-direction:column;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar{
+      height:var(--header-h);
+      background:rgba(255,255,255,.85);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--gray-soft);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 24px;
+      position:sticky;top:0;z-index:100;
+    }
+    .topbar-left{display:flex;align-items:center;gap:12px;}
+    .menu-btn{
+      display:none;width:36px;height:36px;border:none;background:transparent;
+      cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:6px;
+    }
+    .menu-btn span{width:20px;height:2px;background:var(--dark);border-radius:2px;transition:.3s;}
+    .topbar-title{font-family:'Inter',sans-serif;font-size:18px;font-weight:700;color:var(--dark);}
+    .topbar-right{display:flex;align-items:center;gap:12px;}
+    .notif-btn{
+      width:38px;height:38px;border:1.5px solid var(--gray-soft);background:white;
+      border-radius:50%;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;position:relative;font-size:16px;transition:border-color .2s;
+    }
+    .notif-btn:hover{border-color:var(--green-vivid);}
+    .notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--green-vivid);border:2px solid white;}
+    .topbar-avatar{width:38px;height:38px;border-radius:50%;background:var(--grad-card);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:13px;cursor:pointer;}
+
+    /* ===== PAGE BODY ===== */
+    .page-body{padding:28px 24px 60px;max-width:1080px;width:100%;}
+
+    /* ===== PAGE HEADER ===== */
+    .page-header{margin-bottom:28px;}
+    .page-header h1{font-family:'Inter',sans-serif;font-size:clamp(22px,3vw,30px);font-weight:800;color:var(--dark);margin-bottom:4px;}
+    .page-header p{font-size:14px;color:var(--gray-text);}
+    
+    /* ===== ROLE TOGGLE ===== */
+    .role-toggle{
+      display:inline-flex;background:var(--white);border:1.5px solid var(--gray-soft);
+      border-radius:999px;padding:4px;margin-bottom:24px;gap:4px;
+      box-shadow:var(--shadow-card);
+    }
+    .role-btn{
+      padding:9px 24px;border-radius:999px;border:none;background:transparent;
+      font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--gray-text);
+      cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;
+    }
+    .role-btn.active{background:var(--grad-hero);color:var(--white);}
+
+    /* ===== TABS ===== */
+    .tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+    .tab-btn{
+      padding:8px 18px;border-radius:999px;border:1.5px solid var(--gray-soft);
+      background:white;font-size:13px;font-weight:500;color:var(--gray-text);
+      cursor:pointer;transition:all .2s;white-space:nowrap;
+    }
+    .tab-btn:hover{border-color:var(--green-vivid);color:var(--green-vivid);}
+    .tab-btn.active{background:var(--green-mist);border-color:var(--green-vivid);color:var(--green-mid);font-weight:600;}
+    .tab-btn .count{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:20px;height:20px;border-radius:50%;background:var(--green-vivid);color:white;
+      font-size:11px;font-weight:700;margin-left:6px;
+    }
+    .tab-btn.active .count{background:var(--green-mid);}
+
+    /* ===== SEARCH + FILTER ROW ===== */
+    .filter-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+    .search-box{
+      flex:1;min-width:200px;display:flex;align-items:center;gap:10px;
+      background:white;border:1.5px solid var(--gray-soft);border-radius:var(--radius-sm);
+      padding:10px 16px;transition:border-color .2s;
+    }
+    .search-box:focus-within{border-color:var(--green-vivid);}
+    .search-box input{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);}
+    .search-box input::placeholder{color:var(--gray-text);}
+    .filter-select{
+      padding:10px 14px;border:1.5px solid var(--gray-soft);border-radius:var(--radius-sm);
+      font-family:'Inter',sans-serif;font-size:13px;color:var(--dark);background:white;
+      cursor:pointer;outline:none;transition:border-color .2s;min-width:130px;
+    }
+    .filter-select:focus{border-color:var(--green-vivid);}
+
+    /* ===== SUMMARY STRIP ===== */
+    .summary-strip{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;
+    }
+    .sum-card{
+      background:white;border-radius:var(--radius-md);padding:16px 18px;
+      border:1.5px solid var(--gray-soft);box-shadow:var(--shadow-card);
+      display:flex;flex-direction:column;gap:4px;
+      transition:transform .2s,border-color .2s;
+    }
+    .sum-card:hover{transform:translateY(-3px);border-color:var(--green-vivid);}
+    .sum-card .s-num{font-family:'Inter',sans-serif;font-size:26px;font-weight:800;color:var(--dark);}
+    .sum-card .s-label{font-size:12px;color:var(--gray-text);}
+    .sum-card .s-icon{font-size:20px;margin-bottom:6px;}
+
+    /* ===== CARD LIST ===== */
+    .cards-list{display:flex;flex-direction:column;gap:16px;}
+
+    /* ===== APPLICATION CARD (Earner view) ===== */
+    .app-card{
+      background:white;border-radius:var(--radius-lg);padding:22px 24px;
+      border:1.5px solid var(--gray-soft);box-shadow:var(--shadow-card);
+      display:flex;flex-direction:column;gap:0;
+      transition:transform .25s,border-color .25s,box-shadow .25s;
+      animation:slideUp .4s ease both;
+    }
+    .app-card:hover{transform:translateY(-3px);border-color:var(--green-bright);box-shadow:0 16px 40px rgba(22,163,74,.14);}
+    .app-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;}
+    .app-card-info{flex:1;min-width:0;}
+    .app-card-title{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--dark);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .app-card-company{font-size:13px;color:var(--gray-text);display:flex;align-items:center;gap:6px;}
+    .app-card-company .sep{color:var(--gray-soft);}
+    .app-card-budget{font-family:'Inter',sans-serif;font-size:18px;font-weight:800;color:var(--green-vivid);white-space:nowrap;}
+    .status-pill{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 12px;border-radius:999px;font-size:12px;font-weight:600;
+      flex-shrink:0;
+    }
+    .status-pill.pending  {background:#fef3c7;color:#d97706;}
+    .status-pill.accepted {background:var(--green-mist);color:var(--green-mid);}
+    .status-pill.rejected {background:#fee2e2;color:#dc2626;}
+    .status-pill.completed{background:#ede9fe;color:#7c3aed;}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+    .app-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+    .meta-tag{font-size:12px;color:var(--gray-text);display:flex;align-items:center;gap:5px;}
+    .meta-tag svg{flex-shrink:0;}
+    .app-desc{font-size:13px;color:var(--gray-text);line-height:1.6;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .app-skills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+    .skill-chip{padding:4px 10px;border-radius:999px;background:var(--green-mist);color:var(--green-mid);font-size:11px;font-weight:500;}
+    .app-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .btn{padding:9px 20px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+    .btn-primary{background:var(--grad-hero);color:white;box-shadow:0 4px 16px rgba(22,163,74,.3);}
+    .btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+    .btn-outline{background:white;color:var(--dark);border:1.5px solid var(--gray-soft);}
+    .btn-outline:hover{border-color:var(--green-vivid);color:var(--green-vivid);}
+    .btn-danger{background:white;color:#dc2626;border:1.5px solid #fecaca;}
+    .btn-danger:hover{background:#fee2e2;}
+    .btn-sm{padding:7px 14px;font-size:12px;}
+    .app-progress{display:flex;align-items:center;gap:10px;margin-top:4px;}
+    .progress-bar{flex:1;height:4px;background:var(--gray-soft);border-radius:99px;overflow:hidden;}
+    .progress-fill{height:100%;border-radius:99px;background:var(--grad-accent);transition:width .5s ease;}
+    .progress-label{font-size:11px;color:var(--gray-text);white-space:nowrap;}
+
+    /* ===== HIRER: APPLICANTS CARD ===== */
+    .hirer-card{
+      background:white;border-radius:var(--radius-lg);padding:20px 24px;
+      border:1.5px solid var(--gray-soft);box-shadow:var(--shadow-card);
+      animation:slideUp .4s ease both;
+      transition:transform .25s,border-color .25s;
+    }
+    .hirer-card:hover{transform:translateY(-3px);border-color:var(--green-bright);}
+    .hirer-card-head{margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--gray-soft);}
+    .hirer-card-title{font-family:'Inter',sans-serif;font-size:17px;font-weight:700;color:var(--dark);margin-bottom:6px;}
+    .hirer-card-meta{display:flex;gap:14px;flex-wrap:wrap;}
+    .applicants-list{display:flex;flex-direction:column;gap:12px;}
+    .applicant-row{
+      display:flex;align-items:center;gap:14px;padding:14px 16px;
+      border-radius:var(--radius-md);border:1.5px solid var(--gray-soft);
+      transition:background .2s,border-color .2s;
+    }
+    .applicant-row:hover{background:var(--off-white);border-color:var(--green-lime);}
+    .appl-avatar{width:44px;height:44px;border-radius:50%;background:var(--grad-card);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:15px;flex-shrink:0;}
+    .appl-info{flex:1;min-width:0;}
+    .appl-name{font-weight:600;font-size:14px;color:var(--dark);}
+    .appl-role{font-size:12px;color:var(--gray-text);}
+    .appl-trust{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--green-mid);font-weight:600;margin-top:2px;}
+    .trust-shield{font-size:12px;}
+    .appl-bid{font-family:'Inter',sans-serif;font-size:15px;font-weight:900;color:var(--green-vivid);white-space:nowrap;}
+    .appl-actions{display:flex;gap:8px;flex-shrink:0;}
+    .btn-accept{background:var(--green-mist);color:var(--green-mid);border:1.5px solid var(--green-lime);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+    .btn-accept:hover{background:var(--green-vivid);color:white;border-color:var(--green-vivid);}
+    .btn-reject{background:#fff1f2;color:#e11d48;border:1.5px solid #fecdd3;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+    .btn-reject:hover{background:#ffe4e6;}
+    .btn-view{background:white;color:var(--dark);border:1.5px solid var(--gray-soft);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+    .btn-view:hover{border-color:var(--green-vivid);color:var(--green-vivid);}
+    .accepted-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:var(--green-mist);color:var(--green-mid);font-size:12px;font-weight:600;}
+    .rejected-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;background:#fff1f2;color:#e11d48;font-size:12px;font-weight:600;}
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state{
+      text-align:center;padding:72px 24px;
+      background:white;border-radius:var(--radius-lg);border:1.5px dashed var(--gray-soft);
+    }
+    .empty-icon{font-size:56px;margin-bottom:16px;opacity:.7;}
+    .empty-state h3{font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--dark);margin-bottom:8px;}
+    .empty-state p{font-size:14px;color:var(--gray-text);max-width:340px;margin:0 auto 24px;line-height:1.6;}
+    
+    /* ===== MODAL ===== */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px);}
+    .modal-bg.open{opacity:1;pointer-events:all;}
+    .modal{background:white;border-radius:var(--radius-lg);max-width:520px;width:100%;padding:32px;box-shadow:0 32px 80px rgba(0,0,0,.25);transform:translateY(20px);transition:transform .25s;max-height:90vh;overflow-y:auto;}
+    .modal-bg.open .modal{transform:translateY(0);}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+    .modal-title{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:var(--dark);}
+    .modal-close{width:34px;height:34px;border:none;background:var(--off-white);border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .modal-close:hover{background:var(--gray-soft);}
+    .modal-body{}
+    .profile-detail-row{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--gray-soft);}
+    .profile-detail-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+    .pd-avatar{width:56px;height:56px;border-radius:50%;background:var(--grad-card);display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:18px;flex-shrink:0;}
+    .pd-info h3{font-family:'Inter',sans-serif;font-size:17px;font-weight:800;color:var(--dark);margin-bottom:3px;}
+    .pd-info p{font-size:13px;color:var(--gray-text);margin-bottom:6px;}
+    .pd-chips{display:flex;gap:6px;flex-wrap:wrap;}
+    .pd-chip{padding:3px 10px;border-radius:999px;background:var(--green-mist);color:var(--green-mid);font-size:11px;font-weight:500;}
+    .pd-stats{display:flex;gap:16px;margin-top:10px;}
+    .pd-stat-item{font-size:12px;color:var(--gray-text);display:flex;flex-direction:column;gap:1px;}
+    .pd-stat-item strong{font-size:15px;font-weight:700;color:var(--dark);}
+    .modal-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap;}
+    .toast{
+      position:fixed;bottom:24px;right:24px;z-index:600;
+      background:var(--green-deep);color:white;padding:14px 20px;
+      border-radius:var(--radius-md);font-size:14px;font-weight:500;
+      box-shadow:0 8px 32px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;
+      transform:translateY(80px);opacity:0;transition:transform .3s,opacity .3s;
+      max-width:320px;
+    }
+    .toast.show{transform:translateY(0);opacity:1;}
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+    
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .main{margin-left:0;}
+      .menu-btn{display:flex;}
+      .topbar{padding:0 16px;}
+      .page-body{padding:16px 16px 60px;}
+      .summary-strip{grid-template-columns:repeat(2,1fr);gap:10px;}
+      .app-card-top{flex-wrap:wrap;}
+      .app-card-budget{width:100%;}
+      .appl-actions{flex-direction:column;gap:6px;}
+      .btn-accept,.btn-reject,.btn-view{width:100%;text-align:center;justify-content:center;}
+      .filter-row{flex-direction:column;}
+      .filter-select{width:100%;}
+    }
+    .reveal{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;}
+    .reveal.visible{opacity:1;transform:translateY(0);}
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:1024px){
+      .summary-strip{grid-template-columns:repeat(2,1fr);}
+    }
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .main{margin-left:0;}
+      .menu-btn{display:flex;}
+      .topbar{padding:0 16px;}
+      .page-body{padding:20px 16px 60px;}
+      .summary-strip{grid-template-columns:repeat(2,1fr);gap:10px;}
+      .app-card-top{flex-wrap:wrap;}
+      .app-card-budget{width:100%;}
+      .appl-actions{flex-direction:column;gap:6px;}
+      .btn-accept,.btn-reject,.btn-view{width:100%;text-align:center;justify-content:center;}
+      .filter-row{flex-direction:column;}
+      .filter-select{width:100%;}
+    }
+    @media(max-width:480px){
+      .summary-strip{grid-template-columns:1fr 1fr;}
+      .sum-card .s-num{font-size:22px;}
+      .role-toggle{width:100%;justify-content:center;}
+      .role-btn{flex:1;text-align:center;}
+      .appl-actions{flex-direction:row;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar Overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-dot"></span> CampusGig
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a class="nav-item" href="index.html">
+      <span class="icon"><i class="fa-solid fa-house"></i></span> Home
+    </a>
+    <a class="nav-item" href="feed.html">
+      <span class="icon"><i class="fa-solid fa-bolt"></i></span> Feed
+    </a>
+    <a class="nav-item" href="mygigs.html">
+      <span class="icon"><i class="fa-solid fa-briefcase"></i></span> My Gigs
+    </a>
+    <a class="nav-item active" href="applications.html">
+      <span class="icon"><i class="fa-solid fa-list-check"></i></span> Applications
+    </a>
+    <div class="nav-label">Account</div>
+    <a class="nav-item" href="profile.html">
+      <span class="icon"><i class="fa-solid fa-user"></i></span> My Profile
+    </a>
+    <a class="nav-item" href="wallet.html">
+      <span class="icon"><i class="fa-solid fa-wallet"></i></span> Escrow Wallet
+    </a>
+    <a class="nav-item" href="settings.html">
+      <span class="icon"><i class="fa-solid fa-gear"></i></span> Settings
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user" id="sidebarUser">
+      <div class="s-avatar" id="sidebarAvatar">?</div>
+      <div>
+        <div class="s-name" id="sidebarName">Loading…</div>
+        <div class="s-role" id="sidebarRole">—</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" id="menuBtn" onclick="openSidebar()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="topbar-title">Applications</span>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn"><i class="fa-solid fa-bell"></i><span class="notif-dot"></span></div>
+      <div class="topbar-avatar" id="topAvatar">?</div>
+    </div>
+  </header>
+
+  <!-- Page Body -->
+  <div class="page-body">
+
+    <!-- Page Header -->
+    <div class="page-header reveal">
+      <h1>Applications</h1>
+      <p id="pageSubtitle">Track gigs you've applied to and manage your applications.</p>
+    </div>
+
+    <!-- Role Toggle (auto-set from localStorage but user can switch view) -->
+    <div class="role-toggle reveal" id="roleToggle">
+      <button class="role-btn active" id="earnerBtn" onclick="switchRole('earner')">🎓 Earner View</button>
+      <button class="role-btn" id="hirerBtn" onclick="switchRole('hirer')">💼 Hirer View</button>
+    </div>
+
+    <!-- Summary Strip -->
+    <div class="summary-strip reveal" id="summaryStrip"></div>
+
+    <!-- Tabs -->
+    <div class="tabs reveal" id="tabsRow"></div>
+
+    <!-- Filter Row -->
+    <div class="filter-row reveal">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass" style="color: #94a3b8; font-size: 14px;"></i>
+        <input type="text" id="searchInput" placeholder="Search your history…" oninput="renderView()">
+      </div>
+      <select class="filter-select" id="sortSelect" onchange="renderView()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="budget-high">Budget: High → Low</option>
+        <option value="budget-low">Budget: Low → High</option>
+      </select>
+    </div>
+
+    <!-- Cards List -->
+    <div class="cards-list" id="cardsList"></div>
+
+  </div><!-- /page-body -->
+</div><!-- /main -->
+
+<!-- ===== MODAL ===== -->
+<div class="modal-bg" id="modalBg" onclick="closeModalBg(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Applicant Details</span>
+      <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastMsg">Done!</span>
+</div>
+
+<script>
+/* ================================================================
+   CampusGig — Applications Page
+   Pure Vanilla JS + LocalStorage
+   ================================================================ */
+
+// ---- Seed demo data if storage is empty -------------------------
+(function seedDemoData(){
+  // Users
+  if(!localStorage.getItem('cg_users')){
+    const users = [
+      {id:'u1',phone:'670000001',password:'pass',role:'earner',name:'Amara Enow',   skillCategory:'Engineering',trustScore:92,memberSince:'Jan 2025',avatar:'AE',avatarColor:'#16a34a'},
+      {id:'u2',phone:'670000002',password:'pass',role:'earner',name:'Grace Tabi',   skillCategory:'Marketing',  trustScore:87,memberSince:'Feb 2025',avatar:'GT',avatarColor:'#f59e0b'},
+      {id:'u3',phone:'670000003',password:'pass',role:'earner',name:'Kevin Fon',    skillCategory:'Business',   trustScore:75,memberSince:'Mar 2025',avatar:'KF',avatarColor:'#6366f1'},
+      {id:'u4',phone:'670000004',password:'pass',role:'hirer', name:'Buea Bakery',  businessName:'Buea Bakery', trustScore:80,memberSince:'Jan 2025',avatar:'BB',avatarColor:'#0ea5e9'},
+      {id:'u5',phone:'670000005',password:'pass',role:'hirer', name:'TechVentures', businessName:'TechVentures',trustScore:91,memberSince:'Dec 2024',avatar:'TV',avatarColor:'#8b5cf6'},
+    ];
+    localStorage.setItem('cg_users', JSON.stringify(users));
+  }
+
+  // Current user (default to earner for demo)
+  if(!localStorage.getItem('cg_currentUser')){
+    const users = JSON.parse(localStorage.getItem('cg_users'));
+    localStorage.setItem('cg_currentUser', JSON.stringify(users[0]));
+  }
+
+  // Posts / Gigs
+  if(!localStorage.getItem('cg_posts')){
+    const posts = [
+      {id:'p1',type:'gig',  title:'Build a Restaurant Website',      description:'We need a responsive website for our new restaurant in Molyko. Must include menu page, contact form, and reservation system.',budget:35000, category:'Engineering',hirerName:'Buea Bakery',  hirerId:'u4',postedDate:'2025-05-10',status:'open'},
+      {id:'p2',type:'gig',  title:'Social Media Manager Needed',     description:'Looking for a creative student to manage our Instagram and Facebook pages. 3 posts per week, stories, and engagement.',budget:15000, category:'Marketing',  hirerName:'TechVentures', hirerId:'u5',postedDate:'2025-05-08',status:'open'},
+      {id:'p3',type:'gig',  title:'Excel Financial Model',           description:'Need a detailed Excel model for our SME quarterly financials. Must have charts and pivot tables.',budget:20000, category:'Business',  hirerName:'Buea Bakery',  hirerId:'u4',postedDate:'2025-05-06',status:'open'},
+      {id:'p4',type:'gig',  title:'Logo & Brand Identity Design',    description:'We are a new startup and need a professional logo, color palette, and brand guidelines document.',budget:25000, category:'Creative',   hirerName:'TechVentures', hirerId:'u5',postedDate:'2025-05-04',status:'closed'},
+      {id:'p5',type:'service',title:'Full-Stack Web Dev',            description:'I build fast, responsive websites using React and Node.js. Delivery in 5-7 days.',price:30000,  category:'Engineering',earnerName:'Amara Enow',   earnerId:'u1',postedDate:'2025-05-09',status:'active'},
+    ];
+    localStorage.setItem('cg_posts', JSON.stringify(posts));
+  }
+
+  // Applications
+  if(!localStorage.getItem('cg_applications')){
+    const apps = [
+      {id:'a1',postId:'p1',earnerId:'u1',hirerId:'u4',coverNote:'I have 2 years of React/Node.js experience and have built 5 similar projects. I can deliver within 7 days.',bidAmount:32000,appliedDate:'2025-05-11',status:'pending'},
+      {id:'a2',postId:'p2',earnerId:'u1',hirerId:'u5',coverNote:'I manage two local brand pages with a combined 4k followers. I will grow your pages strategically.',bidAmount:15000,appliedDate:'2025-05-09',status:'accepted'},
+      {id:'a3',postId:'p3',earnerId:'u1',hirerId:'u4',coverNote:'I am a 3rd year Accounting student and have built financial models for 3 SMEs already.',bidAmount:18000,appliedDate:'2025-05-07',status:'rejected'},
+      {id:'a4',postId:'p4',earnerId:'u2',hirerId:'u5',coverNote:'I specialize in brand identity design. See my portfolio for examples.',bidAmount:22000,appliedDate:'2025-05-05',status:'accepted'},
+      {id:'a5',postId:'p1',earnerId:'u2',hirerId:'u4',coverNote:'I am a Marketing student with graphic design skills.',bidAmount:28000,appliedDate:'2025-05-12',status:'pending'},
+      {id:'a6',postId:'p3',earnerId:'u3',hirerId:'u4',coverNote:'Accounting + Excel expert. I can start immediately.',bidAmount:17500,appliedDate:'2025-05-08',status:'pending'},
+    ];
+    localStorage.setItem('cg_applications', JSON.stringify(apps));
+  }
+})();
+
+// ---- State -------------------------------------------------------
+let currentRole = 'earner';
+let activeTab   = 'all';
+
+const COLORS = ['#16a34a','#f59e0b','#6366f1','#0ea5e9','#8b5cf6','#ec4899','#14b8a6'];
+function avatarColor(name){return COLORS[name.charCodeAt(0)%COLORS.length];}
+function initials(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function fmt(n){return Number(n).toLocaleString()+' CFA';}
+function relDate(d){
+  const diff = Math.floor((Date.now()-new Date(d))/(1000*60*60*24));
+  if(diff===0)return'Today';if(diff===1)return'Yesterday';return diff+' days ago';
+}
+
+// ---- Bootstrap ---------------------------------------------------
+window.addEventListener('DOMContentLoaded', ()=>{
+  loadUser();
+  // Auto-set role from currentUser
+  const cu = getCU();
+  if(cu){ currentRole = cu.role; }
+  highlightRoleBtn();
+  renderSummary();
+  renderTabs();
+  renderView();
+  initReveal();
+});
+
+function getCU(){
+  try{return JSON.parse(localStorage.getItem('cg_currentUser'));}catch{return null;}
+}
+function getUsers(){try{return JSON.parse(localStorage.getItem('cg_users'))||[];}catch{return[];}}
+function getPosts(){try{return JSON.parse(localStorage.getItem('cg_posts'))||[];}catch{return[];}}
+function getApps(){try{return JSON.parse(localStorage.getItem('cg_applications'))||[];}catch{return[];}}
+function saveApps(apps){localStorage.setItem('cg_applications',JSON.stringify(apps));}
+
+function loadUser(){
+  const cu = getCU();
+  const name = cu ? cu.name : 'Guest';
+  const role = cu ? (cu.role==='earner'?'Earner':'Hirer') : '—';
+  const av   = initials(name);
+  document.getElementById('sidebarAvatar').textContent=av;
+  document.getElementById('sidebarName').textContent=name;
+  document.getElementById('sidebarRole').textContent=role;
+  document.getElementById('topAvatar').textContent=av;
+  const style = cu ? `background:${avatarColor(name)}` : '';
+  document.getElementById('sidebarAvatar').style=style;
+  document.getElementById('topAvatar').style=style;
+}
+
+// ---- Role Toggle -------------------------------------------------
+function switchRole(r){
+  currentRole = r;
+  activeTab = 'all';
+  highlightRoleBtn();
+  renderSummary();
+  renderTabs();
+  renderView();
+}
+function highlightRoleBtn(){
+  document.getElementById('earnerBtn').classList.toggle('active', currentRole==='earner');
+  document.getElementById('hirerBtn').classList.toggle('active', currentRole==='hirer');
+  document.getElementById('pageSubtitle').textContent = currentRole==='earner'
+    ? 'Track all gigs you have applied to and monitor their status.'
+    : 'Manage applicants for your posted gigs — accept or reject with one click.';
+}
+
+// ---- Data Helpers ------------------------------------------------
+function getEarnerApps(){
+  const cu   = getCU(); if(!cu) return [];
+  const apps = getApps();
+  const posts= getPosts();
+  return apps.filter(a=>a.earnerId===cu.id).map(a=>{
+    const post = posts.find(p=>p.id===a.postId)||{};
+    return {...a, post};
+  });
+}
+
+function getHirerData(){
+  // returns posts by this hirer, each with their applicants
+  const cu    = getCU(); if(!cu) return [];
+  const posts = getPosts().filter(p=>p.hirerId===cu.id && p.type==='gig');
+  const apps  = getApps();
+  const users = getUsers();
+  return posts.map(p=>{
+    const applicants = apps.filter(a=>a.postId===p.id).map(a=>{
+      const user = users.find(u=>u.id===a.earnerId)||{};
+      return {...a, earner:user};
+    });
+    return {...p, applicants};
+  });
+}
+
+// ---- Summary Strip -----------------------------------------------
+function renderSummary(){
+  const strip = document.getElementById('summaryStrip');
+  let cards;
+  if(currentRole==='earner'){
+    const apps = getEarnerApps();
+    const pending  = apps.filter(a=>a.status==='pending').length;
+    const accepted = apps.filter(a=>a.status==='accepted').length;
+    const rejected = apps.filter(a=>a.status==='rejected').length;
+    cards = [
+      {icon:'📋', num:apps.length,   label:'Total Applied'},
+      {icon:'⏳', num:pending,       label:'Pending Review'},
+      {icon:'✅', num:accepted,      label:'Accepted'},
+      {icon:'❌', num:rejected,      label:'Rejected'},
+    ];
+  } else {
+    const hirerData = getHirerData();
+    const totalApplicants = hirerData.reduce((s,p)=>s+p.applicants.length,0);
+    const pending  = hirerData.reduce((s,p)=>s+p.applicants.filter(a=>a.status==='pending').length,0);
+    const accepted = hirerData.reduce((s,p)=>s+p.applicants.filter(a=>a.status==='accepted').length,0);
+    cards = [
+      {icon:'📌', num:hirerData.length,    label:'Active Gig Posts'},
+      {icon:'👥', num:totalApplicants,      label:'Total Applicants'},
+      {icon:'⏳', num:pending,             label:'Awaiting Review'},
+      {icon:'✅', num:accepted,            label:'Accepted'},
+    ];
+  }
+  strip.innerHTML = cards.map(c=>`
+    <div class="sum-card reveal">
+      <div class="s-icon">${c.icon}</div>
+      <div class="s-num">${c.num}</div>
+      <div class="s-label">${c.label}</div>
+    </div>`).join('');
+  initReveal();
+}
+
+// ---- Tabs --------------------------------------------------------
+function renderTabs(){
+  const row = document.getElementById('tabsRow');
+  let tabs;
+  if(currentRole==='earner'){
+    const apps = getEarnerApps();
+    const countOf = s => s==='all'?apps.length:apps.filter(a=>a.status===s).length;
+    tabs = [
+      {key:'all',      label:'All',      count:countOf('all')},
+      {key:'pending',  label:'Pending',  count:countOf('pending')},
+      {key:'accepted', label:'Accepted', count:countOf('accepted')},
+      {key:'rejected', label:'Rejected', count:countOf('rejected')},
+    ];
+  } else {
+    const posts = getHirerData();
+    tabs = [
+      {key:'all',   label:'All Gigs',       count:posts.length},
+      {key:'open',  label:'Open',           count:posts.filter(p=>p.status==='open').length},
+      {key:'closed',label:'Closed',         count:posts.filter(p=>p.status==='closed').length},
+    ];
+  }
+  row.innerHTML = tabs.map(t=>`
+    <button class="tab-btn${activeTab===t.key?' active':''}" onclick="setTab('${t.key}')">
+      ${t.label}${t.count>0?`<span class="count">${t.count}</span>`:''}
+    </button>`).join('');
+}
+
+function setTab(key){
+  activeTab = key;
+  renderTabs();
+  renderView();
+}
+
+// ---- Main Render -------------------------------------------------
+function renderView(){
+  currentRole==='earner' ? renderEarnerView() : renderHirerView();
+  initReveal();
+}
+
+// ---- EARNER VIEW -------------------------------------------------
+function renderEarnerView(){
+  const list     = document.getElementById('cardsList');
+  const search   = document.getElementById('searchInput').value.toLowerCase();
+  const sort     = document.getElementById('sortSelect').value;
+  let apps       = getEarnerApps();
+
+  // filter by tab
+  if(activeTab!=='all') apps = apps.filter(a=>a.status===activeTab);
+  // filter by search
+  if(search) apps = apps.filter(a=>(a.post.title||'').toLowerCase().includes(search)||(a.post.hirerName||'').toLowerCase().includes(search));
+  // sort
+  apps.sort((a,b)=>{
+    if(sort==='newest') return new Date(b.appliedDate)-new Date(a.appliedDate);
+    if(sort==='oldest') return new Date(a.appliedDate)-new Date(b.appliedDate);
+    if(sort==='budget-high') return (b.bidAmount||0)-(a.bidAmount||0);
+    if(sort==='budget-low')  return (a.bidAmount||0)-(b.bidAmount||0);
+    return 0;
+  });
+
+  if(apps.length===0){
+    list.innerHTML = emptyEarner(activeTab);
+    return;
+  }
+
+  list.innerHTML = apps.map((a,i)=>{
+    const p = a.post||{};
+    const statusLabels = {pending:'Pending Review',accepted:'Accepted 🎉',rejected:'Not Selected',completed:'Completed'};
+    const prog = {pending:30,accepted:70,rejected:15,completed:100}[a.status]||0;
+    const cat  = p.category||'General';
+    const catEmoji = {Engineering:'💻',Marketing:'📢',Business:'📊',Creative:'🎨',Talents:'⭐'}[cat]||'📌';
+    return `
+    <div class="app-card reveal" style="animation-delay:${i*0.07}s">
+      <div class="app-card-top">
+        <div class="app-card-info">
+          <div class="app-card-title">${p.title||'Untitled Gig'}</div>
+          <div class="app-card-company">
+            <span>${p.hirerName||'Unknown Hirer'}</span>
+            <span class="sep">·</span>
+            <span>${catEmoji} ${cat}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div class="app-card-budget">${fmt(a.bidAmount||p.budget)}</div>
+          <span class="status-pill ${a.status}"><span class="status-dot"></span>${statusLabels[a.status]||a.status}</span>
+        </div>
+      </div>
+      <div class="app-meta">
+        <span class="meta-tag"><i class="fa-regular fa-calendar-check"></i> Applied ${relDate(a.appliedDate)}</span>
+        <span class="meta-tag"><i class="fa-solid fa-wallet"></i> Budget: ${fmt(p.budget)}</span>
+        ${p.status==='open'?`<span class="meta-tag" style="color:var(--green-vivid)"><i class="fa-solid fa-circle-check"></i> Gig Open</span>`:`<span class="meta-tag" style="color:#dc2626"><i class="fa-solid fa-circle-xmark"></i> Gig Closed</span>`}
+      </div>
+      <div class="app-desc">"${a.coverNote||'No cover note provided.'}"</div>
+      <div class="app-skills">
+        ${(p.category?[p.category]:[]).map(s=>`<span class="skill-chip">${s}</span>`).join('')}
+      </div>
+      <div class="app-progress">
+        <div class="progress-bar"><div class="progress-fill" style="width:${prog}%"></div></div>
+        <span class="progress-label">${prog}% complete</span>
+      </div>
+      <div class="app-actions" style="margin-top:14px">
+        <button class="btn btn-outline btn-sm" onclick="viewGigDetail('${p.id}','${a.id}')"><i class="fa-solid fa-eye"></i> View Details</button>
+        ${a.status==='accepted'?`<button class="btn btn-primary btn-sm" onclick="openChat('${p.hirerId}')"><i class="fa-solid fa-comment"></i> Message Hirer</button>`:''}
+        ${a.status==='pending'?`<button class="btn btn-danger btn-sm" onclick="withdrawApp('${a.id}')"><i class="fa-solid fa-xmark"></i> Withdraw</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ---- HIRER VIEW -------------------------------------------------
+function renderHirerView(){
+  const list   = document.getElementById('cardsList');
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const sort   = document.getElementById('sortSelect').value;
+  let posts    = getHirerData();
+
+  if(activeTab!=='all') posts = posts.filter(p=>p.status===activeTab);
+  if(search) posts = posts.filter(p=>p.title.toLowerCase().includes(search));
+
+  if(posts.length===0){
+    list.innerHTML = emptyHirer();
+    return;
+  }
+
+  list.innerHTML = posts.map((p,i)=>{
+    const appCount = p.applicants.length;
+    const pendingCount = p.applicants.filter(a=>a.status==='pending').length;
+    return `
+    <div class="hirer-card reveal" style="animation-delay:${i*0.07}s">
+      <div class="hirer-card-head">
+        <div class="hirer-card-title">${p.title}</div>
+        <div class="hirer-card-meta">
+          <span class="meta-tag"><i class="fa-solid fa-users"></i> ${appCount} Applicant${appCount!==1?'s':''}</span>
+          <span class="meta-tag" style="color:var(--green-vivid)"><i class="fa-solid fa-hourglass-half"></i> ${pendingCount} Pending</span>
+          <span class="meta-tag"><i class="fa-solid fa-wallet"></i> Budget: ${fmt(p.budget)}</span>
+          <span class="meta-tag"><i class="fa-solid fa-calendar-day"></i> ${relDate(p.postedDate)}</span>
+          <span class="status-pill ${p.status==='open'?'accepted':'rejected'}">${p.status==='open'?'🟢 Open':'🔴 Closed'}</span>
+        </div>
+      </div>
+      ${appCount===0
+        ? `<div style="text-align:center;padding:32px;color:var(--gray-text);font-size:14px;">No applicants yet — share your gig to attract talent! 🚀</div>`
+        : `<div class="applicants-list">
+            ${p.applicants.sort((a,b)=>new Date(b.appliedDate)-new Date(a.appliedDate)).map(a=>`
+            <div class="applicant-row" id="row-${a.id}">
+              <div class="appl-avatar" style="background:${avatarColor(a.earner.name||'A')}">${initials(a.earner.name||'?')}</div>
+              <div class="appl-info">
+                <div class="appl-name">${a.earner.name||'Unknown'}</div>
+                <div class="appl-role">${a.earner.skillCategory||'—'} Student</div>
+                <div class="appl-trust"><span class="trust-shield"><i class="fa-solid fa-shield-halved"></i></span> Trust Score: ${a.earner.trustScore||0}</div>
+              </div>
+              <div class="appl-bid">${fmt(a.bidAmount)}</div>
+              <div class="appl-actions">
+                ${a.status==='pending'?`
+                  <button class="btn-view"    onclick="viewApplicant('${a.id}','${p.id}')">View</button>
+                  <button class="btn-accept"  onclick="decideApp('${a.id}','accepted')"><i class="fa-solid fa-check"></i> Accept</button>
+                  <button class="btn-reject"  onclick="decideApp('${a.id}','rejected')"><i class="fa-solid fa-xmark"></i> Reject</button>
+                `:a.status==='accepted'
+                  ?`<span class="accepted-tag">✅ Accepted</span><button class="btn-view" onclick="viewApplicant('${a.id}','${p.id}')">View</button>`
+                  :`<span class="rejected-tag">✕ Rejected</span>`
+                }
+              </div>
+            </div>`).join('')}
+          </div>`
+      }
+    </div>`;
+  }).join('');
+}
+
+// ---- Empty States ------------------------------------------------
+function emptyEarner(tab){
+  const msgs = {
+    all:     {icon:'📋', h:'No applications yet',    p:'Browse the feed and apply to gigs that match your skills.'},
+    pending: {icon:'⏳', h:'No pending applications', p:'Your pending applications will appear here.'},
+    accepted:{icon:'🎉', h:'No accepted applications', p:'Keep applying — acceptances will show up here!'},
+    rejected:{icon:'<i class="fa-solid fa-fire-glow"></i>', h:'No rejected applications', p:"No rejections yet. Keep going — you've got this!"},
+  };
+  const m = msgs[tab]||msgs.all;
+  return `<div class="empty-state reveal">
+    <div class="empty-icon">${m.icon}</div>
+    <h3>${m.h}</h3>
+    <p>${m.p}</p>
+    <button class="btn btn-primary" onclick="window.location.href='feed.html'"><i class="fa-solid fa-magnifying-glass"></i> Browse Gigs</button>
+  </div>`;
+}
+function emptyHirer(){
+  return `<div class="empty-state reveal">
+    <div class="empty-icon"><i class="fa-solid fa-thumbtack"></i></div>
+    <h3>No gigs posted yet</h3>
+    <p>Post your first gig to start receiving applications from talented students.</p>
+    <button class="btn btn-primary" onclick="window.location.href='mygigs.html'"><i class="fa-solid fa-plus"></i> Post a Gig</button>
+  </div>`;
+}
+
+// ---- Actions: Earner ---------------------------------------------
+function withdrawApp(appId){
+  if(!confirm('Withdraw this application?')) return;
+  const apps = getApps().filter(a=>a.id!==appId);
+  saveApps(apps);
+  showToast('Application withdrawn.');
+  renderSummary(); renderTabs(); renderView();
+}
+
+// ---- Actions: Hirer ----------------------------------------------
+function decideApp(appId, decision){
+  const apps = getApps();
+  const idx  = apps.findIndex(a=>a.id===appId);
+  if(idx===-1) return;
+  apps[idx].status = decision;
+  saveApps(apps);
+  const msg = decision==='accepted' ? '✅ Applicant accepted! Escrow payment can now be locked.' : '✕ Applicant marked as not selected.';
+  showToast(msg);
+  renderSummary(); renderTabs(); renderView();
+}
+
+// ---- View Gig Detail (Earner) ------------------------------------
+function viewGigDetail(postId, appId){
+  const post = getPosts().find(p=>p.id===postId)||{};
+  const app  = getApps().find(a=>a.id===appId)||{};
+  document.getElementById('modalTitle').textContent = post.title||'Gig Details';
+  document.getElementById('modalBody').innerHTML = `
+    <div style="margin-bottom:16px;padding:14px;background:var(--off-white);border-radius:var(--radius-sm);">
+      <div style="font-size:12px;color:var(--gray-text);margin-bottom:4px;">Gig Description</div>
+      <div style="font-size:14px;line-height:1.6;color:var(--dark)">${post.description||'—'}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="padding:12px;background:var(--green-mist);border-radius:var(--radius-sm);text-align:center">
+        <div style="font-size:11px;color:var(--green-mid);margin-bottom:2px">Posted Budget</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:var(--green-mid)">${fmt(post.budget)}</div>
+      </div>
+      <div style="padding:12px;background:var(--off-white);border-radius:var(--radius-sm);text-align:center">
+        <div style="font-size:11px;color:var(--gray-text);margin-bottom:2px">Your Bid</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:var(--dark)">${fmt(app.bidAmount)}</div>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;color:var(--gray-text);margin-bottom:6px">Your Cover Note</div>
+      <div style="font-size:14px;line-height:1.6;color:var(--dark);font-style:italic;padding:12px;background:var(--off-white);border-radius:var(--radius-sm);">"${app.coverNote||'—'}"</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:12px;color:var(--gray-text)">Status:</span>
+      <span class="status-pill ${app.status}"><span class="status-dot"></span>${app.status}</span>
+    </div>
+    <div class="modal-actions">
+      ${app.status==='accepted'?`<button class="btn btn-primary" onclick="openChat('${post.hirerId}');closeModal()"><i class="fa-solid fa-comment"></i> Message Hirer</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>`;
+  openModal();
+}
+
+// ---- View Applicant Detail (Hirer) -------------------------------
+function viewApplicant(appId, postId){
+  const app   = getApps().find(a=>a.id===appId)||{};
+  const users = getUsers();
+  const earner= users.find(u=>u.id===app.earnerId)||{};
+  const post  = getPosts().find(p=>p.id===postId)||{};
+  document.getElementById('modalTitle').textContent='Applicant Profile';
+  document.getElementById('modalBody').innerHTML=`
+    <div class="profile-detail-row">
+      <div class="pd-avatar" style="background:${avatarColor(earner.name||'A')}">${initials(earner.name||'?')}</div>
+      <div class="pd-info">
+        <h3>${earner.name||'Unknown'}</h3>
+        <p>${earner.skillCategory||'—'} Student &nbsp;·&nbsp; Member since ${earner.memberSince||'2025'}</p>
+        <div class="pd-chips"><span class="pd-chip"><i class="fa-solid fa-shield-halved"></i> Trust: ${earner.trustScore||0}</span><span class="pd-chip">${earner.skillCategory||'General'}</span></div>
+      </div>
+    </div>
+    <div style="padding:14px;background:var(--off-white);border-radius:var(--radius-sm);margin-bottom:16px">
+      <div style="font-size:12px;color:var(--gray-text);margin-bottom:6px">Cover Note</div>
+      <div style="font-size:14px;line-height:1.6;font-style:italic">"${app.coverNote||'—'}"</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px">
+      <div style="padding:12px;background:var(--green-mist);border-radius:var(--radius-sm);text-align:center">
+        <div style="font-size:11px;color:var(--green-mid);margin-bottom:2px">Bid Amount</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:var(--green-mid)">${fmt(app.bidAmount)}</div>
+      </div>
+      <div style="padding:12px;background:var(--off-white);border-radius:var(--radius-sm);text-align:center">
+        <div style="font-size:11px;color:var(--gray-text);margin-bottom:2px">Your Budget</div>
+        <div style="font-family:'Inter',sans-serif;font-size:18px;font-weight:900;color:var(--dark)">${fmt(post.budget)}</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      ${app.status==='pending'?`
+        <button class="btn btn-primary" onclick="decideApp('${app.id}','accepted');closeModal()"><i class="fa-solid fa-check"></i> Accept</button>
+        <button class="btn btn-danger"  onclick="decideApp('${app.id}','rejected');closeModal()"><i class="fa-solid fa-xmark"></i> Reject</button>
+      `:''}
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+    </div>`;
+  openModal();
+}
+
+function openChat(userId){
+  window.location.href=`messages.html?user=${userId}`;
+}
+
+// ---- Modal -------------------------------------------------------
+function openModal(){document.getElementById('modalBg').classList.add('open');}
+function closeModal(){document.getElementById('modalBg').classList.remove('open');}
+function closeModalBg(e){if(e.target===document.getElementById('modalBg'))closeModal();}
+
+// ---- Toast -------------------------------------------------------
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ---- Reveal on Scroll -------------------------------------------
+function initReveal(){
+  const els = document.querySelectorAll('.reveal:not(.visible)');
+  const ob = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ob.unobserve(e.target);}});
+  },{threshold:.12});
+  els.forEach(el=>ob.observe(el));
+}
+
+// ---- Sidebar -------------------------------------------------------
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+</script>
+</body>
+</html>
